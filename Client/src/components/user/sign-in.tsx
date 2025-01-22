@@ -78,7 +78,7 @@ export function LoginForm({
                 </div>
                 <Button type="submit" className="w-full">
                   Login
-                </Button>
+                </Button> 
               </div>
               <div className="text-sm text-center">
                 Don&apos;t have an account?{" "}
