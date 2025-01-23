@@ -3,14 +3,17 @@ dotenv.config()
 
 import express, {Application} from 'express'
 import { env } from './config/env';
+import envValidator from './utils/envValidator';
 
 import connectDB from './config/database';
-import userRouter from './routes/UserRoute';
+import userRouter from './app/routes/UserRoute';
 
 class App {
     public app: Application;
 
     constructor() {
+        envValidator()
+
         this.app = express()
 
         this.middlewares()
