@@ -1,11 +1,16 @@
 import bcrypt from 'bcryptjs'
 
 import { httpStatusCodes } from '../constants/statusCodes';
+import { generateOtp } from '../utils/generateOtp';
+import { transporter } from '../config/nodemailer';
+import { generateOtpHtmlTemplate } from '../utils/otpTemplate';
+import { generateHttpError } from '../utils/httpError';
 import { Messages } from '../constants/messages';
 import { IUserRepository } from "../interfaces/user/IUserRepository";
 import { IUserService } from "../interfaces/user/IUserService";
 import { UserType } from '../types/Type';
 import { env } from '../config/env';
+import { redisClient } from '../config/redis';
 
 export class UserService implements IUserService {
     constructor(
@@ -16,10 +21,42 @@ export class UserService implements IUserService {
         const existingUser = await this.userRepository.findByEmail(user.email)
 
         if (existingUser) {
-            throw new Error("User already exists with this email id");
+            throw generateHttpError(httpStatusCodes.CONFLICT, Messages.USER_EXIST)
         }
 
+        user.password = await bcrypt.hash(user.password as string, 10)
 
-        return 'f'
+        let otp = generateOtp()
+
+        let mail = {
+            user: env.USER_EMAIL,
+            to: user.email,
+            subject: 'Your 6-digit OTP',
+            html: generateOtpHtmlTemplate(otp)
+        }
+
+        try {
+            await transporter.sendMail(mail)
+        }catch (err) {
+            console.log(err);
+            throw generateHttpError(httpStatusCodes.INTERNAL_SERVER_ERROR, Messages.OTP_ERROR)
+        }
+
+        const tempObject = JSON.stringify({
+            otp: otp,
+            userData: user
+        })
+
+        await redisClient.setEx(user.email, 300, tempObject)
+
+        let storedValue = await redisClient.get(user.email)
+        if(storedValue) {
+            let parsed = JSON.parse(storedValue)
+            console.log(parsed);
+        }
+        
+        return user.email as string;
     }
+
+    
 }

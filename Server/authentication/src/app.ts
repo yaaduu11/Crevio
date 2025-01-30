@@ -2,10 +2,13 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import express, {Application} from 'express'
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 import { env } from './config/env';
 import envValidator from './utils/envValidator';
 
 import connectDB from './config/database';
+import { initializeRedisClient } from './config/redis';
 import userRouter from './app/routes/UserRoute';
 
 class App {
@@ -16,22 +19,25 @@ class App {
 
         this.app = express()
 
-        this.middlewares()
+        this.initializeMiddlewares()
         this.initializeDB()
-        this.routes()
+        this.initializeRoutes()
     }
 
-    private middlewares(): void {
+    private initializeMiddlewares(): void {
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended:true}))
+        this.app.use(cookieParser())
+        this.app.use(morgan('combined'))
+    }
+
+    private initializeRoutes(): void {
+        this.app.use('/',userRouter)
     }
 
     private initializeDB(): void {
         connectDB()
-    }
-
-    private routes(): void {
-        this.app.use('/',userRouter)
+        initializeRedisClient()
     }
 
     public listen(): void {

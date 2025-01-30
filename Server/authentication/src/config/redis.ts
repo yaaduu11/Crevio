@@ -17,7 +17,7 @@ const initializeRedisClient = () => {
     })
 
     redisClient.connect().catch((err)=>{
-        console.log('Error when connecting to redis', err);
+        console.error('Error when connecting to redis', err);
     })
 
     return redisClient

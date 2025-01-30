@@ -1,5 +1,15 @@
 import { Router } from 'express'
+import { UserController } from '../controllers/UserController'
+import { UserService } from '../../services/UserService'
+import UserRepository from '../../repositories/UserRepository'
 
-const userRouter = Router()
+const userService = new UserService(UserRepository)
+const userController = new UserController(userService)
+const router = Router()
 
-export default userRouter
+router.post(
+    '/register',
+    userController.register.bind(userController) 
+)
+
+export default router

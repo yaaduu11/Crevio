@@ -1,3 +1,4 @@
+import { useDispatch } from "react-redux"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import {
@@ -9,13 +10,65 @@ import {
 } from "../ui/card"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
+import eye_open from '../../assets/user/eye-open.png';
+import eye_close from '../../assets/user/eye-close.png';
 import { useNavigate } from "react-router-dom"
+import { useReducer, useState } from "react"
+import { UserStoreType, UserSignupFormType, UserSignupFormAction } from "../../types/userTypes"
+import { validateForm } from "../../validation/formValidation"
+import { formSchema } from "../../validation/formSchema"
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-    const navigate = useNavigate()
+
+export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
+  const [error, setError] = useState({field: "", message: ""})
+  const navigate = useNavigate()
+  // const dispatchFn = useDispatch()
+  
+  const initialState : UserSignupFormType = {
+     name :'',
+     email : '',
+     password : '',
+  }
+  
+  const reducer = (state: UserSignupFormType, action: UserSignupFormAction) => {
+    switch(action.type){
+      case "SET_NAME":
+        return {...state, name:action.payload};
+      case 'SET_EMAIL':
+        return {...state, email:action.payload};
+      case 'SET_PASSWORD':
+        return {...state, password:action.payload};
+      default :
+        return state;
+    }
+  }
+  
+  const [formData, dispatch] = useReducer(reducer, initialState)
+  
+  const handleFormSubmission = async (event: React.FormEvent)=>{
+    event.preventDefault();
+    
+    const error = validateForm(
+       formSchema,
+       formData as unknown as Record<string, string>
+    )
+    
+    if(error) {
+      setError(error)
+      return;
+    }else{
+      setError({field: "", message:""})
+    }
+    
+    const response = await axios.post('http://localhost:3000/register', formData)
+    
+    if(response) {
+      // localStorage.setItem("email", response.data.email)
+      navigate('/otp')
+    }
+    
+  }
+  
   return (
     <div className={cn("flex flex-col gap-6 ", className)} {...props}>
       <Card>
@@ -55,29 +108,58 @@ export function LoginForm({
               </div>
               <div className="grid gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Name</Label>
+                  <Label htmlFor="name">Name</Label>
                   <Input
                     id="name"
-                    type="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={(e)=>
+                      dispatch({
+                        type: 'SET_NAME',
+                        payload: e.target.value
+                      })
+                    }
                     required
                   />
+                  {error.field== 'name'? (
+                    <p className="text-xs text-red-500">{error.message}</p> 
+                  ):(
+                    <> </>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="crevio@gmail.com"
+                    value={formData.email}
+                    onChange={(e)=>
+                      dispatch({
+                        type: 'SET_EMAIL',
+                        payload: e.target.value
+                      })
+                    }
                     required
                   />
+                  {error.field== 'email'? (
+                    <p className="text-xs text-red-500">{error.message}</p> 
+                  ):(
+                    <> </>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
                     <Label htmlFor="password">Password</Label>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input id="password" type="password" required value={formData.password} onChange={(e)=> dispatch({type: 'SET_PASSWORD', payload: e.target.value})}/>
+                  {error.field== 'password'? (
+                    <p className="text-xs text-red-500">{error.message}</p> 
+                  ):(
+                    <> </>
+                  )}
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" onClick={handleFormSubmission}>
                   Login
                 </Button>
               </div>
