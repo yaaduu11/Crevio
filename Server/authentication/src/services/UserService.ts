@@ -19,7 +19,7 @@ export class UserService implements IUserService {
 
     async register(user: UserType): Promise<string> {
         const existingUser = await this.userRepository.findByEmail(user.email)
-
+        console.log(user.email)
         if (existingUser) {
             throw generateHttpError(httpStatusCodes.CONFLICT, Messages.USER_EXIST)
         }
@@ -27,8 +27,8 @@ export class UserService implements IUserService {
         user.password = await bcrypt.hash(user.password as string, 10)
 
         let otp = generateOtp()
-
-        let mail = {
+        
+        let mailOptions = {
             user: env.USER_EMAIL,
             to: user.email,
             subject: 'Your 6-digit OTP',
@@ -36,7 +36,7 @@ export class UserService implements IUserService {
         }
 
         try {
-            await transporter.sendMail(mail)
+            await transporter.sendMail(mailOptions)
         }catch (err) {
             console.log(err);
             throw generateHttpError(httpStatusCodes.INTERNAL_SERVER_ERROR, Messages.OTP_ERROR)
@@ -48,14 +48,29 @@ export class UserService implements IUserService {
         })
 
         await redisClient.setEx(user.email, 300, tempObject)
-
-        let storedValue = await redisClient.get(user.email)
-        if(storedValue) {
-            let parsed = JSON.parse(storedValue)
-            console.log(parsed);
-        }
         
         return user.email as string;
+    }
+
+    async verifyOtp(otp: string, email:string) {
+        const storedData = await redisClient.get(email)
+        if(!storedData) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.OTP_EXPIRED)
+        }
+
+        const {otp: storedOtp, userData} = JSON.parse(storedData)
+
+        if(otp!==storedOtp) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_OTP)
+        }
+
+        const userObject : UserType = {
+            name : userData.name as string,
+            email : userData.email as string,
+            password : userData.password as string
+        }
+
+        const user = await this.userRepository.create(userObject)
     }
 
     

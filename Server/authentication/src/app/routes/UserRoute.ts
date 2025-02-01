@@ -12,4 +12,9 @@ router.post(
     userController.register.bind(userController) 
 )
 
+router.post(
+    '/verify-otp',
+    userController.verifyOtp.bind(userController)
+)
+
 export default router

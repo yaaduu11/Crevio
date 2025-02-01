@@ -14,5 +14,9 @@ export class UserController implements IUserController{
         })(req, res, next); 
     }
 
-    
+    verifyOtp(req: Request, res:Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async (req: Request, res: Response): Promise<void> => {
+            
+        })(req, res, next); 
+    }
 }

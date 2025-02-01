@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import { env } from './config/env';
 import envValidator from './utils/envValidator';
 
-import connectDB from './config/database';
+import connectDB from './config/mongodb';
 import { initializeRedisClient } from './config/redis';
 import userRouter from './app/routes/UserRoute';
 
@@ -46,6 +46,5 @@ class App {
         })
     }
 }
-
 const app = new App()
 app.listen()

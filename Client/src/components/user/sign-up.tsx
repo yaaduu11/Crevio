@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
+import axios from 'axios';
 import {
   Card,
   CardContent,
@@ -52,6 +53,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
        formSchema,
        formData as unknown as Record<string, string>
     )
+    console.log(formSchema)
     
     if(error) {
       setError(error)
@@ -60,13 +62,22 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
       setError({field: "", message:""})
     }
     
-    const response = await axios.post('http://localhost:3000/register', formData)
-    
-    if(response) {
-      // localStorage.setItem("email", response.data.email)
-      navigate('/otp')
+    try {
+      const response = await axios.post("http://localhost:3000/auth/register", formData, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+  
+      if (response.status === 201 || response.status === 200) {
+        navigate("/otp");
+      }
+    } catch (err: any) {
+      console.error("Registration failed:", err);
+      setError({
+        field: "server",
+        message: err.response?.data?.message || "Something went wrong!",
+      });
     }
-    
   }
   
   return (

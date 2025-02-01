@@ -1,23 +1,19 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import LandingPage from './pages/user/landingPage';
-import SignIn from './pages/user/SignIn';
-import SignUp from './pages/user/SignUp'
-import Otp from './pages/user/otp'
 import { BrowserRouter } from 'react-router-dom';
+import { UserRoutes } from './routes/UserRoutes';
+import { AdminRoutes } from './routes/AdminRoutes';
 
 const App: React.FC = () => {
   return (
-    <div>      
+    <>      
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage/>} />
-          <Route path="/signin" element={<SignIn/>} />
-          <Route path="/signup" element={<SignUp/>} />
-          <Route path="/otp" element={<Otp/>} />
+          <Route path="/*" element={<UserRoutes/>} />
+          <Route path="/admin/*" element={<AdminRoutes/>} />
         </Routes>
       </BrowserRouter>
-    </div>
+    </>
   );
 };
 
