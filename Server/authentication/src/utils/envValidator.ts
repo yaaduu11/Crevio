@@ -22,4 +22,11 @@ export default function envValidator() {
         throw new Error('User password is not found in the env')
     }
     
+    if(!env.JWT_ACCESS_TOKEN_SECRET) {
+        throw new Error('Access token key is not found in the env')
+    }
+
+    if(!env.JWT_REFRESH_TOKEN_SECRET) {
+        throw new Error('Refresh token key is not found in the env')
+    }
 }

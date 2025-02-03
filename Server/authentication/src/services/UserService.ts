@@ -11,6 +11,8 @@ import { IUserService } from "../interfaces/user/IUserService";
 import { UserType } from '../types/Type';
 import { env } from '../config/env';
 import { redisClient } from '../config/redis';
+import { Jwt } from 'jsonwebtoken';
+import { generateAccessToken, generateRefreshToken } from '../utils/jwtToken';
 
 export class UserService implements IUserService {
     constructor(
@@ -19,7 +21,6 @@ export class UserService implements IUserService {
 
     async register(user: UserType): Promise<string> {
         const existingUser = await this.userRepository.findByEmail(user.email)
-        console.log(user.email)
         if (existingUser) {
             throw generateHttpError(httpStatusCodes.CONFLICT, Messages.USER_EXIST)
         }
@@ -48,11 +49,12 @@ export class UserService implements IUserService {
         })
 
         await redisClient.setEx(user.email, 300, tempObject)
+        console.log(user.email)
         
         return user.email as string;
     }
 
-    async verifyOtp(otp: string, email:string) {
+    async verifyOtp(otp: string, email: string): Promise<{ accessToken: string; refreshToken: string; user: UserType }> {
         const storedData = await redisClient.get(email)
         if(!storedData) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.OTP_EXPIRED)
@@ -71,7 +73,10 @@ export class UserService implements IUserService {
         }
 
         const user = await this.userRepository.create(userObject)
-    }
 
-    
+        const accessToken = await generateAccessToken(user._id)
+        const refreshToken = await generateRefreshToken(user._id)
+
+        return {accessToken, refreshToken, user}
+    }
 }

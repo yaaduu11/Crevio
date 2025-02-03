@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
-import LandingPage from "../pages/user/landingPage";
+import Home from "../pages/user/Home";
 import SignIn from "../pages/user/SignIn";
 import SignUp from "../pages/user/SignUp";
-import Otp from "../pages/user/otp";
+import Otp from "../pages/user/Otp";
 import { userRoutes } from "../constants/routeUrl";
 
 
@@ -11,8 +11,8 @@ export const UserRoutes = () => {
         <>
           <Routes>
                <Route 
-                    path={userRoutes.LANDING} 
-                    element={<LandingPage/>}
+                    path={userRoutes.HOME} 
+                    element={<Home/>}
                 />
                 <Route
                     path={userRoutes.SIGNIN} 

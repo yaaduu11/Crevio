@@ -11,15 +11,16 @@ import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { faPanorama } from '@fortawesome/free-solid-svg-icons';
 import { faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { userRoutes } from "../../constants/routeUrl";
 
-const LandingPage = () => {
+const Home = () => {
   const navigate = useNavigate()
   
   return (
     <>
       <div className="">
-        <div className="w-full h-[800px] bg-[#D7FEC8] rounded-br-[160px] shadow-md top-0">
-          <h1 className="text-[#00835B] font-K2D text-5xl mb-2 font-semibold ml-8 ">
+        <div className="w-full h-[800px] bg-[#D7FEC8] rounded-br-[160px] shadow-md top-0 pt-3">
+          <h1 className="text-[#00835B] font-K2D text-5xl mb-2 font-semibold ml-8">
             Crevio
           </h1>
 
@@ -28,7 +29,7 @@ const LandingPage = () => {
               <div className="flex flex-col">
                 <h1 className="justify-center text-3xl font-semibold sm:text-4xl md:text-5xl lg:text-6xl font-Inter">
                   Find the Right Talent,
-                  <br />
+                  <br/>
                   Get the Job Done.
                 </h1>
 
@@ -40,7 +41,7 @@ const LandingPage = () => {
                 <Button
                   type="submit"
                   className="w-2/5 text-xl h-[68px] mt-12 rounded-2xl font-normal"
-                  onClick={() => navigate('/signin')}
+                  onClick={()=>navigate(userRoutes.SIGNIN)}
                   >
                   Get Started
                 </Button>
@@ -168,7 +169,7 @@ const LandingPage = () => {
           </div>
         </div>
         
-        
+
         <h1 className="mt-40">hello</h1>
       </div>
     </>
@@ -176,4 +177,4 @@ const LandingPage = () => {
   
 }
 
-export default LandingPage
+export default Home

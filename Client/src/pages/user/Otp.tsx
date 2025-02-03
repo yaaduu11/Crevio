@@ -1,5 +1,6 @@
 import React from 'react'
 import { OtpForm } from '../../components/user/otp'
+import { ToastContainer ,Bounce } from 'react-toastify'
 
 const Otp = () => {
   return (
@@ -9,6 +10,19 @@ const Otp = () => {
         
         <div className="w-full max-w-xl p-6"> 
         <OtpForm/>
+        {/* <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      /> */}
       </div>
     </div>
     

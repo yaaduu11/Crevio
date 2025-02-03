@@ -18,5 +18,13 @@ export const env = {
 
     get USER_PASSWORD() {
         return process.env.USER_PASSWORD
+    },
+
+    get JWT_ACCESS_TOKEN_SECRET() {
+        return process.env.JWT_ACCESS_TOKEN_SECRET
+    },
+
+    get JWT_REFRESH_TOKEN_SECRET() {
+        return process.env.JWT_REFRESH_TOKEN_SECRET
     }
 }

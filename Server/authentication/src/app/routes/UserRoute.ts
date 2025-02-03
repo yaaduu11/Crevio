@@ -13,7 +13,7 @@ router.post(
 )
 
 router.post(
-    '/verify-otp',
+    '/verifyOtp',
     userController.verifyOtp.bind(userController)
 )
 

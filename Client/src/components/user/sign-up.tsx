@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-import axios from 'axios';
 import {
   Card,
   CardContent,
@@ -15,13 +14,17 @@ import eye_open from '../../assets/user/eye-open.png';
 import eye_close from '../../assets/user/eye-close.png';
 import { useNavigate } from "react-router-dom"
 import { useReducer, useState } from "react"
-import { UserStoreType, UserSignupFormType, UserSignupFormAction } from "../../types/userTypes"
+import { UserSignupFormType, UserSignupFormAction } from "../../types/userTypes"
 import { validateForm } from "../../validation/formValidation"
 import { formSchema } from "../../validation/formSchema"
+import { signup } from "../../api/user";
+import { userRoutes } from "../../constants/routeUrl"
+import { toast } from "react-toastify"
 
 
 export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
   const [error, setError] = useState({field: "", message: ""})
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   // const dispatchFn = useDispatch()
   
@@ -62,22 +65,62 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
       setError({field: "", message:""})
     }
     
+    // try {
+    //   setLoading(true)
+    //   const response = await signup({...formData})
+      
+    //   if (response.success ) {
+    //     setLoading(false)
+    //     localStorage.setItem("email", response.data.email);
+    //     navigate(userRoutes.OTP);
+    //   } else {  
+    //       setError({
+    //           field: "server",
+    //           message: "Invalid response from server!",
+    //       });
+    //   }
+      
+    // } catch (err: any) {
+    //   console.error("Registration failed:", err);
+    //   setError({
+    //     field: "server",
+    //     message: err.response?.data?.message || "Something went wrong!",
+    //   });
+    // }
+    
     try {
-      const response = await axios.post("http://localhost:3000/auth/register", formData, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
-  
-      if (response.status === 201 || response.status === 200) {
-        navigate("/otp");
+      setLoading(true);
+      const response = await signup({ ...formData });
+      
+      if (response.success) {
+          localStorage.setItem("email", response.data.email);
+          setLoading(false);
+          navigate(userRoutes.OTP);
+      } else {
+          setError({
+              field: "server",
+              message: "Invalid response from server!",
+          });
       }
     } catch (err: any) {
-      console.error("Registration failed:", err);
-      setError({
-        field: "server",
-        message: err.response?.data?.message || "Something went wrong!",
-      });
+        console.error("Registration failed:", err);
+        if (err.response?.data?.message) {
+            setError({
+                field: "server",
+                message: err.response.data.message,
+            });
+
+            toast.error(err.response.data.message || "Something went wrong!");
+        } else {
+            setError({
+                field: "server",
+                message: "Something went wrong!",
+            });
+
+            toast.error("Something went wrong!");
+        }
     }
+    
   }
   
   return (
@@ -170,8 +213,10 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                     <> </>
                   )}
                 </div>
-                <Button type="submit" className="w-full" onClick={handleFormSubmission}>
-                  Login
+                <Button type="submit" className="w-full" onClick={handleFormSubmission} disabled={loading}>
+                 {loading? (
+                   <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>
+                 ): ('Login')}
                 </Button>
               </div>
               <div className="text-sm text-center">
