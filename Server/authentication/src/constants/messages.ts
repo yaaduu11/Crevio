@@ -14,7 +14,7 @@ export const Messages = {
     INCORRECT_OTP: 'The OTP you provided is incorrect',
     OTP_VERIFIED: 'OTP verification successful',
     USER_NOT_FOUND: "User not found, try to signup",
-    PASSWORD_INCORRECT: "Incorrect password, try again",
+    INCORRECT_PASSWORD: "Incorrect password, try again",
     USER_BLOCKED: "Your are blocked from Crevio, Please contact support",
     NO_ACCESS: "Unauthorized Access",
 }

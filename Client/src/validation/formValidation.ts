@@ -1,8 +1,5 @@
 
-export const validateForm = (
-    vaildationSchema: Record<string, { rules: RegExp[]; messages: string[] }>,
-    form: Record<string, string>
-  ): { field: string; message: string } | null => {
+export const validateForm = (vaildationSchema: Record<string, { rules: RegExp[]; messages: string[] }>,form: Record<string, string>): { field: string; message: string } | null => {
       for(const field in vaildationSchema) {
           const value = form[field]
           const { rules, messages } = vaildationSchema[field]
@@ -13,5 +10,6 @@ export const validateForm = (
               }
           }
       }
+      
       return null;
   }

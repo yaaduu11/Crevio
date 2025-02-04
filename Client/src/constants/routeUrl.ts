@@ -4,3 +4,7 @@ export const userRoutes = {
     OTP : "/otp",
     HOME : "/"
 }
+
+export const adminRoutes = {
+    SIGNIN : "/signin"
+}

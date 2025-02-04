@@ -1,5 +1,5 @@
 export const userEndPoints = {
     SIGNUP: "/auth/register",
-    SIGNIN: "/auth/signin",
+    SIGNIN: "/auth/login",
     VERIFY_OTP: "/auth/verifyOtp",
 }

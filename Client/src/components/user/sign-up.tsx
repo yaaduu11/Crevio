@@ -94,7 +94,6 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
       
       if (response.success) {
           localStorage.setItem("email", response.data.email);
-          setLoading(false);
           navigate(userRoutes.OTP);
       } else {
           setError({
@@ -119,6 +118,8 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
 
             toast.error("Something went wrong!");
         }
+    } finally {
+      setLoading(false);
     }
     
   }

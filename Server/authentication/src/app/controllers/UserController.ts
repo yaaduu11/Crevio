@@ -29,4 +29,20 @@ export class UserController implements IUserController{
             res.status(httpStatusCodes.OK).json({ success:true, accessToken, user });
         })(req, res, next); 
     }
+
+    login(req: Request, res:Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async (req: Request, res: Response): Promise<void> => {
+            const {email, password} = req.body
+            const {accessToken, refreshToken, user} = await this.userService.login(email, password)
+
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true, 
+                secure: true,
+                sameSite: "strict", 
+                maxAge: 7 * 24 * 60 * 60 * 1000 
+            });
+
+            res.status(httpStatusCodes.OK).json({ success:true, accessToken, user });
+        })(req, res, next); 
+    }
 }

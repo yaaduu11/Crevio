@@ -79,4 +79,29 @@ export class UserService implements IUserService {
 
         return {accessToken, refreshToken, user}
     }
+
+    async login(email:string, password:string): Promise<{accessToken: string, refreshToken: string, user:UserType}> {
+        let user = await this.userRepository.findByEmail(email)
+
+        if(!user) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
+        }
+
+        const checkPassword = await bcrypt.compare(password, user.password as string)
+
+
+        if(!checkPassword) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_PASSWORD)
+        }
+
+        if(user.isBlocked){
+            throw generateHttpError(httpStatusCodes.UNAUTHORIZED, Messages.USER_BLOCKED)
+        }
+
+        let accessToken = generateAccessToken(String(user._id))
+        let refreshToken = generateRefreshToken(String(user._id))
+        console.log(user);
+
+        return {accessToken, refreshToken, user} as any
+    }
 }

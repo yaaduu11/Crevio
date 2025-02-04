@@ -17,4 +17,9 @@ router.post(
     userController.verifyOtp.bind(userController)
 )
 
+router.post(
+    '/login',
+    userController.login.bind(userController)
+)
+
 export default router

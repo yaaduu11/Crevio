@@ -3,7 +3,7 @@ import Home from "../pages/user/Home";
 import SignIn from "../pages/user/SignIn";
 import SignUp from "../pages/user/SignUp";
 import Otp from "../pages/user/Otp";
-import { userRoutes } from "../constants/routeUrl";
+import { userRoutes } from "../constants/routeUrl";                 
 
 
 export const UserRoutes = () => {

@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import {
@@ -10,13 +11,40 @@ import {
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { useNavigate } from "react-router-dom"
+import { userRoutes } from "../../constants/routeUrl"
+import { fromTheme } from "tailwind-merge"
+import Api from "../../services/axios"
+import { userEndPoints } from "../../constants/endpointUrl"
+import { login } from "../../api/user"
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+
+export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
   const navigate = useNavigate()
+  const [formData, setFormdata] = useState({email:'', password:''})
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormdata({...formData, [e.target.name]: e.target.value})    
+  }
+  
+  const handleSubmit = async(e: React.FormEvent) =>{
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    
+    try {
+      const response = await login(formData.email, formData.password)
+      if(response.success){
+        navigate(userRoutes.HOME)
+      }
+    } catch (error) {
+      
+    } finally {
+      setLoading(false)
+    }
+  }
+ 
   return (
     <div className={cn("flex flex-col gap-6 ", className)} {...props}>
       <Card>
@@ -59,8 +87,11 @@ export function LoginForm({
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="crevio@gmail.com"
+                    value={formData.email}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -74,15 +105,20 @@ export function LoginForm({
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange} required/>
+                  {error && <p className="text-xs text-red-500">{error}</p> }  
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
+                <Button type="submit" className="w-full" disabled={loading} onClick={handleSubmit}>
+                  {loading? (                   
+                    <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>
+                  ):(
+                    "Login"
+                  )}
                 </Button> 
               </div>
-              <div className="text-sm text-center">
+              <div className="text-sm text-center"> 
                 Don&apos;t have an account?{" "}
-                <a className="underline cursor-pointer underline-offset-4" onClick={()=>navigate('/signup')}>
+                <a className="underline cursor-pointer underline-offset-4" onClick={()=>navigate(userRoutes.SIGNUP)}>
                   Sign up
                 </a>
               </div>

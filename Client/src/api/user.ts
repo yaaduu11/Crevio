@@ -27,3 +27,14 @@ export const verifyOtp = async(otp:string, email:string) => {
         return { success:false, err:message, data:{} };
     }
 }
+
+export const login = async(email:string, password:string) => {
+    try {
+        const {data} = await Api.post(userEndPoints.SIGNIN, {email, password}, {headers})
+        return {success:true, data} as any
+    } catch (error) {
+        const err = error as any
+        const message = err.respose?.data?.err || "Something went wrong"
+        return { success:false, err:message, data:{} };
+    }
+}

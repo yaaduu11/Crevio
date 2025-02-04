@@ -16,13 +16,10 @@ const userSchema: Schema = new Schema({
     },
     role: {
         type: String,
-        enum: ["freelancer", "client", "admin"]
+        enum: ["freelancer", "client", "admin", "none"],
+        default : "none"
     },
     isBlocked: {
-        type : Boolean,
-        default: false
-    },
-    isSubscribed : {
         type : Boolean,
         default: false
     },
