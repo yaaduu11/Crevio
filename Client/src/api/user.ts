@@ -12,7 +12,7 @@ export const signup = async (userData: UserSignupFormType) => {
         return { success: true, data} as any;
     } catch (error) {
         const err = error as any
-        const message = err.respose?.data?.err || "Something went wrong"
+        const message = err.response?.data?.err || "Something went wrong"
         return { success:false, err:message, data:{} };
     }
 };
@@ -23,8 +23,18 @@ export const verifyOtp = async(otp:string, email:string) => {
         return {success:true, data } as any
     } catch (error) {
         const err = error as any
-        const message = err.respose?.data?.err || "Something went wrong"
+        const message = err.response?.data?.err || "Something went wrong"
         return { success:false, err:message, data:{} };
+    }
+}
+
+export const assignRole = async(role:string, token: string) => {
+    try {
+        await Api.patch(userEndPoints.ASSIGN_ROLE, {role, token})
+        return {success: true}
+    } catch (error) {
+        const message = "Something went wrong"
+        return { success:false, error:message, data:{} };
     }
 }
 

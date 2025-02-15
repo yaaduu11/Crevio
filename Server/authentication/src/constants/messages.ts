@@ -5,6 +5,7 @@ export const Messages = {
     OTP_RESENT: "OTP has been resent successfully",
     INVALID_NAME: "Please enter a valid name (A - Z)",
     INVALID_EMAIL: "Please enter a valid email",
+    INVALID_TOKEN: "Invalid Token",
     PASSWORD_LENGTH: "Your password must be at least 8 characters long",
     PASSWORD_LETTER: "Your password must contain at least one letter",
     PASSWORD_DIGIT: "Your password must contain at least one number",

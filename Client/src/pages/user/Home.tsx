@@ -1,7 +1,10 @@
+import React, { useState, useEffect } from "react";
 import { Button } from "../../components/user/button"
 import HomeImage_1 from '../../assets/user/freelancer-home.svg'
 import HomeImage_2 from '../../assets/user/freelancer-home2.svg'
-import { useNavigate } from "react-router-dom"
+import Modal_left_side from '../../assets/user/modal_left.avif'
+import Modal_right_side from '../../assets/user/modal_right.avif'
+import { useLocation, useNavigate } from "react-router-dom"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaintbrush } from "@fortawesome/free-solid-svg-icons";
@@ -12,17 +15,61 @@ import { faPanorama } from '@fortawesome/free-solid-svg-icons';
 import { faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { userRoutes } from "../../constants/routeUrl";
+import Navbar from "../../components/user/navbar";
+import { assignRole } from "../../api/user";
 
 const Home = () => {
   const navigate = useNavigate()
+  const location = useLocation();
+  
+  useEffect(() => {
+    if (location.state?.fromOtp) {
+      setShowModal(true);
+    }
+  }, [location.state]);
+
+  const [role, setRole] = useState('')
+  const [leftSelected, setLeftSelected] = useState(false);
+  const [showModal, setShowModal] = useState(false)
+  const [rightSelected, setRightSelected] = useState(false);
+  const [loading, setLoading] = useState(false)
+  
+  const isNextEnabled = leftSelected || rightSelected;
+  
+  const handleLeftClick = () => {
+    setLeftSelected(true);
+    setRightSelected(false);
+    setRole("freelancer");
+  };
+  
+  const handleRightClick = () => {
+    setRightSelected(true);
+    setLeftSelected(false);
+    setRole("client");
+  };
+  
+  const HandleAssignRole = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("accessToken") as string
+      const response = await assignRole(role, token);
+      if (response.success) {
+        setShowModal(false)
+      } else {
+        console.log('handle assign role response is something wrong');
+      }
+    } catch (error) {
+      console.error("Error assigning role", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   
   return (
     <>
       <div className="">
         <div className="w-full h-[800px] bg-[#D7FEC8] rounded-br-[160px] shadow-md top-0 pt-3">
-          <h1 className="text-[#00835B] font-K2D text-5xl mb-2 font-semibold ml-8">
-            Crevio
-          </h1>
+          <Navbar currentPage="home" />
 
           <div className="flex">
             <div className="flex items-center justify-start mt-8 pl-[12%]">
@@ -172,6 +219,120 @@ const Home = () => {
 
         <h1 className="mt-40">hello</h1>
       </div>
+      
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+  
+          <div
+            className="relative flex flex-col w-full max-w-5xl gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn"
+          >
+            <h1 className="mt-12 text-[1.75rem] font-bold text-center">
+              yadukrishnan, your account has been created!<br /> 
+              What brings you to Crevio?
+            </h1>
+            <h1 className="mb-4 text-lg font-medium text-center text-gray-500">
+              We want to tailor our experience so you'll feel right at home.
+            </h1>
+    
+            <div className="flex flex-col gap-4 mt-4 mb-12 sm:flex-row">
+              
+              <div
+                onClick={handleLeftClick}
+                className={`group flex-1 p-4 relative cursor-pointer border rounded-lg border-gray-200 ${
+                  leftSelected ? "border-gray-300 shadow-xl" : "hover:border-gray-300 hover:shadow-xl"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  readOnly
+                  className="absolute w-6 h-6 top-2 right-2 accent-black"
+                  checked={leftSelected}
+                />
+
+                <img
+                  src={Modal_left_side}
+                  alt="left side"
+                  className={`w-[64%] pt-10 transition-all duration-300 ease-out transform ${
+                    leftSelected ? "-translate-y-3" : "group-hover:-translate-y-3"
+                  }`}
+                />
+
+                <h2
+                  className={`text-xl font-semibold transition-all duration-300 ease-out transform ${
+                    leftSelected ? "-translate-y-2" : "group-hover:-translate-y-2"
+                  }`}
+                >
+                  Selling freelance services
+                </h2>
+
+                <p
+                  className={`text-gray-500 transition-all duration-300 ease-out delay-150 transform ${
+                    leftSelected
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
+                  }`}
+                >
+                  I'd like to offer my services.
+                </p>
+              </div>
+
+              <div
+                onClick={handleRightClick}
+                className={`group flex-1 p-4 relative cursor-pointer border rounded-lg border-gray-200 ${
+                  rightSelected ? "border-gray-300 shadow-xl" : "hover:border-gray-300 hover:shadow-xl"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  readOnly
+                  className="absolute w-6 h-6 top-2 right-2 accent-black"
+                  checked={rightSelected}
+                />
+
+                <img
+                  src={Modal_right_side}
+                  alt="left side"
+                  className={`w-[77%] pt-10 transition-all duration-300 ease-out transform ${
+                    rightSelected ? "-translate-y-3" : "group-hover:-translate-y-3"
+                  }`}
+                />
+
+                <h2
+                  className={`text-xl font-semibold transition-all duration-300 ease-out transform ${
+                    rightSelected ? "-translate-y-2" : "group-hover:-translate-y-2"
+                  }`}
+                >
+                  Buying freelance services
+                </h2>
+
+                <p
+                  className={`text-gray-500 transition-all duration-300 ease-out delay-150 transform ${
+                    rightSelected
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
+                  }`}
+                >
+                  I'm looking for talented people to work with.
+                </p>
+              </div>
+              
+            </div>
+    
+            <div className="flex justify-end">
+              <button
+                className={`px-6 py-2 bg-black text-white rounded hover:bg-slate-900 ${
+                  !isNextEnabled ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={!isNextEnabled || loading}
+                onClick={HandleAssignRole}
+              >
+                {loading? (<div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>): ('Next')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
   

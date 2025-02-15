@@ -69,7 +69,7 @@ export function OtpForm({className,...props}: React.ComponentPropsWithoutRef<"di
         localStorage.setItem('accessToken', response.accessToken)
         setTimeout(()=>{
           setLoading(false)
-          navigate(userRoutes.HOME)
+          navigate(userRoutes.HOME, {state: {fromOtp:true}})
         },3000)
       }
     }catch(error) {

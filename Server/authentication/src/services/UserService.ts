@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-
+import { ObjectId } from 'mongoose';
 import { httpStatusCodes } from '../constants/statusCodes';
 import { generateOtp } from '../utils/generateOtp';
 import { transporter } from '../config/nodemailer';
@@ -11,13 +11,10 @@ import { IUserService } from "../interfaces/user/IUserService";
 import { UserType } from '../types/Type';
 import { env } from '../config/env';
 import { redisClient } from '../config/redis';
-import { Jwt } from 'jsonwebtoken';
-import { generateAccessToken, generateRefreshToken } from '../utils/jwtToken';
+import { generateAccessToken, generateRefreshToken, decodeAccessToken } from '../utils/jwtToken';
 
 export class UserService implements IUserService {
-    constructor(
-        private userRepository : IUserRepository
-    ) {}
+    constructor(private userRepository : IUserRepository) {}
 
     async register(user: UserType): Promise<string> {
         const existingUser = await this.userRepository.findByEmail(user.email)
@@ -61,7 +58,6 @@ export class UserService implements IUserService {
         }
 
         const {otp: storedOtp, userData} = JSON.parse(storedData)
-
         if(otp!==storedOtp) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_OTP)
         }
@@ -74,22 +70,33 @@ export class UserService implements IUserService {
 
         const user = await this.userRepository.create(userObject)
 
-        const accessToken = await generateAccessToken(user._id)
-        const refreshToken = await generateRefreshToken(user._id)
+        const accessToken = await generateAccessToken(user._id as ObjectId)
+        const refreshToken = await generateRefreshToken(user._id as ObjectId)
 
         return {accessToken, refreshToken, user}
     }
 
+    async assignRole(role:string, token:string) : Promise<{userRole:string}> {
+        let decoded = await decodeAccessToken(token)
+        console.log('currently in assignRoleqqqqqqq', role);
+
+        let user = await this.userRepository.findById(decoded.id as string)
+        if(!user) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
+        }
+        console.log('currently in assignRoleppppppp', role);
+        
+        await this.userRepository.updateUserRole(user.email, role)
+        return {userRole: role}
+    }
+
     async login(email:string, password:string): Promise<{accessToken: string, refreshToken: string, user:UserType}> {
         let user = await this.userRepository.findByEmail(email)
-
         if(!user) {
             throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
         }
 
         const checkPassword = await bcrypt.compare(password, user.password as string)
-
-
         if(!checkPassword) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_PASSWORD)
         }
@@ -98,10 +105,9 @@ export class UserService implements IUserService {
             throw generateHttpError(httpStatusCodes.UNAUTHORIZED, Messages.USER_BLOCKED)
         }
 
-        let accessToken = generateAccessToken(String(user._id))
-        let refreshToken = generateRefreshToken(String(user._id))
-        console.log(user);
-
-        return {accessToken, refreshToken, user} as any
+        let accessToken = await generateAccessToken(user._id as ObjectId)
+        let refreshToken = await generateRefreshToken(user._id as ObjectId)
+        
+        return {accessToken, refreshToken, user}
     }
 }

@@ -65,29 +65,6 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
       setError({field: "", message:""})
     }
     
-    // try {
-    //   setLoading(true)
-    //   const response = await signup({...formData})
-      
-    //   if (response.success ) {
-    //     setLoading(false)
-    //     localStorage.setItem("email", response.data.email);
-    //     navigate(userRoutes.OTP);
-    //   } else {  
-    //       setError({
-    //           field: "server",
-    //           message: "Invalid response from server!",
-    //       });
-    //   }
-      
-    // } catch (err: any) {
-    //   console.error("Registration failed:", err);
-    //   setError({
-    //     field: "server",
-    //     message: err.response?.data?.message || "Something went wrong!",
-    //   });
-    // }
-    
     try {
       setLoading(true);
       const response = await signup({ ...formData });

@@ -35,10 +35,15 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
     
     try {
       const response = await login(formData.email, formData.password)
+      
       if(response.success){
-        navigate(userRoutes.HOME)
+        localStorage.setItem('accessToken', response.data.accessToken)
+        setTimeout(()=>{
+          navigate(userRoutes.HOME)
+        },2000)
       }
     } catch (error) {
+      console.log(error);
       
     } finally {
       setLoading(false)

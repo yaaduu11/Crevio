@@ -4,6 +4,8 @@ import SignIn from "../pages/user/SignIn";
 import SignUp from "../pages/user/SignUp";
 import Otp from "../pages/user/Otp";
 import { userRoutes } from "../constants/routeUrl";                 
+import Projects from "../pages/user/Projects";
+import About from "../pages/user/About";
 
 
 export const UserRoutes = () => {
@@ -25,6 +27,14 @@ export const UserRoutes = () => {
                 <Route
                     path={userRoutes.OTP} 
                     element={<Otp/>}
+                />
+                <Route
+                    path={userRoutes.PROJECTS}
+                    element={<Projects/>}
+                />
+                <Route
+                    path={userRoutes.ABOUT}
+                    element={<About/>}
                 />
           </Routes>
 

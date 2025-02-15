@@ -30,6 +30,16 @@ export class UserController implements IUserController{
         })(req, res, next); 
     }
 
+    assignRole(req: Request, res:Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async (req: Request, res: Response): Promise<void> => {
+            const {role, token} = req.body;
+            console.log('currently in assignRolessssss', role);
+            const {userRole} = await this.userService.assignRole(role, token)
+            console.log('currently in assignRolessssss', userRole);
+            res.status(httpStatusCodes.OK).json({success:true, userRole});
+        })(req, res, next);
+    }
+
     login(req: Request, res:Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const {email, password} = req.body
@@ -41,7 +51,7 @@ export class UserController implements IUserController{
                 sameSite: "strict", 
                 maxAge: 7 * 24 * 60 * 60 * 1000 
             });
-
+            console.log(accessToken);
             res.status(httpStatusCodes.OK).json({ success:true, accessToken, user });
         })(req, res, next); 
     }

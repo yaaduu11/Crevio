@@ -14,7 +14,7 @@ export const generateHttpError = (statusCode: number, message: string) =>{
     return new HttpError(statusCode, message)
 }
 
-export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof HttpError) {
       return res.status(err.statusCode).json({ message: err.message });
   }

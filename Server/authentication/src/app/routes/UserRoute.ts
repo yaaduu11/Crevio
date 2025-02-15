@@ -22,4 +22,9 @@ router.post(
     userController.login.bind(userController)
 )
 
+router.patch(
+    '/assign-role',
+    userController.assignRole.bind(userController)
+)
+
 export default router

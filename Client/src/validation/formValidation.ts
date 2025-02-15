@@ -12,4 +12,4 @@ export const validateForm = (vaildationSchema: Record<string, { rules: RegExp[];
       }
       
       return null;
-  }
+}
