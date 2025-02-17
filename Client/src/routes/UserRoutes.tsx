@@ -37,13 +37,6 @@ export const UserRoutes = () => {
                     element={<About/>}
                 />
           </Routes>
-
-          {/* Navbar */} 
-          {/* <Routes>
-                <Route 
-                    path={userRoutes.HOME}
-                />
-          </Routes> */}
         </>
     )
 }

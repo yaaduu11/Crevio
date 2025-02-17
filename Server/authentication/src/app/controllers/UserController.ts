@@ -11,7 +11,7 @@ export class UserController implements IUserController{
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const email = await this.userService.register(req.body);
             res.status(httpStatusCodes.OK).json({ email });
-        })(req, res, next); 
+        })(req, res, next);
     }
 
     verifyOtp(req: Request, res:Response, next: NextFunction): Promise<void> {
@@ -33,9 +33,10 @@ export class UserController implements IUserController{
     assignRole(req: Request, res:Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const {role, token} = req.body;
-            console.log('currently in assignRolessssss', role);
+
             const {userRole} = await this.userService.assignRole(role, token)
-            console.log('currently in assignRolessssss', userRole);
+            console.log('after going to service');
+
             res.status(httpStatusCodes.OK).json({success:true, userRole});
         })(req, res, next);
     }
@@ -51,7 +52,6 @@ export class UserController implements IUserController{
                 sameSite: "strict", 
                 maxAge: 7 * 24 * 60 * 60 * 1000 
             });
-            console.log(accessToken);
             res.status(httpStatusCodes.OK).json({ success:true, accessToken, user });
         })(req, res, next); 
     }

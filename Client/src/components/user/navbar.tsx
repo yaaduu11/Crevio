@@ -9,6 +9,7 @@ import { faBell } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = ({currentPage } : {currentPage : string}) => {
   const navigate = useNavigate()
+  const token = localStorage.getItem("accessToken")
   
   const pageFocus = (page: string) =>
     currentPage === page
@@ -31,7 +32,7 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
           Crevio
         </h1>
 
-        <div className="absolute flex space-x-8 transform -translate-x-1/2 left-1/2">
+        { token && <div className="absolute flex space-x-8 transform -translate-x-1/2 left-1/2">
           {Object.keys(pageRoutes).map((page) => {
             const isCurrentPage = currentPage === page;
             return (
@@ -47,12 +48,16 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
               </button>
             );
           })}
-        </div>
+        </div> }
         
-        <div>
+        {token && <div>
           <FontAwesomeIcon className='pr-5 text-xl ' icon={faBell} />
           <FontAwesomeIcon className='text-xl pr-14 ' icon={faUser} />
-        </div>
+        </div> }
+        
+        {!token && <div className='pr-12'>
+          <button className="flex justify-center items-center h-8 w-24 p-0 text-lg bg-[#126d52] text-white rounded-2xl hover:bg-[#1a664f] font-Montserrat" onClick={()=>navigate(userRoutes.SIGNIN)}>Sign In</button>
+        </div>}
 
       </div>
     </>

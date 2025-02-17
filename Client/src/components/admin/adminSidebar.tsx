@@ -30,14 +30,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { adminRoutes } from "../../constants/routeUrl";
+import { logout } from "../../api/admin";
 
 
 export const AdminSidebar = ({currentPage} : {currentPage : string}) => {
     const navigate = useNavigate()
     
+    const handleLogout = async () => {
+      try {
+          console.log('before sending request');
+          const response = await logout();
+          console.log('after sending request');
+          if (response.success) {
+            console.log('response is true here');
+            
+              localStorage.removeItem("accessToken");
+              navigate(`/admin${adminRoutes.SIGNIN}`);
+          }
+      } catch (error) {
+          console.error("Logout failed:", error);
+      }
+    };
+  
     return (
       <SidebarProvider>
-        <div className="flex w-screen h-screen bg-[#2C2C2C]">
+        <div className="flex w-screen h-screen bg-[#000000]">
           <Sidebar>
             <SidebarHeader>
               <h1 className="px-4 text-4xl font-bold text-white font-K2D">Crevio</h1>
@@ -104,7 +121,7 @@ export const AdminSidebar = ({currentPage} : {currentPage : string}) => {
                   <button className="block w-full px-2 py-1 text-sm text-left text-black rounded-md hover:bg-gray-400">
                     Profile
                   </button>
-                  <button className="block w-full px-2 py-1 text-sm text-left text-black rounded-md hover:bg-gray-400">
+                  <button className="block w-full px-2 py-1 text-sm text-left text-black rounded-md hover:bg-gray-400" onClick={handleLogout}>
                     Logout
                   </button>
                 </PopoverContent>

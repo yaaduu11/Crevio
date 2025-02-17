@@ -4,3 +4,10 @@ export const userEndPoints = {
     VERIFY_OTP: "/auth/verifyOtp",
     ASSIGN_ROLE: "/auth/assign-role"
 }
+
+export const adminEndPoints = {
+    SIGNIN : "/auth/admin/login",
+    FETCH_FREELANCERS : "/auth/admin/get-freelancers",
+    FETCH_CLIENTS : "/auth/admin/get-clients",
+    LOGOUT : '/auth/admin/logout'
+}

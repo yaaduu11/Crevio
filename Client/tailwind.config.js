@@ -21,10 +21,19 @@ export default {
           '0%': { transform: 'translateY(100%)' },
           '100%': { transform: 'translateY(0)' },
         },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
         slideIn: 'slideIn 0.5s ease-out forwards',
         "caret-blink": "caret-blink 1.25s ease-out infinite",
+        marquee: 'marquee 10s linear infinite',
+      },
+      transitionDuration: {
+        '1500': '1500ms',
+        '2000': '2000ms',
       },
     },
   },

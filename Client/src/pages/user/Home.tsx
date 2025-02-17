@@ -21,16 +21,20 @@ import { assignRole } from "../../api/user";
 const Home = () => {
   const navigate = useNavigate()
   const location = useLocation();
+  const token = localStorage.getItem("accessToken")
   
   useEffect(() => {
-    if (location.state?.fromOtp) {
-      setShowModal(true);
-    }
-  }, [location.state]);
+    const hasShownModal = localStorage.getItem("hasShownModal");
 
-  const [role, setRole] = useState('')
+    if (location.state?.fromOtp && !hasShownModal) {
+      setShowModal(true);
+      localStorage.setItem("hasShownModal", "true");
+    }
+  }, []);
+
+  const [role, setRole] = useState('');
   const [leftSelected, setLeftSelected] = useState(false);
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   const [rightSelected, setRightSelected] = useState(false);
   const [loading, setLoading] = useState(false)
   
@@ -68,15 +72,14 @@ const Home = () => {
   return (
     <>
       <div className="">
-        <div className="w-full h-[800px] bg-[#D7FEC8] rounded-br-[160px] shadow-md top-0 pt-3">
-          <Navbar currentPage="home" />
-
-          <div className="flex">
+        <Navbar currentPage="home" />     
+        <div className="w-full h-[800px] bg-[#D7FEC8] rounded-br-[160px] shadow-md top-0 pt-20">
+          <div className="flex mt-4">
             <div className="flex items-center justify-start mt-8 pl-[12%]">
               <div className="flex flex-col">
                 <h1 className="justify-center text-3xl font-semibold sm:text-4xl md:text-5xl lg:text-6xl font-Inter">
                   Find the Right Talent,
-                  <br/>
+                  <br/> 
                   Get the Job Done.
                 </h1>
 
@@ -117,55 +120,59 @@ const Home = () => {
             </p>
           </div>  
           
-          <div className="bg-[#EDF3FD] rounded-2xl w-4/5 mx-auto p-4 text-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 px-[3%] items-center min-h-[300px] mt-6">
-            <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-              <FontAwesomeIcon icon={faPaintbrush} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-              <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                Graphic &<br /> Design
-              </div>
-              <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-            </div>
+          {/* <div className="overflow-hidden">
+            <div className="flex animate-marquee"> */}
+              <div className="bg-[#EDF3FD] rounded-2xl w-4/5 mx-auto p-4 text-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 px-[3%] items-center min-h-[300px] mt-6">
+                <div className="p-4 bg-[#EDF3FD] rounded-xl flex flex-col border border-[#EDF3FD]">
+                  <FontAwesomeIcon icon={faPaintbrush} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
+                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
+                    Graphic &<br /> Design
+                  </div>
+                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
+                </div>
 
-            <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-              <FontAwesomeIcon icon={faComputer} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-              <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                Programming &<br /> Tech
-              </div>
-              <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-            </div>
+                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
+                  <FontAwesomeIcon icon={faComputer} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
+                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
+                    Programming &<br /> Tech
+                  </div>
+                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
+                </div>
 
-            <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-              <FontAwesomeIcon icon={faReceipt} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-              <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                Finance &<br /> Accounting
-              </div>
-              <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-            </div>
+                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
+                  <FontAwesomeIcon icon={faReceipt} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
+                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
+                    Finance &<br /> Accounting
+                  </div>
+                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
+                </div>
 
-            <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-              <FontAwesomeIcon icon={faImage} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-              <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                Photography &<br /> Editing
-              </div>
-              <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-            </div>
+                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
+                  <FontAwesomeIcon icon={faImage} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
+                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
+                    Photography &<br /> Editing
+                  </div>
+                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
+                </div>
 
-            <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-              <FontAwesomeIcon icon={faPanorama} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-              <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                Video &<br /> Animation
-              </div>
-              <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-            </div>
+                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
+                  <FontAwesomeIcon icon={faPanorama} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
+                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
+                    Video &<br /> Animation
+                  </div>
+                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
+                </div>
 
-            <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-              <FontAwesomeIcon icon={faPenNib} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-              <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                Writing &<br /> Translation
+                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
+                  <FontAwesomeIcon icon={faPenNib} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
+                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
+                    Writing &<br /> Translation
+                  </div>
+                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
+                </div>
               </div>
-              <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-            </div>
-          </div>
+           
+
         </div>
         
         
@@ -224,11 +231,9 @@ const Home = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black opacity-50"></div>
   
-          <div
-            className="relative flex flex-col w-full max-w-5xl gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn"
-          >
+          <div className="relative flex flex-col w-full max-w-5xl gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn">
             <h1 className="mt-12 text-[1.75rem] font-bold text-center">
-              yadukrishnan, your account has been created!<br /> 
+              {location.state?.userName}, your account has been created!<br />
               What brings you to Crevio?
             </h1>
             <h1 className="mb-4 text-lg font-medium text-center text-gray-500">

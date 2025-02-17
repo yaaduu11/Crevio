@@ -10,6 +10,7 @@ import envValidator from './utils/envValidator';
 import connectDB from './config/mongodb';
 import { initializeRedisClient } from './config/redis';
 import userRouter from './app/routes/UserRoute';
+import adminRouter from './app/routes/AdminRoute'
 
 class App {
     public app: Application;
@@ -32,7 +33,8 @@ class App {
     }
 
     private initializeRoutes(): void {
-        this.app.use('/',userRouter)
+        this.app.use('/', userRouter)
+        this.app.use('/admin', adminRouter)
     }
 
     private initializeDB(): void {

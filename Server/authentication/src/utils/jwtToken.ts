@@ -1,9 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 import { ObjectId } from 'mongoose';
-import { generateHttpError } from './httpError';
-import { httpStatusCodes } from '../constants/statusCodes';
-import { Messages } from '../constants/messages';
 
 export const generateRefreshToken =(userId : ObjectId)=> {
     return jwt.sign(
@@ -21,7 +18,15 @@ export const generateAccessToken=(userId : ObjectId)=>{
     )
 }
 
-export const decodeAccessToken=(token: string) => {
-    let decoded = jwt.verify(token, env.JWT_ACCESS_TOKEN_SECRET as string) as { id: string };
-    return decoded
-}
+export const verifyToken = (token: string) => {
+    try {
+      const decoded = jwt.verify(
+        token,
+        env.JWT_ACCESS_TOKEN_SECRET as string
+      ) as { userId: string };
+      return decoded;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      throw error;
+    }
+};

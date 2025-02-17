@@ -66,10 +66,10 @@ export function OtpForm({className,...props}: React.ComponentPropsWithoutRef<"di
       localStorage.removeItem('email')
       const response = await verifyOtp(value ,email as string)
       if(response.success) {
-        localStorage.setItem('accessToken', response.accessToken)
+        localStorage.setItem('accessToken', response.data.accessToken)
         setTimeout(()=>{
           setLoading(false)
-          navigate(userRoutes.HOME, {state: {fromOtp:true}})
+          navigate(userRoutes.HOME, {state: {fromOtp:true, userName:response.data.user.name}})
         },3000)
       }
     }catch(error) {

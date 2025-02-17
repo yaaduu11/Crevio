@@ -11,7 +11,7 @@ import { IUserService } from "../interfaces/user/IUserService";
 import { UserType } from '../types/Type';
 import { env } from '../config/env';
 import { redisClient } from '../config/redis';
-import { generateAccessToken, generateRefreshToken, decodeAccessToken } from '../utils/jwtToken';
+import { generateAccessToken, generateRefreshToken, verifyToken } from '../utils/jwtToken';
 
 export class UserService implements IUserService {
     constructor(private userRepository : IUserRepository) {}
@@ -25,7 +25,7 @@ export class UserService implements IUserService {
         user.password = await bcrypt.hash(user.password as string, 10)
 
         let otp = generateOtp()
-        
+        console.log(otp)
         let mailOptions = {
             user: env.USER_EMAIL,
             to: user.email,
@@ -77,16 +77,14 @@ export class UserService implements IUserService {
     }
 
     async assignRole(role:string, token:string) : Promise<{userRole:string}> {
-        let decoded = await decodeAccessToken(token)
-        console.log('currently in assignRoleqqqqqqq', role);
+        let decoded = await verifyToken(token)
 
-        let user = await this.userRepository.findById(decoded.id as string)
+        let user = await this.userRepository.findById(decoded.userId as string)
         if(!user) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
-        }
-        console.log('currently in assignRoleppppppp', role);
-        
+        }        
         await this.userRepository.updateUserRole(user.email, role)
+
         return {userRole: role}
     }
 
