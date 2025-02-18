@@ -4,6 +4,11 @@ interface UserSignupFormType {
     password: string;
     role?: 'freelancer' | 'client' | 'admin' | '';
 }
+
+interface ErrorState {
+    field?: string;
+    message?: string;
+}
   
 type UserSignupFormAction =
     | { type: "SET_NAME"; payload: string }
@@ -19,4 +24,4 @@ interface UserStoreType {
     accessToken : null;
 }
 
-export type { UserStoreType, UserSignupFormAction, UserSignupFormType}
+export type { UserStoreType, UserSignupFormAction, UserSignupFormType, ErrorState}

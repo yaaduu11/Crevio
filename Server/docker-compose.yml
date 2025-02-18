@@ -14,7 +14,7 @@ services:
       context: ./authentication
       dockerfile: Dockerfile
     ports:
-      - "3001:3001"
+      - "3007:3001"
     networks:
       - app-network
     environment:

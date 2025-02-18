@@ -35,6 +35,10 @@ export default {
         '1500': '1500ms',
         '2000': '2000ms',
       },
+      colors: {
+        destructive: '#f87171',
+        'destructive-foreground': '#ffffff',
+      },
     },
   },
   sidebar: {

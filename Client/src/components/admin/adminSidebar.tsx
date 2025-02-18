@@ -38,12 +38,8 @@ export const AdminSidebar = ({currentPage} : {currentPage : string}) => {
     
     const handleLogout = async () => {
       try {
-          console.log('before sending request');
           const response = await logout();
-          console.log('after sending request');
-          if (response.success) {
-            console.log('response is true here');
-            
+          if (response.success) {            
               localStorage.removeItem("accessToken");
               navigate(`/admin${adminRoutes.SIGNIN}`);
           }

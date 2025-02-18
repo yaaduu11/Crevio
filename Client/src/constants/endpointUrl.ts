@@ -2,7 +2,11 @@ export const userEndPoints = {
     SIGNUP: "/auth/register",
     SIGNIN: "/auth/login",
     VERIFY_OTP: "/auth/verifyOtp",
-    ASSIGN_ROLE: "/auth/assign-role"
+    RESEND_OTP: "/auth/resendOtp",
+    CHECK_ROLE: "/auth/check-role",
+    ASSIGN_ROLE: "/auth/assign-role",
+    GOOGLE_AUTH: '/auth/google-auth',
+    LOGOUT: '/auth/logout'
 }
 
 export const adminEndPoints = {

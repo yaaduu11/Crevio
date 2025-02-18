@@ -8,7 +8,7 @@ import { generateHttpError } from '../utils/httpError';
 import { Messages } from '../constants/messages';
 import { IUserRepository } from "../interfaces/user/IUserRepository";
 import { IUserService } from "../interfaces/user/IUserService";
-import { UserType } from '../types/Type';
+import { GoogleAuthUserType, SigninResponse, UserType } from '../types/Type';
 import { env } from '../config/env';
 import { redisClient } from '../config/redis';
 import { generateAccessToken, generateRefreshToken, verifyToken } from '../utils/jwtToken';
@@ -46,12 +46,11 @@ export class UserService implements IUserService {
         })
 
         await redisClient.setEx(user.email, 300, tempObject)
-        console.log(user.email)
         
         return user.email as string;
     }
 
-    async verifyOtp(otp: string, email: string): Promise<{ accessToken: string; refreshToken: string; user: UserType }> {
+    async verifyOtp(otp: string, email: string): Promise<{accessToken:string, refreshToken:string, user: UserType}> {
         const storedData = await redisClient.get(email)
         if(!storedData) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.OTP_EXPIRED)
@@ -59,8 +58,11 @@ export class UserService implements IUserService {
 
         const {otp: storedOtp, userData} = JSON.parse(storedData)
         if(otp!==storedOtp) {
+            console.log('otp is incorrect');
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_OTP)
         }
+
+        console.log(otp);
 
         const userObject : UserType = {
             name : userData.name as string,
@@ -76,6 +78,34 @@ export class UserService implements IUserService {
         return {accessToken, refreshToken, user}
     }
 
+    async resendOtp(email: string): Promise<void> {
+        const storedData = await redisClient.get(email);
+        if(!storedData) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.OTP_EXPIRED)
+        }
+
+        const { userData } = JSON.parse(storedData);
+
+        const newOtp = generateOtp()
+        console.log(newOtp);
+        
+        await redisClient.setEx(email, 300, JSON.stringify({ otp: newOtp, userData }));
+
+        let mailOptions = {
+            user: env.USER_EMAIL,
+            to: userData.email,
+            subject: 'Your 6-digit Resended OTP',
+            html: generateOtpHtmlTemplate(newOtp)
+        }
+
+        try {
+            await transporter.sendMail(mailOptions)
+        } catch (error) {
+            console.log(error);
+            throw generateHttpError(httpStatusCodes.INTERNAL_SERVER_ERROR, Messages.OTP_ERROR)
+        }
+    }
+
     async assignRole(role:string, token:string) : Promise<{userRole:string}> {
         let decoded = await verifyToken(token)
 
@@ -86,6 +116,11 @@ export class UserService implements IUserService {
         await this.userRepository.updateUserRole(user.email, role)
 
         return {userRole: role}
+    }
+
+    async checkUserRole(email: string): Promise<{isNone: boolean}> {
+        const isNone = await this.userRepository.findUserRole(email)
+        return {isNone}
     }
 
     async login(email:string, password:string): Promise<{accessToken: string, refreshToken: string, user:UserType}> {
@@ -107,5 +142,31 @@ export class UserService implements IUserService {
         let refreshToken = await generateRefreshToken(user._id as ObjectId)
         
         return {accessToken, refreshToken, user}
+    }
+
+    async googleAuth(user: GoogleAuthUserType): Promise<SigninResponse> {
+        const userExisted = await this.userRepository.findByEmail(user.email)
+        if(userExisted){
+            if(userExisted.isBlocked){
+                throw generateHttpError(httpStatusCodes.UNAUTHORIZED, Messages.USER_BLOCKED)
+            }
+
+            const accessToken = await generateAccessToken(userExisted._id as ObjectId)
+            const refreshToken = await generateRefreshToken(userExisted._id as ObjectId)
+
+            return {accessToken, refreshToken, user: userExisted}
+        }else{
+            const userObject: UserType = {
+                email: user.email,
+                name: user.name
+            }
+
+            const userData = await this.userRepository.create(userObject)
+
+            const accessToken = await generateAccessToken(userData._id as ObjectId)
+            const refreshToken = await generateRefreshToken(userData._id as ObjectId)
+
+            return {accessToken, refreshToken, user: userData}
+        }
     }
 }

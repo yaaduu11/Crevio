@@ -16,22 +16,12 @@ import { faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { userRoutes } from "../../constants/routeUrl";
 import Navbar from "../../components/user/navbar";
-import { assignRole } from "../../api/user";
+import { assignRole, checkUserRole } from "../../api/user";
 
 const Home = () => {
   const navigate = useNavigate()
   const location = useLocation();
-  const token = localStorage.getItem("accessToken")
   
-  useEffect(() => {
-    const hasShownModal = localStorage.getItem("hasShownModal");
-
-    if (location.state?.fromOtp && !hasShownModal) {
-      setShowModal(true);
-      localStorage.setItem("hasShownModal", "true");
-    }
-  }, []);
-
   const [role, setRole] = useState('');
   const [leftSelected, setLeftSelected] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -39,6 +29,14 @@ const Home = () => {
   const [loading, setLoading] = useState(false)
   
   const isNextEnabled = leftSelected || rightSelected;
+  
+  useEffect(() => {
+    const hasShownModal = localStorage.getItem("hasShownModal");
+    
+    if (location.state?.fromOtp && !hasShownModal) {
+      setShowModal(true);
+    }
+  }, []);
   
   const handleLeftClick = () => {
     setLeftSelected(true);
@@ -58,6 +56,7 @@ const Home = () => {
       const token = localStorage.getItem("accessToken") as string
       const response = await assignRole(role, token);
       if (response.success) {
+        localStorage.setItem("hasShownModal", "true");
         setShowModal(false)
       } else {
         console.log('handle assign role response is something wrong');

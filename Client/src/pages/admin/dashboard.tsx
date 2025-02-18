@@ -1,28 +1,19 @@
 import { useState } from "react";
 import { AdminSidebar } from "../../components/admin/adminSidebar";
 import { Card } from "../../components/ui/card";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { adminRoutes } from "../../constants/routeUrl";
 
-
-// const Dashboard = () => {
-//   return (
-//     <>
-//       <div className="flex flex-col">
-//         <div>
-//           <AdminSidebar currentPage="Dashboard"/>
-//         </div>
-      
-//         <div>
-//           <Card className="w-full max-w-md p-6 shadow-md">
-//           <h2 className="text-lg font-semibold">Welcome to the Admin Panel</h2>
-//           <p className="mt-2 text-gray-600">Manage users, subscriptions, and more.</p>
-//           </Card>
-//         </div>     
-//       </div>      
-//     </>
-//   );
-// };
 const Dashboard = () => {
   const [cardHovered, setCardHovered] = useState(false)
+  
+  const navigate = useNavigate()
+  
+  useEffect(()=>{
+      const accessToken = localStorage.getItem("accessToken")
+      if(!accessToken) navigate(`/admin${adminRoutes.SIGNIN}`)
+  })
 
   return (
     <div className="flex h-screen">

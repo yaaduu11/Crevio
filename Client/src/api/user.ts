@@ -1,6 +1,7 @@
 import Api from "../services/axios";
 import { userEndPoints } from "../constants/endpointUrl";
 import { UserSignupFormType } from "../types/userTypes";
+import { logout } from "./admin";
 
 const headers= {
     'X-User-Level': 'user'
@@ -21,10 +22,32 @@ export const verifyOtp = async(otp:string, email:string) => {
     try {
         const { data } = await Api.post(userEndPoints.VERIFY_OTP, {otp, email}, { headers })
         return {success:true, data } as any
+    } catch (error:any) {
+        const err = error as any;
+        const message = err.response?.data?.error || "Something went wrong";
+        return { success: false, error: message, data: {} };
+    }
+}
+
+export const resendOtp = async(email: string) => {
+    try {
+        await Api.post(userEndPoints.RESEND_OTP, {email}, {headers})
+        return {success:true}
     } catch (error) {
-        const err = error as any
-        const message = err.response?.data?.err || "Something went wrong"
-        return { success:false, err:message, data:{} };
+        const err = error as any;
+        const message = err.response?.data?.error || "Something went wrong";
+        return { success: false, error: message, data: {} };
+    }
+}
+
+export const checkUserRole = async(email: string)=> {
+    try {
+        const {data} = await Api.get<boolean>(userEndPoints.CHECK_ROLE, {params: {email}})
+        return {success:true, data}
+    } catch (error) {
+        const err = error as any;
+        const message = err.response?.data?.error || "Something went wrong";
+        return { success: false, error: message, data: {} };
     }
 }
 
@@ -46,5 +69,25 @@ export const login = async(email:string, password:string) => {
         const err = error as any
         const message = err.respose?.data?.err || "Something went wrong"
         return { success:false, err:message, data:{} };
+    }
+}
+
+export const googleAuth = async (user: Omit<UserSignupFormType, "password" | "confirmPassword"> & {profilePicture?: string;}) => {
+    try {
+      const { data } = await Api.post(userEndPoints.GOOGLE_AUTH,{user,},{ headers });
+      return { success: true, data };
+    } catch (err) {
+      const message = "An error occured";
+      return { success: false, error: message };
+    }
+};
+
+export const userLogout = async() =>{
+    try {
+        await Api.delete(userEndPoints.LOGOUT, {headers})
+        return {success:true}
+    } catch (error) {
+        const message = "Something went wrong"
+        return { success:false, error:message};
     }
 }

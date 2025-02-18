@@ -50,9 +50,7 @@ export const _getClients = async(token: string) => {
 
 export const logout = async() => {
     try {
-        console.log('before sending request in api');
         await Api.delete(adminEndPoints.LOGOUT, {headers})
-        console.log('after sending request in api');        
         return {success:true}
     } catch (error) {
         const message = "Something went wrong"

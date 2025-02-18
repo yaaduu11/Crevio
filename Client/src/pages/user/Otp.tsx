@@ -1,28 +1,22 @@
 import React from 'react'
+import { useEffect } from 'react'
 import { OtpForm } from '../../components/user/otp'
-import { ToastContainer ,Bounce } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
+import { userRoutes } from '../../constants/routeUrl'
 
 const Otp = () => {
+  const navigate = useNavigate()
+  
+  useEffect(()=>{
+    const accessToken = localStorage.getItem("accessToken")
+    if(accessToken) navigate(userRoutes.HOME)
+  })
+
   return (
-    
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#FAF5E3]">
         <h1 className="text-[#00835B] font-K2D text-5xl mb-2 font-semibold">Crevio</h1>
-        
         <div className="w-full max-w-xl p-6"> 
-        <OtpForm/>
-        {/* <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      /> */}
+          <OtpForm/>
       </div>
     </div>
     

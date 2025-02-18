@@ -9,7 +9,7 @@ const router = Router()
 
 router.post(
     '/register',
-    userController.register.bind(userController) 
+    userController.register.bind(userController)
 )
 
 router.post(
@@ -18,13 +18,33 @@ router.post(
 )
 
 router.post(
-    '/login',
-    userController.login.bind(userController)
+    '/resendOtp',
+    userController.resendOtp.bind(userController)
 )
 
 router.patch(
     '/assign-role',
     userController.assignRole.bind(userController)
+)
+
+router.get(
+    '/check-role',
+    userController.checkRole.bind(userController)
+)
+
+router.post(
+    '/login',
+    userController.login.bind(userController)
+)
+
+router.post(
+    '/google-auth',
+    userController.googleAuth.bind(userController)
+)
+
+router.delete(
+    '/logout',
+    userController.logout.bind(userController)
 )
 
 export default router

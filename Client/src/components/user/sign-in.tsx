@@ -12,44 +12,82 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { useNavigate } from "react-router-dom"
 import { userRoutes } from "../../constants/routeUrl"
-import { fromTheme } from "tailwind-merge"
-import Api from "../../services/axios"
-import { userEndPoints } from "../../constants/endpointUrl"
-import { login } from "../../api/user"
+import { googleAuth, login } from "../../api/user"
+import { useGoogleLogin } from '@react-oauth/google';
+import { decodeToken } from "../../utils/googleAuthToken"
+import { ErrorState } from "../../types/userTypes"
 
 
 export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
   const navigate = useNavigate()
   const [formData, setFormdata] = useState({email:'', password:''})
-  const [error, setError] = useState('')
+  const [error, setError] = useState<ErrorState>({});
   const [loading, setLoading] = useState(false)
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormdata({...formData, [e.target.name]: e.target.value})    
-  }
+    const { name, value } = e.target;
+    setFormdata({ ...formData, [name]: value });
+
+    if (name === 'email') {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+      if (value.trim() === "" || !emailRegex.test(value.trim())) {
+        setError({ field: 'email', message: 'Enter a valid email.' });
+      } else {
+        setError({});
+      }
+    }
+  };
   
-  const handleSubmit = async(e: React.FormEvent) =>{
-    e.preventDefault()
-    setError('')
-    setLoading(true)
-    
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError({});
+    setLoading(true);
+
     try {
-      const response = await login(formData.email, formData.password)
-      
-      if(response.success){
-        localStorage.setItem('accessToken', response.data.accessToken)
-        setTimeout(()=>{
-          navigate(userRoutes.HOME)
-        },2000)
+      const response = await login(formData.email, formData.password);
+
+      if (response.success) {
+        localStorage.setItem('accessToken', response.data.accessToken);
+        setTimeout(() => {
+          navigate(userRoutes.HOME);
+          setLoading(false);
+        }, 2000);
       }
     } catch (error) {
       console.log(error);
-      
-    } finally {
-      setLoading(false)
+      setError({ field: 'form', message: "Invalid credentials" });
+      setLoading(false);
     }
-  }
- 
+  };
+  
+  const googleSignin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const decoded = await decodeToken(tokenResponse.access_token);
+
+        const response = await googleAuth({
+          email: decoded.email,
+          name: decoded.given_name + decoded.family_name,
+          profilePicture: decoded.picture,
+        });
+
+        if (response.success) {
+          const accessToken = (response.data as { accessToken: string }).accessToken;
+          localStorage.setItem("accessToken", accessToken);
+          navigate(userRoutes.HOME, { state: { fromOtp: true } });
+        } else {
+          setError({ field: 'form', message: "Google Sign-In failed. Try again." });
+        }
+      } catch (err) {
+        console.error(err);
+        setError({ field: 'form', message: "An error occurred while signing in with Google" });
+      }
+    },
+    onError: () => setError({ field: 'form', message: "Google Sign-In failed" }),
+  });
+  
+  const isDisabled = loading || formData.email.trim() === "" || formData.password.trim() === "" || (error.field === "email");
+
   return (
     <div className={cn("flex flex-col gap-6 ", className)} {...props}>
       <Card>
@@ -72,7 +110,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                   </svg>
                   Login with Apple
                 </Button> */}
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full transition duration-500 ease-in-out transform hover:shadow-md hover:bg-gray-50 hover:-translate-y-1 hover:border-black" onClick={() => googleSignin()}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
                       d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
@@ -99,6 +137,9 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                     onChange={handleChange}
                     required
                   />
+                  {error.field === 'email' ? (
+                    <p className="text-xs text-red-500">{error.message}</p>
+                  ) : null}
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
@@ -111,15 +152,17 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                     </a>
                   </div>
                   <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange} required/>
-                  {error && <p className="text-xs text-red-500">{error}</p> }  
+                  {error.field === 'form' && (
+                    <p className="text-xs text-red-500">{error.message}</p>
+                  )}
                 </div>
-                <Button type="submit" className="w-full" disabled={loading} onClick={handleSubmit}>
-                  {loading? (                   
+                <Button type="submit" className="w-full" disabled={isDisabled} onClick={handleSubmit}>
+                  {loading ? (
                     <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>
-                  ):(
+                  ) : (
                     "Login"
                   )}
-                </Button> 
+                </Button>
               </div>
               <div className="text-sm text-center"> 
                 Don&apos;t have an account?{" "}

@@ -3,6 +3,8 @@ import asyncHandler from "../../utils/asyncHandler";
 import { httpStatusCodes } from "../../constants/statusCodes";
 import { IUserController } from "../../interfaces/user/IUserController";
 import { IUserService } from "../../interfaces/user/IUserService";
+import { GoogleAuthUserType } from "../../types/Type";
+import { Messages } from "../../constants/messages";
 
 export class UserController implements IUserController{
     constructor(private userService: IUserService) {}
@@ -30,15 +32,37 @@ export class UserController implements IUserController{
         })(req, res, next); 
     }
 
+    resendOtp(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const {email} = req.body
+
+            if (!email) {
+                res.status(httpStatusCodes.BAD_REQUEST).json({ error: Messages.INCOMPLETE_FORM });
+                return;
+            }
+
+            await this.userService.resendOtp(email)
+            res.status(httpStatusCodes.OK).json({ success:true })
+        })(req,res,next)
+    }
+
     assignRole(req: Request, res:Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const {role, token} = req.body;
-
             const {userRole} = await this.userService.assignRole(role, token)
-            console.log('after going to service');
 
             res.status(httpStatusCodes.OK).json({success:true, userRole});
         })(req, res, next);
+    }
+
+    checkRole(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req:Request, res: Response): Promise<void>=> {
+            const email = req.query.email as string;
+            const {isNone} = await this.userService.checkUserRole(email)
+            console.log(isNone);
+            
+            res.status(httpStatusCodes.OK).json({success:true, isNone})
+        })(req,res, next)
     }
 
     login(req: Request, res:Response, next: NextFunction): Promise<void> {
@@ -54,5 +78,36 @@ export class UserController implements IUserController{
             });
             res.status(httpStatusCodes.OK).json({ success:true, accessToken, user });
         })(req, res, next); 
+    }
+
+    googleAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req:Request, res: Response):Promise<void> => {
+            const {...userData} = req.body.user;
+            console.log(userData);
+            
+            const {accessToken, refreshToken, user} = await this.userService.googleAuth(userData as GoogleAuthUserType)
+
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly:true,
+                secure: true,
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            })
+
+            res.status(httpStatusCodes.OK).json({accessToken, user})
+        })(req, res, next)
+    }
+
+    logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req:Request, res:Response): Promise<void> => {            
+            await res.clearCookie("refreshToken", {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict'
+            });
+            console.log('ffdfdf');
+            
+            res.status(httpStatusCodes.OK).json({})
+        })(req,res,next)
     }
 }

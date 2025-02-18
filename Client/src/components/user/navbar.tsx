@@ -5,6 +5,8 @@ import { userRoutes } from '../../constants/routeUrl'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
+import { userLogout } from '../../api/user';
 
 
 const Navbar = ({currentPage } : {currentPage : string}) => {
@@ -23,6 +25,19 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
     "about us": userRoutes.ABOUT,
     "contact us": userRoutes.CONTACT,
     "pricing": userRoutes.PRICING,
+  };
+  
+  const handleLogout = async () => {
+      try {
+          const response = await userLogout();
+          if (response.success) {            
+            localStorage.removeItem("accessToken");
+            navigate(userRoutes.SIGNIN);
+            localStorage.removeItem("hasShownModal")
+          }
+      } catch (error) {
+          console.error("Logout failed:", error);
+      }
   };
   
   return (
@@ -51,8 +66,32 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
         </div> }
         
         {token && <div>
-          <FontAwesomeIcon className='pr-5 text-xl ' icon={faBell} />
-          <FontAwesomeIcon className='text-xl pr-14 ' icon={faUser} />
+          <FontAwesomeIcon className='pr-6 text-xl' icon={faBell} />
+          {/* <FontAwesomeIcon className='text-xl pr-14 ' icon={faUser} /> */}
+          <Popover>
+            <PopoverTrigger asChild> 
+              <button className="text-xl pr-14 focus:outline-none">
+                <FontAwesomeIcon icon={faUser} />
+              </button>
+            </PopoverTrigger>
+
+            <PopoverContent
+              className="absolute right-0 p-2 mt-2 bg-white border rounded-lg shadow-md top-full w-28"
+              align="end" 
+              side="bottom" 
+              sideOffset={6} 
+            >
+              <button className="block w-full px-2 py-1 text-sm text-left text-black rounded-md hover:bg-gray-200">
+                Profile
+              </button>
+              <button
+                className="block w-full px-2 py-1 text-sm text-left text-black rounded-md hover:bg-gray-200"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </PopoverContent>
+          </Popover>
         </div> }
         
         {!token && <div className='pr-12'>

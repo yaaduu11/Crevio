@@ -52,7 +52,6 @@ export class AdminController implements IAdminController {
 
     logout(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {
-            console.log('request got in controller');
             
             await res.clearCookie("refreshToken", {
                 httpOnly: true,
@@ -60,7 +59,6 @@ export class AdminController implements IAdminController {
                 sameSite: 'strict'
             });
             
-            console.log('deleted in controller');
             res.status(httpStatusCodes.OK).json({})
         })(req,res,next)
     }

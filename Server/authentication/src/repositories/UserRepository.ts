@@ -35,6 +35,12 @@ class UserRepository implements IUserRepository {
         }
     }
 
+    async findUserRole(email: string): Promise<boolean> {
+        const data = await User.findOne({email})
+        if(data?.role !== 'freelancer' && data?.role !=='client' && data?.role !== 'admin') return true
+        return false
+    }
+
     async updateUserRole(email: string, role: string): Promise<void> {
         try {
             await User.updateOne({ email }, { $set: { role } });
@@ -43,6 +49,8 @@ class UserRepository implements IUserRepository {
             throw new Error("Error when updating the user's role");
         }
     }
+
+
     
 }
 
