@@ -2,6 +2,8 @@ export const userRoutes = {
     SIGNIN : "/signin",
     SIGNUP : "/signup",
     OTP : "/otp",
+    FORGOT_PASSWORD: "/forgotpassword",
+    NEW_PASSWORD: "/newpassword",
     HOME : "/",
     PROJECTS:'/projects',
     ABOUT : '/about',

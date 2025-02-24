@@ -8,5 +8,8 @@ export interface IUserController {
     assignRole(req: Request, res: Response, next: NextFunction): Promise<void>;
     login(req: Request, res: Response, next: NextFunction): Promise<void>;
     googleAuth(req: Request, res: Response, next: NextFunction): Promise<void>;
+    forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void>;
+    verifyOtpFP(req: Request, res: Response, next: NextFunction): Promise<void>;
+    newPassword(req: Request, res: Response, next: NextFunction): Promise<void>;
     logout(req:Request, res:Response, next:NextFunction): Promise<void>;
 }

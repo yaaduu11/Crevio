@@ -8,4 +8,7 @@ export interface IUserService {
     checkUserRole(email: string): Promise<{isNone:boolean}>;
     login(email:string, password:string) : Promise<{accessToken: string, refreshToken: string, user:UserType}>;
     googleAuth(user: GoogleAuthUserType): Promise<SigninResponse>;
+    forgotPassword(email: string): Promise<void>;
+    verifyOtpFp(otp: string, email:string): Promise<{user:UserType}>;
+    newPassword(password:string, email:string): Promise<{user:UserType}>
 }

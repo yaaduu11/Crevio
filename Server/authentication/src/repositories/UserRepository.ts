@@ -50,7 +50,14 @@ class UserRepository implements IUserRepository {
         }
     }
 
-
+    async updateUser(user: UserType): Promise<void> {
+        try {
+            await User.findByIdAndUpdate(user._id, user)
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error when updating the user");
+        }
+    }
     
 }
 

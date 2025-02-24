@@ -22,7 +22,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { resendOtp, verifyOtp } from "../../api/user"
 
 
-export function OtpForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
+export function OtpForm({className, handleOtpVerification, successRoute, ApiType, ...props}: React.ComponentPropsWithoutRef<"div"> & {
+  handleOtpVerification: (otp: string, email: string) => Promise<any>;
+  successRoute: string;
+  ApiType: string;
+}) {
   const [value, setValue] = React.useState("")
   const [timer, setTimer] = useState(30)
   const [isResend, setIsResend] = useState(false)
@@ -62,9 +66,8 @@ export function OtpForm({className,...props}: React.ComponentPropsWithoutRef<"di
       navigate(userRoutes.SIGNUP);
       toast({
         variant: "destructive",
-        description:
-          "Your registration data were lost. Please signup again.",
-        duration: 3000,
+        description: ApiType=='signup'? "Your registration data were lost. Please signup again." : "Your email were lost, Please retry again.",
+        duration: 2500,
       });
       return;
     }
@@ -73,30 +76,29 @@ export function OtpForm({className,...props}: React.ComponentPropsWithoutRef<"di
       toast({
         variant: "destructive",
         description: "OTP expired. Please resend the OTP and try again.",
-        duration: 3000,
+        duration: 2500,
       });
       return;
     }
-  
+
     setLoading(true);
     try {
-      const response = await verifyOtp(value, email);
+      const response = await handleOtpVerification(value, email);
       if (response.success) {
-        localStorage.removeItem("email");
-        localStorage.setItem("accessToken", response.data.accessToken);
+        if(ApiType=='signup') {
+          localStorage.removeItem("email");
+          localStorage.setItem("accessToken", response.data.accessToken);
+        }
         setTimeout(() => {
           setLoading(false);
-          navigate(userRoutes.HOME, {
-            state: { fromOtp: true, userName: response.data.user.name },
-          });
-        }, 3000);
+          navigate(successRoute, ApiType=='signup'? { state: { fromOtp: true, userName: response.data.user.name },}: {});
+        }, 2000);
       } else {
-        console.error("Error response:", response.error);
         setLoading(false);
         toast({
           variant: "destructive",
           description: response.error,
-          duration: 3000,
+          duration: 2500,
         });
       }
     } catch (error) {
@@ -105,7 +107,7 @@ export function OtpForm({className,...props}: React.ComponentPropsWithoutRef<"di
       toast({
         variant: "destructive",
         description: "Internal server error",
-        duration: 3000,
+        duration: 2500,
       });
     }
   };
@@ -129,11 +131,7 @@ export function OtpForm({className,...props}: React.ComponentPropsWithoutRef<"di
   
     try {
       await resendOtp(email)
-      toast({
-        variant: "default",
-        description: "A new OTP has been sent to your email.",
-        duration: 3000,
-      });
+      
     } catch (error) {
       console.error("Error when resending OTP:", error);
       toast({

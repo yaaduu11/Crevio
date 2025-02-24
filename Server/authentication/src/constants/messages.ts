@@ -20,5 +20,6 @@ export const Messages = {
     INCORRECT_PASSWORD: "Incorrect password, try again",
     USER_BLOCKED: "Your are blocked from Crevio, Please contact support",
     NO_ACCESS: "Unauthorized Access",
-    LOGEDOUT_SUCCESS: "Logged out successfully"
+    LOGEDOUT_SUCCESS: "Logged out successfully",
+    GOOGLE_ACC_FP : "Your account was created using Google. Please sign in with Google instead."
 }

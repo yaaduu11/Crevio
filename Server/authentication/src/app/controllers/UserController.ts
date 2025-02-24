@@ -82,9 +82,7 @@ export class UserController implements IUserController{
 
     googleAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res: Response):Promise<void> => {
-            const {...userData} = req.body.user;
-            console.log(userData);
-            
+            const {...userData} = req.body.user;            
             const {accessToken, refreshToken, user} = await this.userService.googleAuth(userData as GoogleAuthUserType)
 
             res.cookie("refreshToken", refreshToken, {
@@ -98,16 +96,40 @@ export class UserController implements IUserController{
         })(req, res, next)
     }
 
+    forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req:Request, res: Response): Promise<void> => {
+            const {email} = req.body
+            await this.userService.forgotPassword(email)
+
+            res.status(httpStatusCodes.OK).json({success:true })
+        })(req, res, next)
+    }
+
+    verifyOtpFP(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const {otp, email} = req.body
+            const {user} = await this.userService.verifyOtpFp(otp, email)
+
+            res.status(httpStatusCodes.OK).json({success:true, user})
+        })(req, res, next)
+    }
+
+    newPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req:Request, res:Response): Promise<void> => {
+            const {password, email} = req.body
+            const {user} = await this.userService.newPassword(password, email)
+            res.status(httpStatusCodes.OK).json({success:true, user})
+        })(req, res, next)
+    }
+
     logout(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {            
             await res.clearCookie("refreshToken", {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict'
-            });
-            console.log('ffdfdf');
-            
-            res.status(httpStatusCodes.OK).json({})
+            });            
+            res.status(httpStatusCodes.OK).json({ success:true })
         })(req,res,next)
     }
 }

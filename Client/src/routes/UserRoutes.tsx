@@ -6,6 +6,8 @@ import Otp from "../pages/user/Otp";
 import { userRoutes } from "../constants/routeUrl";                 
 import Projects from "../pages/user/Projects";
 import About from "../pages/user/About";
+import ForgotPassword from "../pages/user/ForgotPassword";
+import NewPassword from "../pages/user/NewPassword";
 
 
 export const UserRoutes = () => {
@@ -27,6 +29,14 @@ export const UserRoutes = () => {
                 <Route
                     path={userRoutes.OTP} 
                     element={<Otp/>}
+                />
+                <Route
+                    path={userRoutes.FORGOT_PASSWORD} 
+                    element={<ForgotPassword/>}
+                />
+                <Route
+                    path={userRoutes.NEW_PASSWORD} 
+                    element={<NewPassword/>}
                 />
                 <Route
                     path={userRoutes.PROJECTS}

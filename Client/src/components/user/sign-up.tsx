@@ -22,13 +22,17 @@ import { userRoutes } from "../../constants/routeUrl"
 import { toast } from "react-toastify"
 import { useGoogleLogin } from '@react-oauth/google';
 import { decodeToken } from "../../utils/googleAuthToken"
+import { Eye, EyeOff } from 'lucide-react'
+import { useToast } from "../../hooks/use-toast"
 
 
 export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
   const [error, setError] = useState({field: "", message: ""})
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate()
-  // const dispatchFn = useDispatch()
+  const { toast } = useToast();
+
   
   const initialState : UserSignupFormType = {
      name :'',
@@ -58,9 +62,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
        formSchema,
        formData as unknown as Record<string, string>
     )
-    
-    console.log(formSchema)
-    
+        
     if(error) {
       setError(error)
       return;
@@ -74,29 +76,28 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
       
       if (response.success) {
           localStorage.setItem("email", response.data.email);
-          navigate(userRoutes.OTP);
+          navigate(userRoutes.OTP, { state: { type: "signup" } });
       } else {
-          setError({
-              field: "server",
-              message: "Invalid response from server!",
+          toast({
+            variant: "destructive",
+            description: response.error || "User already exists, try another email",
+            duration: 2500,
           });
       }
     } catch (err: any) {
         console.error("Registration failed:", err);
         if (err.response?.data?.message) {
-            setError({
-                field: "server",
-                message: err.response.data.message,
+            toast({
+              variant: "destructive",
+              description: err.response.data.message,
+              duration: 2500,
             });
-
-            toast.error(err.response.data.message || "Something went wrong!");
         } else {
-            setError({
-                field: "server",
-                message: "Something went wrong!",
+            toast({
+              variant: "destructive",
+              description: "Something went wrong!",
+              duration: 2500
             });
-
-            toast.error("Something went wrong!");
         }
     } finally {
       setLoading(false);
@@ -208,11 +209,26 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                     <> </>
                   )}
                 </div>
-                <div className="grid gap-2">
+                <div className="relative grid gap-2">
                   <div className="flex items-center">
                     <Label htmlFor="password">Password</Label>
                   </div>
-                  <Input id="password" type="password" required value={formData.password} onChange={(e)=> dispatch({type: 'SET_PASSWORD', payload: e.target.value})}/>
+                  <Input 
+                    id="password" 
+                    name="password"
+                    type={showPassword? "text" : "password"}
+                    required 
+                    value={formData.password} 
+                    onChange={(e)=> dispatch({type: 'SET_PASSWORD', payload: e.target.value})}
+                  />
+                  <button
+                    type="button"
+                    className={`absolute right-3 flex items-center transition-all -top-[-55%]
+                      ${error.field=='password'? "-top-[-30px]" : ""}`}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button> 
                   {error.field== 'password'? (
                     <p className="text-xs text-red-500">{error.message}</p> 
                   ):(

@@ -16,6 +16,9 @@ import { googleAuth, login } from "../../api/user"
 import { useGoogleLogin } from '@react-oauth/google';
 import { decodeToken } from "../../utils/googleAuthToken"
 import { ErrorState } from "../../types/userTypes"
+import { emailRegex } from "../../validation/regex"
+import { Eye, EyeOff, Variable } from 'lucide-react'
+import { useToast } from "../../hooks/use-toast"
 
 
 export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
@@ -23,19 +26,22 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
   const [formData, setFormdata] = useState({email:'', password:''})
   const [error, setError] = useState<ErrorState>({});
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  
+  const {toast} = useToast()
+  
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormdata({ ...formData, [name]: value });
 
     if (name === 'email') {
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
       if (value.trim() === "" || !emailRegex.test(value.trim())) {
         setError({ field: 'email', message: 'Enter a valid email.' });
       } else {
         setError({});
       }
-    }
+    } 
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,6 +58,15 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
           navigate(userRoutes.HOME);
           setLoading(false);
         }, 2000);
+        setLoading(false)
+      }else{
+        setLoading(false)
+        setError({ field: 'form', message: response.error});
+        toast({
+          variant: 'destructive',
+          description: response.error,
+          duration: 2500
+        })
       }
     } catch (error) {
       console.log(error);
@@ -141,28 +156,38 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                     <p className="text-xs text-red-500">{error.message}</p>
                   ) : null}
                 </div>
-                <div className="grid gap-2">
+                <div className="relative grid gap-2">
                   <div className="flex items-center">
                     <Label htmlFor="password">Password</Label>
-                    <a
-                      href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                      Forgot your password?
-                    </a>
+                    <a onClick={()=>navigate(userRoutes.FORGOT_PASSWORD)} className="ml-auto text-sm cursor-pointer underline-offset-4 hover:underline">Forgot your password?</a>
                   </div>
-                  <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange} required/>
+                  <Input 
+                    id="password" 
+                    name="password" 
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password} 
+                    onChange={handleChange} 
+                    required
+                  />
+                  <button
+                    type="button"
+                    className={`absolute right-3 flex items-center transition-all -top-[-43%]
+                      ${error.field=='form'? "-top-[-28%]" : "top-1/2 transform -translate-y-1/2"}`}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                   {error.field === 'form' && (
                     <p className="text-xs text-red-500">{error.message}</p>
                   )}
+                  <Button type="submit" className="w-full" disabled={isDisabled} onClick={handleSubmit}>
+                    {loading ? (
+                      <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>
+                    ) : (
+                      "Login"
+                    )}
+                  </Button>
                 </div>
-                <Button type="submit" className="w-full" disabled={isDisabled} onClick={handleSubmit}>
-                  {loading ? (
-                    <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>
-                  ) : (
-                    "Login"
-                  )}
-                </Button>
               </div>
               <div className="text-sm text-center"> 
                 Don&apos;t have an account?{" "}

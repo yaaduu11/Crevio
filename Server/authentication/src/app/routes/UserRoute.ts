@@ -42,6 +42,21 @@ router.post(
     userController.googleAuth.bind(userController)
 )
 
+router.post(
+    '/forgot-password',
+    userController.forgotPassword.bind(userController)
+)
+
+router.post(
+    '/verifyOtpFP',
+    userController.verifyOtpFP.bind(userController)
+)
+
+router.post(
+    '/new-password',
+    userController.newPassword.bind(userController)
+)
+
 router.delete(
     '/logout',
     userController.logout.bind(userController)

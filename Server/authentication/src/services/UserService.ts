@@ -58,7 +58,6 @@ export class UserService implements IUserService {
 
         const {otp: storedOtp, userData} = JSON.parse(storedData)
         if(otp!==storedOtp) {
-            console.log('otp is incorrect');
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_OTP)
         }
 
@@ -168,5 +167,55 @@ export class UserService implements IUserService {
 
             return {accessToken, refreshToken, user: userData}
         }
+    }
+
+    async forgotPassword(email: string): Promise<void> {
+        const checkUser = await this.userRepository.findByEmail(email)
+        if(!checkUser){                        
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST , Messages.USER_NOT_FOUND)
+        }
+
+        if(!checkUser.password) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.GOOGLE_ACC_FP)
+        }
+
+        let newOtp = generateOtp()
+        
+        await redisClient.setEx(email, 300, JSON.stringify({ otp: newOtp, checkUser }));
+        
+        let mailOptions = {
+            user: env.USER_EMAIL,
+            to: email,
+            subject: 'Your 6-digit OTP',
+            html: generateOtpHtmlTemplate(newOtp)
+        }
+
+        try {
+            await transporter.sendMail(mailOptions)
+        } catch (error) {
+            console.log(error);
+            throw generateHttpError(httpStatusCodes.INTERNAL_SERVER_ERROR, Messages.OTP_ERROR)
+        }
+    }
+
+
+    async verifyOtpFp(otp: string, email: string): Promise<{ user: UserType; }> {
+        const storedData = await redisClient.get(email)
+
+        const {otp:storedOtp, userData} = JSON.parse(storedData as string)
+        if(otp!==storedOtp) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_OTP)
+        }        
+        return {user:userData}
+    }
+
+    async newPassword(password: string, email: string): Promise<{ user: UserType; }> {
+        const user = await this.userRepository.findByEmail(email)
+        if(!user) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
+        }
+        user.password = await bcrypt.hash(password, 10)
+        await this.userRepository.updateUser(user)
+        return {user}
     }
 }

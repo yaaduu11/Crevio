@@ -95,7 +95,7 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
         </div> }
         
         {!token && <div className='pr-12'>
-          <button className="flex justify-center items-center h-8 w-24 p-0 text-lg bg-[#126d52] text-white rounded-2xl hover:bg-[#1a664f] font-Montserrat" onClick={()=>navigate(userRoutes.SIGNIN)}>Sign In</button>
+          <button className="flex justify-center items-center h-8 w-24 p-0 text-md bg-[#126d52] text-white rounded-xl hover:bg-[#1a664f] font-Montserrat" onClick={()=>navigate(userRoutes.SIGNIN)}>Sign In</button>
         </div>}
 
       </div>
