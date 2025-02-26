@@ -9,4 +9,12 @@ const Api = axios.create({
     withCredentials: true
 })
 
+
+export const refreshToken = async() => {
+    const response = await axios.post(userEndPoints.REFRESH_TOKEN, {}, {withCredentials: true}) as any
+
+    const accessToken = response.data?.accessToken
+}
+
+
 export default Api

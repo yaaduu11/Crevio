@@ -1,7 +1,7 @@
 
 export const env = {
     get PORT() {
-        return process.env.PORT!
+        return process.env.PORT
     },
 
     get MONGO_URI() {
@@ -9,7 +9,7 @@ export const env = {
     },
 
     get REDIS_URI() {
-        return process.env.REDIS_URI
+        return process.env.REDIS_URI || 'redis://localhost:6379'
     },
 
     get USER_EMAIL() {

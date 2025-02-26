@@ -9,6 +9,7 @@ export const userEndPoints = {
     GOOGLE_AUTH: '/auth/google-auth',
     FORGOT_PASSWORD: '/auth/forgot-password',
     NEW_PASSWORD: '/auth/new-password',
+    REFRESH_TOKEN: '/auth/refresh-token',
     LOGOUT: '/auth/logout'
 }
 

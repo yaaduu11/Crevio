@@ -48,6 +48,7 @@ const new_password = ({className,...props}: React.ComponentPropsWithoutRef<"div"
         const response = await newPassword(passwords.password, email as string)
 
         if(response.success){
+            localStorage.removeItem("email")
             setLoading(false)
             toast({
               variant: 'success',

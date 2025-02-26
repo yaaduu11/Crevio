@@ -12,7 +12,7 @@ const app = express()
 
 app.use(corsMiddleware)
 
-app.use(morgan('combined'))
+app.use(morgan('short'))
 
 setupProxies(app)
 

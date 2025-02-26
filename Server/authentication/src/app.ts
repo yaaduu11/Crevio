@@ -29,7 +29,7 @@ class App {
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended:true}))
         this.app.use(cookieParser())
-        this.app.use(morgan('combined'))
+        this.app.use(morgan('short'))
     }
 
     private initializeRoutes(): void {

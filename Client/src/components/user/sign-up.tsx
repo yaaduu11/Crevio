@@ -224,7 +224,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                   <button
                     type="button"
                     className={`absolute right-3 flex items-center transition-all -top-[-55%]
-                      ${error.field=='password'? "-top-[-30px]" : ""}`}
+                      ${error.field=='password'? "-top-[-29px]" : ""}`}
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}

@@ -6,29 +6,34 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "localhost", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
 
   authentication:
-    image: authentication-image:latest
-    container_name: authentication-service
+    container_name: authentication
     build: 
       context: ./authentication
       dockerfile: Dockerfile
     ports:
-      - "3007:3001"
+      - "3001:3001"
     networks:
       - app-network
+    env_file:
+      - ./authentication/.env
     environment:
-      - NODE_ENV=production
-      - MONGO_URI=mongodb+srv://yadukrishnankzr:Wb4ueyOzdQW9kdio@crevio-cluster.on5qd.mongodb.net/authService
-      - REDIS_HOST=redis_service
-      - REDIS_PORT=6379
+      - REDIS_URI=redis://redis:6379
     depends_on:
-      - redis
-    volumes:
-      - ./authentication:/app
+      redis:
+        condition: service_healthy
+
 
   api-gateway:
-    image: api-gateway-image:latest
     container_name: api-gateway
     build: 
       context: ./api-gateway
@@ -37,13 +42,10 @@ services:
       - "3000:3000"
     networks:
       - app-network
-    environment:
-      - GATEWAY_PORT=3000
-      - AUTH_SERVICE_URL=http://authentication-service:3001
+    env_file:
+      - ./api-gateway/.env
     depends_on:
       - authentication
-    volumes:
-      - ./api-gateway:/app
 
 volumes:
   redis_data:

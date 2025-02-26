@@ -107,7 +107,7 @@ export const verifyOtpFP = async(otp:string, email:string) => {
 
 export const newPassword = async(password: string, email:string) => {
     try {
-        const {data} = await Api.post(userEndPoints.NEW_PASSWORD, {password, email})
+        const {data} = await Api.patch(userEndPoints.NEW_PASSWORD, {password, email})
         return {success: true, data}
     } catch (error) {
         const err =error as any

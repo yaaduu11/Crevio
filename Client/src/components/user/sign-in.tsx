@@ -41,7 +41,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
       } else {
         setError({});
       }
-    } 
+    }
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,7 +58,6 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
           navigate(userRoutes.HOME);
           setLoading(false);
         }, 2000);
-        setLoading(false)
       }else{
         setLoading(false)
         setError({ field: 'form', message: response.error});
@@ -171,8 +170,8 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                   />
                   <button
                     type="button"
-                    className={`absolute right-3 flex items-center transition-all -top-[-43%]
-                      ${error.field=='form'? "-top-[-28%]" : "top-1/2 transform -translate-y-1/2"}`}
+                    className={`absolute right-3 flex items-center transition-all top-[36%]
+                      ${error.field=='form'? "top-[28%]" : ""}`}
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}

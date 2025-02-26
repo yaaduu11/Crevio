@@ -52,7 +52,7 @@ router.post(
     userController.verifyOtpFP.bind(userController)
 )
 
-router.post(
+router.patch(
     '/new-password',
     userController.newPassword.bind(userController)
 )

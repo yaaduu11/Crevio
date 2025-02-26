@@ -128,6 +128,10 @@ export class UserService implements IUserService {
             throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
         }
 
+        if(!user.password) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.GOOGLE_ACC_FP)
+        }
+
         const checkPassword = await bcrypt.compare(password, user.password as string)
         if(!checkPassword) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_PASSWORD)

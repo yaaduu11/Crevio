@@ -13,6 +13,10 @@ export const env = {
 
     get CLIENT_PORT() {
         return process.env.CLIENT_PORT
+    },
+
+    get JWT_ACCESS_TOKEN_SECRET() {
+        return process.env.JWT_ACCESS_TOKEN_SECRET
     }
 }
 
@@ -27,5 +31,9 @@ export function envValidator() {
 
     if(!env.CLIENT_PORT) {
         throw new Error('CLIENT PORT is not found in env')
+    }
+
+    if(!env.JWT_ACCESS_TOKEN_SECRET) {
+        throw new Error('JWT access token secret is not found in env')
     }
 }
