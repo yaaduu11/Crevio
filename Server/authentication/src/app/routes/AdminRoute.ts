@@ -23,6 +23,16 @@ router.get(
     adminController.getClients.bind(adminController)
 )
 
+router.patch(
+    '/client-block-unblock',
+    adminController.clientBlockUnblock.bind(adminController)
+)
+
+router.patch(
+    '/freelancer-block-unblock',
+    adminController.freelancerBlockUnblock.bind(adminController)
+)
+
 router.delete(
     '/logout',
     adminController.logout.bind(adminController)

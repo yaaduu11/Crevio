@@ -143,6 +143,7 @@ export class UserService implements IUserService {
 
         let accessToken = await generateAccessToken(user._id as ObjectId)
         let refreshToken = await generateRefreshToken(user._id as ObjectId)
+        console.log('hellooooooooo');
         
         return {accessToken, refreshToken, user}
     }
@@ -221,5 +222,25 @@ export class UserService implements IUserService {
         user.password = await bcrypt.hash(password, 10)
         await this.userRepository.updateUser(user)
         return {user}
+    }
+
+    async refreshToken(token: string): Promise<string> {
+        const payload = verifyToken(token)
+        if(!payload) {
+            throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.INVALID_TOKEN)
+        }
+
+        const user = await this.userRepository.findByEmail(payload.userId)
+        if(!user) {
+            throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.USER_NOT_FOUND)
+        }
+
+        if(user.isBlocked) {
+            throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.USER_BLOCKED)
+        }
+
+        const accessToken = await generateAccessToken(user._id as ObjectId)
+
+        return accessToken
     }
 }

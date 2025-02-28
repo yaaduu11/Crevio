@@ -4,10 +4,12 @@ import { Card } from "../../components/ui/card";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminRoutes } from "../../constants/routeUrl";
+import { RootState } from "../../redux/storage";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const [cardHovered, setCardHovered] = useState(false)
-  
+  const admin = useSelector((state:RootState)=>state.admin)  
   const navigate = useNavigate()
   
   useEffect(()=>{
@@ -22,7 +24,7 @@ const Dashboard = () => {
       </div>
 
       <div className="flex-1 p-6 bg-[#000000] pl-16 pt-24">
-      <h1 className={`text-3xl text-white transition duration-1500 ease-in-out transform font-Montserrat ${cardHovered ? '-translate-y-4' : ''}`}>Welcome Admin</h1>
+      <h1 className={`text-3xl text-white transition duration-1500 ease-in-out transform font-Montserrat ${cardHovered ? '-translate-y-4' : ''}`}>Welcome admin</h1>
         <div className="flex gap-16 mt-8">
           <Card className="w-full max-w-md p-6 transition duration-700 ease-in-out transform shadow-md hover:-translate-y-4 hover:bg-purple-100 rounded-3xl" 
             onMouseEnter={() => setCardHovered(true)}

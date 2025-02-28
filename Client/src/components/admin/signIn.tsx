@@ -6,10 +6,14 @@ import { signin } from "../../api/admin";
 import { useNavigate } from "react-router-dom";
 import { adminRoutes } from "../../constants/routeUrl";
 import { useToast } from "../../hooks/use-toast";
+import { setAdmin } from "../../redux/adminSlice";
+import { useDispatch } from "react-redux";
+import Loader from "../ui/loader";
 
 export function AdminLoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [adminData, setAdminData] = useState({ email: '', password: '' });
   
@@ -39,7 +43,15 @@ export function AdminLoginForm({ className, ...props }: React.ComponentPropsWith
     try {
       const response = await signin(adminData.email, adminData.password);
       if (response.success) {
-        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("accessToken", response.data.accessToken);   
+        dispatch(setAdmin({
+          _id: response.data.admin._id,
+          name: response.data.admin.name,
+          email: response.data.admin.email,
+          role: response.data.admin.role,
+          accessToken: response.data.accessToken,
+        }))
+        
         setTimeout(() => {
           setLoading(false);
           navigate(`/admin${adminRoutes.DASHBOARD}`);
@@ -64,6 +76,8 @@ export function AdminLoginForm({ className, ...props }: React.ComponentPropsWith
   };
   
   return (
+    <>
+    {loading && <Loader onComplete={() => setLoading(false)} />}
     <div className={cn("flex flex-col relative items-center", className)} {...props}>
       <form className="relative w-fit" onSubmit={handleSubmit}>
         <div className="relative flex flex-col">
@@ -99,11 +113,10 @@ export function AdminLoginForm({ className, ...props }: React.ComponentPropsWith
                      bg-[#000000] border-[#000000] border-4 hover:bg-[#505050]"
           disabled={loading}
         >
-          {loading ? (
-            <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>
-          ) : ('➤')}
+          ➤
         </Button>
       </form>
     </div>
+    </>
   );
 }

@@ -20,10 +20,7 @@ export const generateAccessToken=(userId : ObjectId)=>{
 
 export const verifyToken = (token: string) => {
     try {
-      const decoded = jwt.verify(
-        token,
-        env.JWT_ACCESS_TOKEN_SECRET as string
-      ) as { userId: string };
+      const decoded = jwt.verify(token,env.JWT_ACCESS_TOKEN_SECRET as string) as { userId: string };
       return decoded;
     } catch (error) {
       console.error("Error decoding token:", error);

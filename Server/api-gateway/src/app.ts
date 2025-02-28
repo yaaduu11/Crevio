@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import { env, envValidator } from './config/envValidator'
 import { corsMiddleware } from './middlewares/cors'
 import { setupProxies } from './middlewares/proxy'
+import authMiddleware from './middlewares/authMiddleware'
 
 dotenv.config()
 envValidator()
@@ -11,6 +12,10 @@ envValidator()
 const app = express()
 
 app.use(corsMiddleware)
+
+app.use((req, res, next)=> {
+    authMiddleware(req, res, next)
+})
 
 app.use(morgan('short'))
 

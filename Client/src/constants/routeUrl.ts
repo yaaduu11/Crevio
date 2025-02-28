@@ -8,7 +8,8 @@ export const userRoutes = {
     PROJECTS:'/projects',
     ABOUT : '/about',
     CONTACT : '/contact',
-    PRICING : '/pricing'
+    PRICING : '/pricing',
+    PROFILE: '/profile'
 }
 
 export const adminRoutes = {

@@ -46,6 +46,26 @@ class AdminRepository implements IAdminRepository {
             return []
         }
     }
+
+    async findById(userId: string): Promise<UserType | null> {
+        try {
+            const client = await User.findById(userId)
+            return client
+        } catch (error) {
+            console.log(error);
+            return null
+        }
+    }
+
+    async save(user: UserType): Promise<boolean> {
+        try {
+            await User.findByIdAndUpdate(user._id, user)            
+            return true
+        } catch (error) {
+            console.log(error);
+            return false
+        }
+    }
 }
 
 export default new AdminRepository

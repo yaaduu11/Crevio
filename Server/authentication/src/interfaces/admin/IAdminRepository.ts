@@ -3,7 +3,9 @@ import { UserType } from "../../types/Type"
 
 export interface IAdminRepository {
     findByEmail(email: string) : Promise<UserType | null>;
+    findById(userId: string): Promise<UserType | null>;
     verifyAdmin(Id: string): Promise<boolean >;
     getFreelancers(): Promise<UserType[]>
     getClients(): Promise<UserType[]>
+    save(user:UserType): Promise<boolean>;
 }

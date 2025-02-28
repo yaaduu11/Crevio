@@ -1,5 +1,6 @@
 interface SigninResponse {
     accessToken: string;
+    admin: UserTypes
 }
 
 type SigninResult = { success: true; data: SigninResponse } | { success: false; error: string; data:{} }

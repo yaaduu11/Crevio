@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useDebugValue } from "react";
 import { Button } from "../../components/user/button"
 import HomeImage_1 from '../../assets/user/freelancer-home.svg'
 import HomeImage_2 from '../../assets/user/freelancer-home2.svg'
@@ -17,16 +17,22 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { userRoutes } from "../../constants/routeUrl";
 import Navbar from "../../components/user/navbar";
 import { assignRole, checkUserRole } from "../../api/user";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/userSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/storage";
 
 const Home = () => {
   const navigate = useNavigate()
   const location = useLocation();
+  const user = useSelector((state: RootState) => state.user);
   
   const [role, setRole] = useState('');
   const [leftSelected, setLeftSelected] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [rightSelected, setRightSelected] = useState(false);
   const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
   
   const isNextEnabled = leftSelected || rightSelected;
   
@@ -58,6 +64,7 @@ const Home = () => {
       if (response.success) {
         localStorage.setItem("hasShownModal", "true");
         setShowModal(false)
+        dispatch(setUser({role}))
       } else {
         console.log('handle assign role response is something wrong');
       }

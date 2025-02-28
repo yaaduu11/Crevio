@@ -12,7 +12,7 @@ import { UserType } from '../types/Type';
 export class AdminService implements IAdminService {
     constructor(private adminRepository: IAdminRepository) {}
 
-    async signin(email: string, password: string): Promise<{accessToken: string, refreshToken: string}> {        
+    async signin(email: string, password: string): Promise<{accessToken: string, refreshToken: string, admin: UserType}> {        
         let admin = await this.adminRepository.findByEmail(email)        
         if(!admin) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.ADMIN_NOT_FOUND)
@@ -26,13 +26,12 @@ export class AdminService implements IAdminService {
 
         let accessToken = await generateAccessToken(admin?._id as ObjectId)
         let refreshToken = await generateRefreshToken(admin?._id as ObjectId)
-        return {accessToken, refreshToken}
+        
+        return {accessToken, refreshToken, admin}
     }
 
-    async getFreelancers(token: string): Promise<{ freelancers: UserType[]; }> {
-        const decoded = await verifyToken(token)
-
-        const isAdmin = await this.adminRepository.verifyAdmin(decoded.userId)
+    async getFreelancers(userId: string): Promise<{ freelancers: UserType[]; }> {
+        const isAdmin = await this.adminRepository.verifyAdmin(userId)
         if(!isAdmin) {
             throw generateHttpError(httpStatusCodes.UNAUTHORIZED, Messages.NO_ACCESS)
         }
@@ -40,10 +39,8 @@ export class AdminService implements IAdminService {
         return {freelancers}
     }
 
-    async getClients(token: string): Promise<{ clients: UserType[]; }> {
-        let decoded = await verifyToken(token)
-
-        const isAdmin = await this.adminRepository.verifyAdmin(decoded.userId)
+    async getClients(userId: string): Promise<{ clients: UserType[]; }> {
+        const isAdmin = await this.adminRepository.verifyAdmin(userId)
         if(!isAdmin){
             throw generateHttpError(httpStatusCodes.UNAUTHORIZED, Messages.NO_ACCESS)
         }
@@ -51,4 +48,21 @@ export class AdminService implements IAdminService {
         return {clients}
     }
 
+    async clientBlockUnblock(userId: string): Promise<void> {
+        const client = await this.adminRepository.findById(userId)        
+        if(!client) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
+        }
+        client.isBlocked = !client.isBlocked;        
+        await this.adminRepository.save(client)
+    }
+
+    async freelancerBlockUnblock(userId: string): Promise<void> {
+        const freelancer = await this.adminRepository.findById(userId)
+        if(!freelancer) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
+        }
+        freelancer.isBlocked = !freelancer.isBlocked
+        await this.adminRepository.save(freelancer)
+    }
 }

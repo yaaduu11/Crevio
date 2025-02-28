@@ -3,15 +3,20 @@ import { Button } from './button'
 import { useNavigate } from 'react-router-dom'
 import { userRoutes } from '../../constants/routeUrl'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faUser as faUserSolid } from "@fortawesome/free-solid-svg-icons";
+import { faBell as faBellSolid } from '@fortawesome/free-solid-svg-icons';
+import { faUser as faUserRegular } from "@fortawesome/free-regular-svg-icons";
+import { faBell as faBellRegular } from '@fortawesome/free-regular-svg-icons';
 import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
 import { userLogout } from '../../api/user';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/storage';
 
 
 const Navbar = ({currentPage } : {currentPage : string}) => {
   const navigate = useNavigate()
   const token = localStorage.getItem("accessToken")
+  const user = useSelector((state: RootState)=> state.user)
   
   const pageFocus = (page: string) =>
     currentPage === page
@@ -26,7 +31,7 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
     "contact us": userRoutes.CONTACT,
     "pricing": userRoutes.PRICING,
   };
-  
+
   const handleLogout = async () => {
       try {
           const response = await userLogout();
@@ -47,7 +52,7 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
           Crevio
         </h1>
 
-        { token && <div className="absolute flex space-x-8 transform -translate-x-1/2 left-1/2">
+        { user.accessToken && <div className="absolute flex space-x-8 transform -translate-x-1/2 left-1/2">
           {Object.keys(pageRoutes).map((page) => {
             const isCurrentPage = currentPage === page;
             return (
@@ -65,13 +70,12 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
           })}
         </div> }
         
-        {token && <div>
-          <FontAwesomeIcon className='pr-6 text-xl' icon={faBell} />
-          {/* <FontAwesomeIcon className='text-xl pr-14 ' icon={faUser} /> */}
+        {user.accessToken && <div>
+          {currentPage=="notifications"? <FontAwesomeIcon className='pr-5 text-xl' icon={faBellSolid}/> : <FontAwesomeIcon className='pr-5 text-xl' icon={faBellRegular}/>}
           <Popover>
             <PopoverTrigger asChild> 
               <button className="text-xl pr-14 focus:outline-none">
-                <FontAwesomeIcon icon={faUser} />
+                {currentPage=="profile"? <FontAwesomeIcon icon={faUserSolid}/> : <FontAwesomeIcon icon={faUserRegular}/>}
               </button>
             </PopoverTrigger>
 
@@ -94,7 +98,7 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
           </Popover>
         </div> }
         
-        {!token && <div className='pr-12'>
+        {!user.accessToken && <div className='pr-12'>
           <button className="flex justify-center items-center h-8 w-24 p-0 text-md bg-[#126d52] text-white rounded-xl hover:bg-[#1a664f] font-Montserrat" onClick={()=>navigate(userRoutes.SIGNIN)}>Sign In</button>
         </div>}
 

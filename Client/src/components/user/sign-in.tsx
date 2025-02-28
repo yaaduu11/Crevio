@@ -19,6 +19,8 @@ import { ErrorState } from "../../types/userTypes"
 import { emailRegex } from "../../validation/regex"
 import { Eye, EyeOff, Variable } from 'lucide-react'
 import { useToast } from "../../hooks/use-toast"
+import { useDispatch } from "react-redux"
+import { setUser } from "../../redux/userSlice"
 
 
 export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
@@ -27,6 +29,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
   const [error, setError] = useState<ErrorState>({});
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch()
   
   const {toast} = useToast()
   
@@ -54,6 +57,15 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
 
       if (response.success) {
         localStorage.setItem('accessToken', response.data.accessToken);
+        
+        dispatch(setUser({
+          _id: response.data.user._id,
+          name: response.data.user.name,
+          email: response.data.user.email,
+          role: response.data.user.role,
+          accessToken: response.data.accessToken,
+        }))
+        
         setTimeout(() => {
           navigate(userRoutes.HOME);
           setLoading(false);
@@ -81,7 +93,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
 
         const response = await googleAuth({
           email: decoded.email,
-          name: decoded.given_name + decoded.family_name,
+          name: decoded.given_name,
           profilePicture: decoded.picture,
         });
 
@@ -160,22 +172,26 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                     <Label htmlFor="password">Password</Label>
                     <a onClick={()=>navigate(userRoutes.FORGOT_PASSWORD)} className="ml-auto text-sm cursor-pointer underline-offset-4 hover:underline">Forgot your password?</a>
                   </div>
-                  <Input 
-                    id="password" 
-                    name="password" 
-                    type={showPassword ? "text" : "password"}
-                    value={formData.password} 
-                    onChange={handleChange} 
-                    required
-                  />
-                  <button
-                    type="button"
-                    className={`absolute right-3 flex items-center transition-all top-[36%]
-                      ${error.field=='form'? "top-[28%]" : ""}`}
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
+                  
+                  <div className="flex items-center">
+                    <Input 
+                      id="password" 
+                      name="password" 
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password} 
+                      onChange={handleChange} 
+                      required
+                    />
+                    
+                    <button
+                      type="button"
+                      className={`absolute right-3`}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                  
                   {error.field === 'form' && (
                     <p className="text-xs text-red-500">{error.message}</p>
                   )}

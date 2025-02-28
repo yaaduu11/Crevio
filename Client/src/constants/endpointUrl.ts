@@ -9,7 +9,7 @@ export const userEndPoints = {
     GOOGLE_AUTH: '/auth/google-auth',
     FORGOT_PASSWORD: '/auth/forgot-password',
     NEW_PASSWORD: '/auth/new-password',
-    REFRESH_TOKEN: '/auth/refresh-token',
+    REFRESH_TOKEN: '/auth/refreshToken',
     LOGOUT: '/auth/logout'
 }
 
@@ -17,5 +17,7 @@ export const adminEndPoints = {
     SIGNIN : "/auth/admin/login",
     FETCH_FREELANCERS : "/auth/admin/get-freelancers",
     FETCH_CLIENTS : "/auth/admin/get-clients",
+    CLIENT_BLOCK: "/auth/admin/client-block-unblock",
+    FREELANCER_BLOCK: "/auth/admin/freelancer-block-unblock",
     LOGOUT : '/auth/admin/logout'
 }

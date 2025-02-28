@@ -1,30 +1,34 @@
 import Api from "../services/axios";
 import { adminEndPoints } from "../constants/endpointUrl";
-import { GetFreelancers, SigninResponse, SigninResult, UserTypes } from "../types/adminTypes";
+import { SigninResponse, UserTypes } from "../types/adminTypes";
 
 const headers = {
     'X-User-Level': 'admin'
 }
 
-export const signin = async(email: string, password:string): Promise<SigninResult> =>{
+export const signin = async(email: string, password:string) =>{
     try {
-        const { data } = await Api.post<SigninResponse>(adminEndPoints.SIGNIN, { email, password })
-        return {success:true, data}
+        const { data } = await Api.post<SigninResponse>(adminEndPoints.SIGNIN, { email, password }, {headers})
+        return {success:true, data} as any
     } catch (error) {
         const message = "Something went wrong"
         return { success:false, error:message, data:{} };
     }
 }
 
-export const _getFreelancers = async(token: string) => {
+export const _getFreelancers = async() => {
     try {
-        const config = {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              ...headers, 
-            },
-          };
-        const {data} = await Api.get<UserTypes[]>(adminEndPoints.FETCH_FREELANCERS, config)
+        const {data} = await Api.get<UserTypes[]>(adminEndPoints.FETCH_FREELANCERS, {headers})
+        return {success:true, data} as any
+    } catch (error) {
+        const message = "Something went wrong"
+        return { success:false, error:message, data:[]};
+    }
+}
+
+export const _getClients = async() => {
+    try {
+        const {data} = await Api.get<UserTypes[]>(adminEndPoints.FETCH_CLIENTS, {headers})
         return {success:true, data} as any
     } catch (error) {
         const message = "Something went wrong"
@@ -32,19 +36,25 @@ export const _getFreelancers = async(token: string) => {
     }
 }
 
-export const _getClients = async(token: string) => {
+export const clientBlock = async(userId: string) => {
     try {
-        const config = {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              ...headers, 
-            },
-          };
-        const {data} = await Api.get<UserTypes[]>(adminEndPoints.FETCH_CLIENTS, config)
-        return {success:true, data} as any
+        await Api.patch(adminEndPoints.CLIENT_BLOCK, {userId}, {headers})
+        return {success:true} 
     } catch (error) {
-        const message = "Something went wrong"
-        return { success:false, error:message, data:[] };
+        const err = error as any
+        const message = err.response?.data?.error || "Something went wrong"
+        return { success:false, error:message};
+    }
+}
+
+export const freelancerBlock = async(userId: string) =>{
+    try {
+        await Api.patch(adminEndPoints.FREELANCER_BLOCK, {userId}, {headers})
+        return {success: true}
+    } catch (error) {
+        const err = error as any
+        const message = err.response?.data?.error || "Something went wrong"
+        return { success:false, error:message};
     }
 }
 

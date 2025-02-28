@@ -11,5 +11,6 @@ export interface IUserController {
     forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void>;
     verifyOtpFP(req: Request, res: Response, next: NextFunction): Promise<void>;
     newPassword(req: Request, res: Response, next: NextFunction): Promise<void>;
+    refreshToken(req: Request, res: Response, next: NextFunction): Promise<void>;
     logout(req:Request, res:Response, next:NextFunction): Promise<void>;
 }

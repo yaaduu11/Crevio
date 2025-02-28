@@ -5,6 +5,8 @@ import { IUserController } from "../../interfaces/user/IUserController";
 import { IUserService } from "../../interfaces/user/IUserService";
 import { GoogleAuthUserType } from "../../types/Type";
 import { Messages } from "../../constants/messages";
+import errorHandler from "../middlewares/errorHandler";
+import { generateAccessToken } from "../../utils/jwtToken";
 
 export class UserController implements IUserController{
     constructor(private userService: IUserService) {}
@@ -119,6 +121,19 @@ export class UserController implements IUserController{
             const {password, email} = req.body
             const {user} = await this.userService.newPassword(password, email)
             res.status(httpStatusCodes.OK).json({success:true, user})
+        })(req, res, next)
+    }
+
+    refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response)=> {
+            const refreshToken = req.cookies.refreshToken
+            if(!refreshToken){
+                res.status(httpStatusCodes.FORBIDDEN).json({error: Messages.TOKEN_EMPTY})
+                return;
+            }
+
+            const accessToken = await this.userService.refreshToken(refreshToken)
+            res.status(httpStatusCodes.OK).json({accessToken})
         })(req, res, next)
     }
 

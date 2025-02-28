@@ -11,4 +11,5 @@ export interface IUserService {
     forgotPassword(email: string): Promise<void>;
     verifyOtpFp(otp: string, email:string): Promise<{user:UserType}>;
     newPassword(password:string, email:string): Promise<{user:UserType}>
+    refreshToken(token: string): Promise<string>;
 }

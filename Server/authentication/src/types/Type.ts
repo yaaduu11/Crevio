@@ -6,7 +6,7 @@ export interface UserType {
     email: string;
     password?: string;
     role?: 'freelancer' | 'client' | 'admin';
-    isBlocked?: false;
+    isBlocked?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }

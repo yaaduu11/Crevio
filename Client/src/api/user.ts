@@ -52,7 +52,7 @@ export const checkUserRole = async(email: string)=> {
 
 export const assignRole = async(role:string, token: string) => {
     try {
-        await Api.patch(userEndPoints.ASSIGN_ROLE, {role, token})
+        await Api.patch(userEndPoints.ASSIGN_ROLE, {role, token}, {headers})
         return {success: true}
     } catch (error) {
         const err = error as any
@@ -107,7 +107,7 @@ export const verifyOtpFP = async(otp:string, email:string) => {
 
 export const newPassword = async(password: string, email:string) => {
     try {
-        const {data} = await Api.patch(userEndPoints.NEW_PASSWORD, {password, email})
+        const {data} = await Api.patch(userEndPoints.NEW_PASSWORD, {password, email}, {headers})
         return {success: true, data}
     } catch (error) {
         const err =error as any

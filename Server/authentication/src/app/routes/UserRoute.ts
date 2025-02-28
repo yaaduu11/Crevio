@@ -57,6 +57,11 @@ router.patch(
     userController.newPassword.bind(userController)
 )
 
+router.post(
+    '/refreshToken',
+    userController.refreshToken.bind(userController)
+)
+
 router.delete(
     '/logout',
     userController.logout.bind(userController)

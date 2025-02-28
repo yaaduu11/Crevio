@@ -19,7 +19,9 @@ import { useNavigate } from "react-router-dom"
 import { userRoutes } from "../../constants/routeUrl"
 import { useToast } from "../../hooks/use-toast"
 import "react-toastify/dist/ReactToastify.css";
-import { resendOtp, verifyOtp } from "../../api/user"
+import { resendOtp } from "../../api/user"
+import { useDispatch } from "react-redux"
+import { setUser } from "../../redux/userSlice"
 
 
 export function OtpForm({className, handleOtpVerification, successRoute, ApiType, ...props}: React.ComponentPropsWithoutRef<"div"> & {
@@ -31,6 +33,7 @@ export function OtpForm({className, handleOtpVerification, successRoute, ApiType
   const [timer, setTimer] = useState(30)
   const [isResend, setIsResend] = useState(false)
   const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
   
   const navigate = useNavigate()
   const { toast } = useToast();
@@ -88,6 +91,13 @@ export function OtpForm({className, handleOtpVerification, successRoute, ApiType
         if(ApiType=='signup') {
           localStorage.removeItem("email");
           localStorage.setItem("accessToken", response.data.accessToken);
+          dispatch(setUser({
+              _id: response.user._id,
+              name: response.user.name,
+              email: response.user.email,
+              role: response.user.role,
+              accessToken: response.accessToken,
+          }))
         }
         setTimeout(() => {
           setLoading(false);

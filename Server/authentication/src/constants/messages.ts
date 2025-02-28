@@ -14,7 +14,7 @@ export const Messages = {
     OTP_EXPIRED: "Your OTP has been expired, try again",
     INCORRECT_OTP: 'The OTP you provided is incorrect',
     OTP_VERIFIED: 'OTP verification successful',
-    NO_TOKEN_PROVIDED: 'No token Provided',
+    TOKEN_EMPTY: 'No token Provided',
     USER_NOT_FOUND: "User not found, try to signup",
     ADMIN_NOT_FOUND: "Admin not found",
     INCORRECT_PASSWORD: "Incorrect password, try again",

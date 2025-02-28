@@ -19,7 +19,6 @@ import { validateForm } from "../../validation/formValidation"
 import { formSchema } from "../../validation/formSchema"
 import { signup, googleAuth } from "../../api/user";
 import { userRoutes } from "../../constants/routeUrl"
-import { toast } from "react-toastify"
 import { useGoogleLogin } from '@react-oauth/google';
 import { decodeToken } from "../../utils/googleAuthToken"
 import { Eye, EyeOff } from 'lucide-react'
@@ -213,22 +212,26 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                   <div className="flex items-center">
                     <Label htmlFor="password">Password</Label>
                   </div>
-                  <Input 
-                    id="password" 
-                    name="password"
-                    type={showPassword? "text" : "password"}
-                    required 
-                    value={formData.password} 
-                    onChange={(e)=> dispatch({type: 'SET_PASSWORD', payload: e.target.value})}
-                  />
-                  <button
-                    type="button"
-                    className={`absolute right-3 flex items-center transition-all -top-[-55%]
-                      ${error.field=='password'? "-top-[-29px]" : ""}`}
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button> 
+                  
+                  <div className="flex items-center">
+                    <Input 
+                      id="password" 
+                      name="password"
+                      type={showPassword? "text" : "password"}
+                      required 
+                      value={formData.password} 
+                      onChange={(e)=> dispatch({type: 'SET_PASSWORD', payload: e.target.value})}
+                    />
+                    <button
+                      type="button"
+                      className={`absolute right-3 `}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button> 
+                  </div>
+                  
+                  
                   {error.field== 'password'? (
                     <p className="text-xs text-red-500">{error.message}</p> 
                   ):(

@@ -1,9 +1,10 @@
 import { Route, Routes } from "react-router-dom";
+import { userRoutes } from "../constants/routeUrl";   
+              
 import Home from "../pages/user/Home";
 import SignIn from "../pages/user/SignIn";
 import SignUp from "../pages/user/SignUp";
 import Otp from "../pages/user/Otp";
-import { userRoutes } from "../constants/routeUrl";                 
 import Projects from "../pages/user/Projects";
 import About from "../pages/user/About";
 import ForgotPassword from "../pages/user/ForgotPassword";
@@ -15,15 +16,15 @@ export const UserRoutes = () => {
         <>
           <Routes>
                <Route 
-                    path={userRoutes.HOME} 
+                    path={userRoutes.HOME}
                     element={<Home/>}
                 />
                 <Route
-                    path={userRoutes.SIGNIN} 
+                    path={userRoutes.SIGNIN}
                     element={<SignIn/>}
                 />
                 <Route
-                    path={userRoutes.SIGNUP} 
+                    path={userRoutes.SIGNUP}
                     element={<SignUp/>}
                 />
                 <Route
