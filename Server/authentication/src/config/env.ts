@@ -9,7 +9,7 @@ export const env = {
     },
 
     get REDIS_URI() {
-        return process.env.REDIS_URI || 'redis://localhost:6379'
+        return process.env.REDIS_URI
     },
 
     get USER_EMAIL() {
@@ -26,5 +26,17 @@ export const env = {
 
     get JWT_REFRESH_TOKEN_SECRET() {
         return process.env.JWT_REFRESH_TOKEN_SECRET
+    },
+
+    get CLOUDINARY_CLOUD_NAME() {
+        return process.env.CLOUDINARY_CLOUD_NAME
+    },
+
+    get CLOUDINARY_API_KEY() {
+        return process.env.CLOUDINARY_API_KEY
+    },
+
+    get CLOUDINARY_API_SECRET() {
+        return process.env.CLOUDINARY_API_SECRET
     }
 }

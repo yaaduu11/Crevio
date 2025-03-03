@@ -44,7 +44,7 @@ class App {
 
     public listen(): void {
         this.app.listen(env.PORT, ()=>{
-            console.log(`Server running on http://localhost:${env.PORT}`)
+            console.log(`authentication running on ${env.PORT}`)
         })
     }
 }

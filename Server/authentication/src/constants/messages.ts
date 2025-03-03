@@ -18,8 +18,9 @@ export const Messages = {
     USER_NOT_FOUND: "User not found, try to signup",
     ADMIN_NOT_FOUND: "Admin not found",
     INCORRECT_PASSWORD: "Incorrect password, try again",
-    USER_BLOCKED: "Your are blocked from Crevio, Please contact support",
+    USER_BLOCKED: "Your are blocked from Crevio.",
     NO_ACCESS: "Unauthorized Access",
     LOGEDOUT_SUCCESS: "Logged out successfully",
-    GOOGLE_ACC_FP : "Your account was created using Google. Please sign in with Google instead."
+    GOOGLE_ACC_FP : "Your account was created using Google. Please sign in with Google instead.",
+    INVALID_FILE_FORMAT: "Invalid file format. Allowed: JPG, JPEG, PNG, WEBP."
 }

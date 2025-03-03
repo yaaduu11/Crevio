@@ -11,12 +11,13 @@ import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
 import { userLogout } from '../../api/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/storage';
-
+import { useDispatch } from 'react-redux';
+import { removeUser, setUser } from '../../redux/userSlice';
 
 const Navbar = ({currentPage } : {currentPage : string}) => {
   const navigate = useNavigate()
-  const token = localStorage.getItem("accessToken")
   const user = useSelector((state: RootState)=> state.user)
+  const dispatch = useDispatch()
   
   const pageFocus = (page: string) =>
     currentPage === page
@@ -37,8 +38,8 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
           const response = await userLogout();
           if (response.success) {            
             localStorage.removeItem("accessToken");
+            dispatch(setUser(removeUser()))
             navigate(userRoutes.SIGNIN);
-            localStorage.removeItem("hasShownModal")
           }
       } catch (error) {
           console.error("Logout failed:", error);
@@ -85,8 +86,8 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
               side="bottom" 
               sideOffset={6} 
             >
-              <button className="block w-full px-2 py-1 text-sm text-left text-black rounded-md hover:bg-gray-200">
-                Profile
+              <button className="block w-full px-2 py-1 text-sm text-left text-black rounded-md hover:bg-gray-200" onClick={()=>navigate(userRoutes.DASHBOARD)}>
+                Dashboard
               </button>
               <button
                 className="block w-full px-2 py-1 text-sm text-left text-black rounded-md hover:bg-gray-200"

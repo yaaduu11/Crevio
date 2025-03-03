@@ -1,21 +1,11 @@
 import { useState } from "react";
 import { AdminSidebar } from "../../components/admin/adminSidebar";
 import { Card } from "../../components/ui/card";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { adminRoutes } from "../../constants/routeUrl";
-import { RootState } from "../../redux/storage";
-import { useSelector } from "react-redux";
+
 
 const Dashboard = () => {
   const [cardHovered, setCardHovered] = useState(false)
-  const admin = useSelector((state:RootState)=>state.admin)  
-  const navigate = useNavigate()
-  
-  useEffect(()=>{
-      const accessToken = localStorage.getItem("accessToken")
-      if(!accessToken) navigate(`/admin${adminRoutes.SIGNIN}`)
-  })
+  // const admin = useSelector((state:RootState)=>state.admin)  
 
   return (
     <div className="flex h-screen">

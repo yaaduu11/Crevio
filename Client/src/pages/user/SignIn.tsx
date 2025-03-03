@@ -4,12 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { userRoutes } from '../../constants/routeUrl';
 
 const SignIn = () => {
-  const navigate = useNavigate()
-  
-  useEffect(()=>{
-    const accessToken = localStorage.getItem("accessToken")
-    if(accessToken) navigate(userRoutes.HOME)
-  })
   
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#FAF5E3]">

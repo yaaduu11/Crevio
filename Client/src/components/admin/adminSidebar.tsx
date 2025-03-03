@@ -31,20 +31,33 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { adminRoutes } from "../../constants/routeUrl";
 import { logout } from "../../api/admin";
+import { useDispatch } from "react-redux";
+import { removeAdmin, setAdmin } from "../../redux/adminSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/storage";
+
 
 
 export const AdminSidebar = ({currentPage} : {currentPage : string}) => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const admin = useSelector((state: RootState)=>state.admin)
+
     
     const handleLogout = async () => {
       try {
-          const response = await logout();
-          if (response.success) {            
-              localStorage.removeItem("accessToken");
-              navigate(`/admin${adminRoutes.SIGNIN}`);
-          }
+        const response = await logout();
+        if (response.success) {            
+          localStorage.removeItem("accessToken");
+          console.log('okkk');
+          
+          dispatch(removeAdmin())
+          console.log(admin);
+          
+          navigate(`/admin${adminRoutes.SIGNIN}`);
+        }
       } catch (error) {
-          console.error("Logout failed:", error);
+        console.error("Logout failed:", error);
       }
     };
   

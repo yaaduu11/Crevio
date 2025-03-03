@@ -1,4 +1,3 @@
-import { useDispatch } from "react-redux"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import {
@@ -10,8 +9,6 @@ import {
 } from "../ui/card"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import eye_open from '../../assets/user/eye-open.png';
-import eye_close from '../../assets/user/eye-close.png';
 import { useNavigate } from "react-router-dom"
 import { useReducer, useState } from "react"
 import { UserSignupFormType, UserSignupFormAction } from "../../types/userTypes"
@@ -23,6 +20,8 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { decodeToken } from "../../utils/googleAuthToken"
 import { Eye, EyeOff } from 'lucide-react'
 import { useToast } from "../../hooks/use-toast"
+import { setUser } from "../../redux/userSlice"
+import { useDispatch } from "react-redux"
 
 
 export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
@@ -31,6 +30,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate()
   const { toast } = useToast();
+  const reduxDispatch = useDispatch()
 
   
   const initialState : UserSignupFormType = {
@@ -117,6 +117,14 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
         if (response.success) {
           const accessToken = (response.data as { accessToken: string }).accessToken;
           localStorage.setItem("accessToken", accessToken);
+          console.log(response.user);
+           reduxDispatch(setUser({
+              _id: response.data.user._id,
+              name: response.data.user.name,
+              email: response.data.user.email,
+              role: response.data.user.role,
+              accessToken: response.data.accessToken,
+            }))
           navigate(userRoutes.HOME, {state: {fromOtp:true}});
         } else {
           // setError("Google Sign-In failed. Try again.");

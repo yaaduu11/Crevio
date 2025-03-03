@@ -3,11 +3,12 @@ import { userEndPoints } from "../constants/endpointUrl";
 import store from "../redux/storage";
 import { removeUser, setUser } from "../redux/userSlice";
 import { removeAdmin, setAdmin } from "../redux/adminSlice";
+import messages from "../constants/messages";
 
 const refreshToken = async(userLevel: "user" | "admin") => {
-    const response = await axios.post(userEndPoints.REFRESH_TOKEN, {}, {withCredentials: true}) as any
-    const accessToken = response.data?.accessToken
-
+    const {data} = await Api.post(userEndPoints.REFRESH_TOKEN, {}, {withCredentials: true}) as any
+    
+    const accessToken = data?.accessToken    
     if(userLevel == 'user') {
         store.dispatch(setUser({accessToken}))
     }else{
@@ -49,22 +50,33 @@ Api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config
 
-        if(error.response && error.response.status == 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
+        if (error.response) {            
+            const { status, data } = error.response;
 
-            try {
-                const userLevel = originalRequest.headers['X-User-Level'];
-                const newToken = await refreshToken(userLevel)
+            if (status === 403 && data.message === messages.USER_BLOCKED) {
+                console.log('yeah yeah');
+                
+                store.dispatch(removeUser());
+                return Promise.reject(error);
+            }
 
-                originalRequest.headers.Authorization = `Bearer ${newToken}`
-                return Api(originalRequest)
-            } catch (error) {
-                if(originalRequest.headers['X-User-Level'] == 'user') {
-                    store.dispatch(removeUser())
-                }else{
-                    store.dispatch(removeAdmin())
+            if (status === 401 && !originalRequest._retry) {
+                originalRequest._retry = true;
+
+                try {
+                    const userLevel = originalRequest.headers['X-User-Level'];
+                    const newToken = await refreshToken(userLevel);
+
+                    originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                    return Api(originalRequest);
+                } catch (refreshError) {
+                    if (originalRequest.headers['X-User-Level'] === 'user') { 
+                        store.dispatch(removeUser());
+                    } else {
+                        store.dispatch(removeAdmin());
+                    }
+                    return Promise.reject(refreshError);
                 }
-                return Promise.reject(error)
             }
         }
         return Promise.reject(error)

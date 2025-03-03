@@ -14,13 +14,13 @@ export const generateAccessToken=(userId : ObjectId)=>{
     return jwt.sign(
         {userId},
         env.JWT_ACCESS_TOKEN_SECRET as string,
-        {expiresIn: '3h'}
+        {expiresIn: '1m'}
     )
 }
 
 export const verifyToken = (token: string) => {
     try {
-      const decoded = jwt.verify(token,env.JWT_ACCESS_TOKEN_SECRET as string) as { userId: string };
+      const decoded = jwt.verify(token,env.JWT_REFRESH_TOKEN_SECRET as string) as { userId: string };
       return decoded;
     } catch (error) {
       console.error("Error decoding token:", error);

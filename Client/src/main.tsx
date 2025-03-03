@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <StrictMode>
-        <GoogleOAuthProvider clientId='267776999193-sj19e0deq609g0480niqp0bohvcf5qfv.apps.googleusercontent.com'>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
           <App />
         </GoogleOAuthProvider>
       </StrictMode>

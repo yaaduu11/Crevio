@@ -50,21 +50,11 @@ export class UserController implements IUserController{
 
     assignRole(req: Request, res:Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
-            const {role, token} = req.body;
-            const {userRole} = await this.userService.assignRole(role, token)
+            const {role, email} = req.body;
+            const {userRole} = await this.userService.assignRole(role, email)
 
             res.status(httpStatusCodes.OK).json({success:true, userRole});
         })(req, res, next);
-    }
-
-    checkRole(req: Request, res: Response, next: NextFunction): Promise<void> {
-        return asyncHandler(async(req:Request, res: Response): Promise<void>=> {
-            const email = req.query.email as string;
-            const {isNone} = await this.userService.checkUserRole(email)
-            console.log(isNone);
-            
-            res.status(httpStatusCodes.OK).json({success:true, isNone})
-        })(req,res, next)
     }
 
     login(req: Request, res:Response, next: NextFunction): Promise<void> {
@@ -94,7 +84,7 @@ export class UserController implements IUserController{
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             })
 
-            res.status(httpStatusCodes.OK).json({accessToken, user})
+            res.status(httpStatusCodes.OK).json({sucess:true, accessToken, user})
         })(req, res, next)
     }
 

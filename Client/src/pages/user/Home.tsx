@@ -16,7 +16,7 @@ import { faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { userRoutes } from "../../constants/routeUrl";
 import Navbar from "../../components/user/navbar";
-import { assignRole, checkUserRole } from "../../api/user";
+import { assignRole } from "../../api/user";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/userSlice";
 import { useSelector } from "react-redux";
@@ -24,7 +24,6 @@ import { RootState } from "../../redux/storage";
 
 const Home = () => {
   const navigate = useNavigate()
-  const location = useLocation();
   const user = useSelector((state: RootState) => state.user);
   
   const [role, setRole] = useState('');
@@ -36,10 +35,8 @@ const Home = () => {
   
   const isNextEnabled = leftSelected || rightSelected;
   
-  useEffect(() => {
-    const hasShownModal = localStorage.getItem("hasShownModal");
-    
-    if (location.state?.fromOtp && !hasShownModal) {
+  useEffect(() => {    
+    if (user.role == 'none') {
       setShowModal(true);
     }
   }, []);
@@ -59,10 +56,8 @@ const Home = () => {
   const HandleAssignRole = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("accessToken") as string
-      const response = await assignRole(role, token);
+      const response = await assignRole(role, user.email);
       if (response.success) {
-        localStorage.setItem("hasShownModal", "true");
         setShowModal(false)
         dispatch(setUser({role}))
       } else {
@@ -239,7 +234,7 @@ const Home = () => {
   
           <div className="relative flex flex-col w-full max-w-5xl gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn">
             <h1 className="mt-12 text-[1.75rem] font-bold text-center">
-              {location.state?.userName}, your account has been created!<br />
+              {user.name}, your account has been created!<br />
               What brings you to Crevio?
             </h1>
             <h1 className="mb-4 text-lg font-medium text-center text-gray-500">

@@ -59,7 +59,6 @@ const Freelancers = () => {
   useEffect(()=>{
     const getFreelancers = async()=>{
       try {
-        const token = localStorage.getItem("accessToken")
         const response = await _getFreelancers()
         if(response.success){
            setFreelancers(response.data.freelancers)

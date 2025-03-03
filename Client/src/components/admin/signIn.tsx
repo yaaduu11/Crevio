@@ -43,7 +43,6 @@ export function AdminLoginForm({ className, ...props }: React.ComponentPropsWith
     try {
       const response = await signin(adminData.email, adminData.password);
       if (response.success) {
-        localStorage.setItem("accessToken", response.data.accessToken);   
         dispatch(setAdmin({
           _id: response.data.admin._id,
           name: response.data.admin.name,

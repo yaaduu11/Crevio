@@ -61,8 +61,6 @@ export class UserService implements IUserService {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_OTP)
         }
 
-        console.log(otp);
-
         const userObject : UserType = {
             name : userData.name as string,
             email : userData.email as string,
@@ -105,21 +103,14 @@ export class UserService implements IUserService {
         }
     }
 
-    async assignRole(role:string, token:string) : Promise<{userRole:string}> {
-        let decoded = await verifyToken(token)
-
-        let user = await this.userRepository.findById(decoded.userId as string)
+    async assignRole(role:string, email:string) : Promise<{userRole:string}> {
+        let user = await this.userRepository.findByEmail(email)
         if(!user) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
         }        
         await this.userRepository.updateUserRole(user.email, role)
 
         return {userRole: role}
-    }
-
-    async checkUserRole(email: string): Promise<{isNone: boolean}> {
-        const isNone = await this.userRepository.findUserRole(email)
-        return {isNone}
     }
 
     async login(email:string, password:string): Promise<{accessToken: string, refreshToken: string, user:UserType}> {
@@ -137,13 +128,12 @@ export class UserService implements IUserService {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_PASSWORD)
         }
 
-        if(user.isBlocked){
-            throw generateHttpError(httpStatusCodes.UNAUTHORIZED, Messages.USER_BLOCKED)
+        if(user.isBlocked) {
+            throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.USER_BLOCKED)
         }
 
         let accessToken = await generateAccessToken(user._id as ObjectId)
         let refreshToken = await generateRefreshToken(user._id as ObjectId)
-        console.log('hellooooooooo');
         
         return {accessToken, refreshToken, user}
     }
@@ -225,13 +215,14 @@ export class UserService implements IUserService {
     }
 
     async refreshToken(token: string): Promise<string> {
-        const payload = verifyToken(token)
+        const payload = await verifyToken(token)
+
         if(!payload) {
             throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.INVALID_TOKEN)
         }
 
-        const user = await this.userRepository.findByEmail(payload.userId)
-        if(!user) {
+        const user = await this.userRepository.findById(payload.userId)
+        if(!user) {            
             throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.USER_NOT_FOUND)
         }
 
@@ -239,8 +230,7 @@ export class UserService implements IUserService {
             throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.USER_BLOCKED)
         }
 
-        const accessToken = await generateAccessToken(user._id as ObjectId)
-
+        const accessToken = await generateAccessToken(user._id as ObjectId)        
         return accessToken
     }
 }

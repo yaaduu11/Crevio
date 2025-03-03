@@ -59,7 +59,6 @@ const Clients = () => {
   useEffect(()=>{
     const getClients = async()=>{
       try {
-        const token = localStorage.getItem("accessToken")
         const response = await _getClients()
         if(response.success){
           setClients(response.data.clients)

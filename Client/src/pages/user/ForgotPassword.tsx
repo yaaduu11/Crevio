@@ -6,12 +6,6 @@ import { userRoutes } from '../../constants/routeUrl'
 import { ForgotPasswordCard } from '../../components/user/forgot_password'
 
 const ForgotPassword = () => {
-  const navigate = useNavigate()
-  
-  // useEffect(()=>{
-  //   const accessToken = localStorage.getItem("accessToken")
-  //   if(accessToken) navigate(userRoutes.HOME)
-  // })
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#FAF5E3]">

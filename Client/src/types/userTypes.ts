@@ -2,7 +2,7 @@ interface UserSignupFormType {
     name: string;
     email: string;
     password: string;
-    role?: 'freelancer' | 'client' | 'admin' | '';
+    role?: 'freelancer' | 'client' | 'admin' | 'none';
 }
 
 interface ErrorState {
@@ -20,7 +20,7 @@ interface UserStoreType {
     _id: string;
     name: string;
     email: string;
-    role?: 'freelancer' | 'client' | 'admin' | '';
+    role?: 'freelancer' | 'client' | 'admin' | 'none';
     accessToken : null;
 }
 

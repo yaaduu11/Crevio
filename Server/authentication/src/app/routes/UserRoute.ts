@@ -27,11 +27,6 @@ router.patch(
     userController.assignRole.bind(userController)
 )
 
-router.get(
-    '/check-role',
-    userController.checkRole.bind(userController)
-)
-
 router.post(
     '/login',
     userController.login.bind(userController)

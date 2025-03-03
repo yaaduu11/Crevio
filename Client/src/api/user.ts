@@ -39,20 +39,9 @@ export const resendOtp = async(email: string) => {
     }
 }
 
-export const checkUserRole = async(email: string)=> {
+export const assignRole = async(role:string, email:string) => {
     try {
-        const {data} = await Api.get<boolean>(userEndPoints.CHECK_ROLE, {params: {email}})
-        return {success:true, data}
-    } catch (error) {
-        const err = error as any;
-        const message = err.response?.data?.error || "Something went wrong";
-        return { success: false, error: message, data: {} };
-    }
-}
-
-export const assignRole = async(role:string, token: string) => {
-    try {
-        await Api.patch(userEndPoints.ASSIGN_ROLE, {role, token}, {headers})
+        await Api.patch(userEndPoints.ASSIGN_ROLE, {role, email}, {headers})
         return {success: true}
     } catch (error) {
         const err = error as any
@@ -72,10 +61,11 @@ export const login = async(email:string, password:string) => {
     }
 }
 
-export const googleAuth = async (user: Omit<UserSignupFormType, "password" | "confirmPassword"> & {profilePicture?: string;}) => {
+export const googleAuth = async (user: Omit<UserSignupFormType, "password"> & {profilePicture?: string;}) => {
     try {
-      const { data } = await Api.post(userEndPoints.GOOGLE_AUTH,{user,},{ headers });
-      return { success: true, data };
+      const { data } = await Api.post(userEndPoints.GOOGLE_AUTH,{user,},{ headers });      
+      return { success: true, data } as any
+
     } catch (error) {
         const err = error as any
         const message = err.response?.data?.error || "Something went wrong"
@@ -111,6 +101,17 @@ export const newPassword = async(password: string, email:string) => {
         return {success: true, data}
     } catch (error) {
         const err =error as any
+        const message = err.message?.data?.error || 'Something went wrong.'
+        return {success:false, error: message, data: {}}
+    }
+}
+
+export const changeProfile = async(formData: FormData) => {
+    try {
+        const {data} = await Api.post(userEndPoints.CHANGE_PROFILE, {formData}, {headers})
+        return {success: true, data}
+    } catch (error) {
+        const err = error as any
         const message = err.message?.data?.error || 'Something went wrong.'
         return {success:false, error: message, data: {}}
     }

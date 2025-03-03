@@ -6,7 +6,7 @@ const initialState :  UserStoreType = {
     _id: '',
     name: '',
     email: '',
-    role: '',
+    role: 'admin',
     accessToken: null
 }
 
