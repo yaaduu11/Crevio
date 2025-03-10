@@ -8,10 +8,11 @@ import { generateHttpError } from '../utils/httpError';
 import { Messages } from '../constants/messages';
 import { IUserRepository } from "../interfaces/user/IUserRepository";
 import { IUserService } from "../interfaces/user/IUserService";
-import { GoogleAuthUserType, SigninResponse, UserType } from '../types/Type';
+import { FileType, GoogleAuthUserType, SigninResponse, UserType } from '../types/Type';
 import { env } from '../config/env';
 import { redisClient } from '../config/redis';
 import { generateAccessToken, generateRefreshToken, verifyToken } from '../utils/jwtToken';
+import { handleProfileImageUpload } from '../config/cloudinary';
 
 export class UserService implements IUserService {
     constructor(private userRepository : IUserRepository) {}
@@ -119,6 +120,10 @@ export class UserService implements IUserService {
             throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
         }
 
+        if(user.isBlocked) {
+            throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.USER_BLOCKED)
+        }
+
         if(!user.password) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.GOOGLE_ACC_FP)
         }
@@ -126,10 +131,6 @@ export class UserService implements IUserService {
         const checkPassword = await bcrypt.compare(password, user.password as string)
         if(!checkPassword) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_PASSWORD)
-        }
-
-        if(user.isBlocked) {
-            throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.USER_BLOCKED)
         }
 
         let accessToken = await generateAccessToken(user._id as ObjectId)
@@ -212,6 +213,48 @@ export class UserService implements IUserService {
         user.password = await bcrypt.hash(password, 10)
         await this.userRepository.updateUser(user)
         return {user}
+    }
+
+    async updateProfile(id: string, profileImage: FileType | undefined): Promise<{user: UserType}> {
+        console.log(id);
+        
+        if (!profileImage) {            
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, "Profile image is required")
+        }
+
+        const imageURL = await handleProfileImageUpload(profileImage.buffer)
+        
+        const user = await this.userRepository.findById(id);
+
+        if (!user) {
+            console.log('second request');
+
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
+        }
+
+        user.profilePicture = imageURL;
+        await this.userRepository.updateUser(user);
+        return {user}
+    }
+
+    async getProfileImage(userId: string): Promise<{ user: UserType; }> {
+        const user = await this.userRepository.findById(userId)
+        if(!user) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
+        }
+        return {user}
+    }
+
+    async editUserName(userId: string, name: string): Promise<{ userName: string; }> {
+        const user = await this.userRepository.findById(userId)
+        if(!user) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
+        }
+
+        user.name = name
+        await this.userRepository.updateUser(user)
+        const userName = user.name
+        return {userName}
     }
 
     async refreshToken(token: string): Promise<string> {

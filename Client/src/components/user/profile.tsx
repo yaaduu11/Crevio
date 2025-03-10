@@ -1,29 +1,73 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { User, Mail } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
-import { changeProfile } from '../../api/user';
-import { userEndPoints } from '../../constants/endpointUrl';
+import { changeProfile, editUserName, getProfileImage } from '../../api/user';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/storage';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/userSlice';
 
 interface ProfileProps {
   user: {
     name: string;
     email: string;
-    avatar?: string;
   };
 }
+
+
 
 const ProfileComponent: React.FC<ProfileProps> = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(user.name);
   const [error, setError] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState('')
   const allowedFormats = ["jpg", "jpeg", "png", "webp"];
   const {toast} = useToast()
-  const profileImage = localStorage.getItem("profileImage")
+  const dispatch = useDispatch()
 
-  const handleEditSave = () => {
+  useEffect(() => {
+     const getProfile = async() =>{
+        try {
+          const response = await getProfileImage()
+          if(response.success){
+            setProfileImage(response.data.user.profilePicture)
+          }
+        } catch (error) {
+          console.log(error);  
+        }
+     }
+     getProfile()
+  }, [])
+  
+  
+  const handleEditSave = async() => {
     if (isEditing) {
+      if (!editedName.trim()) {
+        setError("Name cannot be empty.");
+        return;
+      }
+      
+      const response = await editUserName(editedName)
+      if(response.success){
+        toast({
+          variant: "success",
+          description: "Username successfully updated",
+          duration: 2500,
+        });
+        
+        dispatch(setUser({ name: editedName }))
+        setIsEditing(false);
+      }else{
+        setError(response.error);
+        toast({
+          variant: 'destructive',
+          description: response.error,
+          duration: 25000
+        })
+      }
+    }else {
+      setIsEditing(true)
     }
-    setIsEditing(!isEditing);
   };
   
 
@@ -55,26 +99,25 @@ const ProfileComponent: React.FC<ProfileProps> = ({ user }) => {
         return;
     }
 
-    setError(null);
     const imageURL = URL.createObjectURL(file);
 
     const formData = new FormData();
     formData.append("profileImage", file);
 
     try {
-        // const response = await changeProfile(formData)
-
-        // if (response.success) {
-          localStorage.setItem("profileImage", imageURL)
-          toast({
-            variant: 'success',
-            description: 'Profile image successfully changed',
-            duration: 2500
-          })
-        // }
-
+      console.log(imageURL);
+      console.log(formData);
+      
+        const response = await changeProfile(formData)
+        console.log(response);
+                
+        if (response.success) {
+          window.location.reload();
+        }       
     } catch (error) {
         setError("Failed to upload. Please try again.");
+    }finally{
+        URL.revokeObjectURL(imageURL);
     }
   };
     
@@ -118,7 +161,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({ user }) => {
                   className="w-4/5 text-2xl font-bold text-gray-800 border-b border-gray-300 focus:outline-none focus:border-blue-500"
                 />
               ) : (
-                <h1 className="text-2xl font-bold text-gray-800">{editedName}</h1>
+                <h1 className="text-2xl font-bold text-gray-800">{user.name}</h1>
               )}
               <button 
                 className="flex items-center justify-center w-8 h-8 text-sm text-white transition-all duration-300 bg-black border rounded-2xl hover:scale-125"

@@ -5,8 +5,6 @@ import { IUserController } from "../../interfaces/user/IUserController";
 import { IUserService } from "../../interfaces/user/IUserService";
 import { GoogleAuthUserType } from "../../types/Type";
 import { Messages } from "../../constants/messages";
-import errorHandler from "../middlewares/errorHandler";
-import { generateAccessToken } from "../../utils/jwtToken";
 
 export class UserController implements IUserController{
     constructor(private userService: IUserService) {}
@@ -115,7 +113,7 @@ export class UserController implements IUserController{
     }
 
     refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
-        return asyncHandler(async(req: Request, res: Response)=> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const refreshToken = req.cookies.refreshToken
             if(!refreshToken){
                 res.status(httpStatusCodes.FORBIDDEN).json({error: Messages.TOKEN_EMPTY})
@@ -124,6 +122,33 @@ export class UserController implements IUserController{
 
             const accessToken = await this.userService.refreshToken(refreshToken)
             res.status(httpStatusCodes.OK).json({accessToken})
+        })(req, res, next)
+    }
+
+    updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req:Request, res:Response): Promise<void> => {
+            const { userId } = JSON.parse(req.headers['x-user-payload'] as string);
+            const profileImage = req.file
+
+            const {user} = await this.userService.updateProfile(userId, profileImage)
+            res.status(httpStatusCodes.OK).json({user})
+        })(req, res, next)
+    }
+
+    getProfileImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const { userId } = JSON.parse(req.headers['x-user-payload'] as string);
+            const {user} = await this.userService.getProfileImage(userId)
+            res.status(httpStatusCodes.OK).json({user})
+        })(req, res, next)
+    }
+
+    editUserName(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req:Request, res:Response): Promise<void> => {
+            const {name} = req.body
+            const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
+            const {userName} = await this.userService.editUserName(userId, name)
+            res.status(httpStatusCodes.OK).json({userName})
         })(req, res, next)
     }
 

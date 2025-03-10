@@ -10,7 +10,8 @@ export default {
         K2D: ['K2D', 'sans-serif'], 
         Inter : ["Inter", 'serif'],
         Rubik : ["Rubik", "serif"],
-        Montserrat : ["Montserrat", 'sans-serif']
+        Montserrat : ["Montserrat", 'sans-serif'],
+        Quicksand: ["Quicksand", "sans-serif"],
       },
       keyframes: {
         "caret-blink": {

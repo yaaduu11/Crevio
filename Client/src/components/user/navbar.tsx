@@ -12,7 +12,7 @@ import { userLogout } from '../../api/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/storage';
 import { useDispatch } from 'react-redux';
-import { removeUser, setUser } from '../../redux/userSlice';
+import { removeUser } from '../../redux/userSlice';
 
 const Navbar = ({currentPage } : {currentPage : string}) => {
   const navigate = useNavigate()
@@ -38,7 +38,7 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
           const response = await userLogout();
           if (response.success) {            
             localStorage.removeItem("accessToken");
-            dispatch(setUser(removeUser()))
+            dispatch(removeUser())
             navigate(userRoutes.SIGNIN);
           }
       } catch (error) {

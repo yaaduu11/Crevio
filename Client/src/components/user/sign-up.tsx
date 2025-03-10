@@ -27,6 +27,7 @@ import { useDispatch } from "react-redux"
 export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
   const [error, setError] = useState({field: "", message: ""})
   const [loading, setLoading] = useState(false)
+  const [showButton, setShowButton] = useState(false)
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate()
   const { toast } = useToast();
@@ -236,7 +237,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button> 
+                    </button>
                   </div>
                   
                   

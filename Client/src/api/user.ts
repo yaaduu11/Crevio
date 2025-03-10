@@ -1,6 +1,6 @@
 import Api from "../services/axios";
 import { userEndPoints } from "../constants/endpointUrl";
-import { UserSignupFormType } from "../types/userTypes";
+import { UserSignupFormType,UserType } from "../types/userTypes";
 
 const headers= {
     'X-User-Level': 'user'
@@ -106,14 +106,41 @@ export const newPassword = async(password: string, email:string) => {
     }
 }
 
-export const changeProfile = async(formData: FormData) => {
+export const changeProfile = async (formData: FormData) => {
     try {
-        const {data} = await Api.post(userEndPoints.CHANGE_PROFILE, {formData}, {headers})
+        const { data } = await Api.post(userEndPoints.CHANGE_PROFILE, formData, {
+            headers: {
+                ...headers,
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return { success: true, data };
+    } catch (error) {
+        const err = error as any;
+        const message = err.response?.data?.error || "Something went wrong.";
+        return { success: false, error: message, data: {} };
+    }
+};
+
+export const getProfileImage = async() => {
+    try {
+        const {data} = await Api.get(userEndPoints.GET_PROFILE_IMAGE, {headers})
+        return {success:true, data} as any
+    } catch (error) {
+        const err = error as any
+        const message = err.response?.data?.error || "Something went wrong."
+        return {success: false, error: message, data: {}}
+    }
+}
+
+export const editUserName = async(name: string) => {
+    try {
+        const {data} = await Api.patch(userEndPoints.EDIT_USER_NAME, {name}, {headers})
         return {success: true, data}
     } catch (error) {
         const err = error as any
-        const message = err.message?.data?.error || 'Something went wrong.'
-        return {success:false, error: message, data: {}}
+        const message = err.response?.data?.error || "Something went wrong."
+        return {success: false, error: message, data: {}}
     }
 }
 

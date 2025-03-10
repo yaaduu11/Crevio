@@ -14,6 +14,7 @@ import ForgotPassword from "../pages/user/ForgotPassword";
 import NewPassword from "../pages/user/NewPassword";
 import Dashboard from "../pages/user/Dashboard";
 import Profile from "../pages/user/Profile";
+import Pricing from "../pages/user/Pricing";
 
 
 export const UserRoutes = () => {
@@ -61,6 +62,10 @@ export const UserRoutes = () => {
                 <Route
                     path={userRoutes.ABOUT}
                     element={<PrivateRoute> <About/> </PrivateRoute>}
+                />
+                <Route
+                    path={userRoutes.PRICING}
+                    element={<Pricing/>}
                 />
                 <Route
                     path={userRoutes.DASHBOARD}

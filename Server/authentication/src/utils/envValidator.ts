@@ -1,4 +1,3 @@
-import { errorMonitor } from "nodemailer/lib/xoauth2";
 import { env } from "../config/env";
 
 export default function envValidator() {

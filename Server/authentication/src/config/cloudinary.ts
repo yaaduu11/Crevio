@@ -13,7 +13,7 @@ function uploadToCloudinary(fileBuffer: Buffer): Promise<string> {
             {folder: 'profile_images', resource_type: 'image'},
             (error, result) => {
                 if(error) {
-                    reject(error);
+                    return reject(error);
                 }else if(result?.secure_url) {
                     resolve(result.secure_url)
                 }else{
@@ -25,7 +25,6 @@ function uploadToCloudinary(fileBuffer: Buffer): Promise<string> {
     })
 }
 
-export async function handleProfileImageUpload(fileBuffer: Buffer) {
-    const imageURL = await uploadToCloudinary(fileBuffer)
-    return imageURL
+export async function handleProfileImageUpload(fileBuffer: Buffer): Promise<string> {
+    return uploadToCloudinary(fileBuffer)
 }

@@ -9,7 +9,9 @@ export const userEndPoints = {
     GOOGLE_AUTH: '/auth/google-auth',
     FORGOT_PASSWORD: '/auth/forgot-password',
     NEW_PASSWORD: '/auth/new-password',
-    CHANGE_PROFILE: '/auth/change-profile',
+    CHANGE_PROFILE: '/auth/update-profile',
+    GET_PROFILE_IMAGE: '/auth/get-profile-image',
+    EDIT_USER_NAME: '/auth/edit-user-name',
     REFRESH_TOKEN: '/auth/refreshToken',
     LOGOUT: '/auth/logout'
 }

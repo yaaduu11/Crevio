@@ -8,11 +8,11 @@ const storage = multer.memoryStorage()
 
 export const upload = multer({
     storage,
-    limits: {fileSize:5 *1024 *1024},
-    fileFilter:(req, file, callbaack) => {
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter:(req, file, callback) => {
         if(!allowedFormats.includes(file.mimetype.split('/')[1])) {
-            return callbaack(generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INVALID_FILE_FORMAT))
+            return callback(generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INVALID_FILE_FORMAT))
         }
-        callbaack(null, true)
+        callback(null, true)
     }
 })

@@ -1,8 +1,10 @@
+import {ObjectId} from 'mongoose'
+
 interface UserSignupFormType {
     name: string;
     email: string;
     password: string;
-    role?: 'freelancer' | 'client' | 'admin' | 'none';
+    role?: 'freelancer' | 'client' | 'admin' | 'none' | '';
 }
 
 interface ErrorState {
@@ -16,11 +18,23 @@ type UserSignupFormAction =
     | { type: "SET_PASSWORD"; payload: string }
 
 
+export interface UserType {
+    _id?: ObjectId;
+    name?: string;
+    email: string;
+    password?: string;
+    profilePicture?: string;
+    role?: 'freelancer' | 'client' | 'admin';
+    isBlocked?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
 interface UserStoreType {
     _id: string;
     name: string;
     email: string;
-    role?: 'freelancer' | 'client' | 'admin' | 'none';
+    role?: 'freelancer' | 'client' | 'admin' | 'none' | '';
     accessToken : null;
 }
 

@@ -1,4 +1,4 @@
-import { GoogleAuthUserType, SigninResponse, UserType } from "../../types/Type";
+import { FileType, GoogleAuthUserType, SigninResponse, UserType } from "../../types/Type";
 
 export interface IUserService { 
     register(user: UserType): Promise<string>;
@@ -10,5 +10,8 @@ export interface IUserService {
     forgotPassword(email: string): Promise<void>;
     verifyOtpFp(otp: string, email:string): Promise<{user:UserType}>;
     newPassword(password:string, email:string): Promise<{user:UserType}>
+    updateProfile(id: string, profileImage: FileType | undefined): Promise<{user: UserType}>;
+    getProfileImage(userId: string): Promise<{user: UserType}>;
+    editUserName(userId:string, name: string): Promise<{ userName: string}>
     refreshToken(token: string): Promise<string>;
 }

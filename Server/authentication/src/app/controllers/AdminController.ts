@@ -3,8 +3,7 @@ import asyncHandler from "../../utils/asyncHandler";
 import { httpStatusCodes } from "../../constants/statusCodes";
 import { IAdminController } from "../../interfaces/admin/IAdminController";
 import { IAdminService } from "../../interfaces/admin/IAdminService";
-import { generateHttpError } from "../../utils/httpError";
-import { Messages } from "../../constants/messages";
+import { sendResponse } from "../../utils/responseModel";
 
 export class AdminController implements IAdminController {
     constructor(private adminService: IAdminService) {}
@@ -20,7 +19,7 @@ export class AdminController implements IAdminController {
                 sameSite: 'strict',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             })
-            res.status(httpStatusCodes.OK).json({sucess:true, accessToken, admin})
+            sendResponse(res, httpStatusCodes.OK, true, {accessToken, admin})
         })(req,res,next)
     }
 
@@ -29,7 +28,7 @@ export class AdminController implements IAdminController {
             const payload = JSON.parse(req.headers['x-user-payload'] as string); 
 
             const {freelancers} = await this.adminService.getFreelancers(payload.userId)
-            res.status(httpStatusCodes.OK).json({freelancers})
+            sendResponse(res, httpStatusCodes.OK, true, {freelancers})
         })(req,res,next)
     }
 
@@ -37,7 +36,7 @@ export class AdminController implements IAdminController {
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {
             const payload = JSON.parse(req.headers['x-user-payload'] as string)
             const {clients} = await this.adminService.getClients(payload.userId)
-            res.status(httpStatusCodes.OK).json({clients})
+            sendResponse(res, httpStatusCodes.OK, true, {clients})
         })(req,res, next)
     }
 
@@ -45,7 +44,7 @@ export class AdminController implements IAdminController {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {userId} = req.body
             await this.adminService.clientBlockUnblock(userId)
-            res.status(httpStatusCodes.OK).json({success:true})
+            sendResponse(res, httpStatusCodes.OK, true)
         })(req, res, next)
     }
 
@@ -53,7 +52,7 @@ export class AdminController implements IAdminController {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {userId} = req.body
             await this.adminService.freelancerBlockUnblock(userId)
-            res.status(httpStatusCodes.OK).json({success:true})
+            sendResponse(res, httpStatusCodes.OK, true)
         })(req, res, next)
     }
 
@@ -65,10 +64,7 @@ export class AdminController implements IAdminController {
                 secure: true,
                 sameSite: 'strict'
             });
-            
-            res.status(httpStatusCodes.OK).json({})
+            sendResponse(res, httpStatusCodes.OK, true)
         })(req,res,next)
     }
-
-    
 }

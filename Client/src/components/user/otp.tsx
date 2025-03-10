@@ -91,11 +91,13 @@ export function OtpForm({className, handleOtpVerification, successRoute, ApiType
         if(ApiType=='signup') {
           localStorage.removeItem("email");
           localStorage.setItem("accessToken", response.data.accessToken);
+          
           dispatch(setUser({
-              _id: response.user._id,
-              name: response.user.name,
-              email: response.user.email,
-              accessToken: response.accessToken,
+              _id: response.data.user._id,
+              name: response.data.user.name,
+              email: response.data.user.email,
+              role: response.data.user.role,
+              accessToken: response.data.accessToken,
           }))
         }
         setTimeout(() => {

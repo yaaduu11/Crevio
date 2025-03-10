@@ -27,7 +27,6 @@ export default function authMiddleware(req:Request, res: Response, next: NextFun
         if (error instanceof TokenExpiredError) {
             console.error("Token has expired");
             return res.status(401).json({error:'Token has expired'});
-
         } else if (error instanceof JsonWebTokenError) {
             console.error("Invalid token");
             return res.status(401).json({error:'Invalid token'});

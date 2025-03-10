@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { UserController } from '../controllers/UserController'
 import { UserService } from '../../services/UserService'
 import UserRepository from '../../repositories/UserRepository'
+import { upload } from '../../config/multer'
 
 const userService = new UserService(UserRepository)
 const userController = new UserController(userService)
@@ -55,6 +56,22 @@ router.patch(
 router.post(
     '/refreshToken',
     userController.refreshToken.bind(userController)
+)
+
+router.post(
+    '/update-profile',
+    upload.single("profileImage"),
+    userController.updateProfile.bind(userController)
+)
+
+router.get(
+    '/get-profile-image',
+    userController.getProfileImage.bind(userController)
+)
+
+router.patch(
+    '/edit-user-name',
+    userController.editUserName.bind(userController)
 )
 
 router.delete(
