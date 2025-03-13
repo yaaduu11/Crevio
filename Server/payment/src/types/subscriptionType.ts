@@ -1,7 +1,6 @@
-import { ObjectId, Document } from "mongoose";
+import { Document } from "mongoose";
 
 export interface SubscriptionType extends Document {
-  userId: ObjectId;
   planName: "Base" | "Standard" | "Extended";
   price: number;
   client_services: string[]; 

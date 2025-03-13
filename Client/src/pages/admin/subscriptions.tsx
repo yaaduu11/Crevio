@@ -28,12 +28,12 @@ const statuses: Status[] = [
 ]
 
 const Subscriptions = () => {
-    const [addPlanModal, setAddPlanModal] = useState(false)
+    const [editPlanModal, setEditPlanModal] = useState(false)
     const [selectedPlan, setSelectedPlan] = useState("");
 
     
-    const createSubscription = () => {
-      setAddPlanModal((prev) => !prev)
+    const editSubscription = () => {
+      setEditPlanModal((prev) => !prev)
     };
     
   return (
@@ -85,7 +85,7 @@ const Subscriptions = () => {
                         <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] rounded-l-2xl ">
                             View
                         </button>
-                        <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500">
+                        <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500" onClick={editSubscription}>
                             Edit
                         </button>
                         <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] rounded-r-2xl">
@@ -113,7 +113,7 @@ const Subscriptions = () => {
                         <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] rounded-l-2xl ">
                             View
                         </button>
-                        <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500">
+                        <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500" onClick={editSubscription}>
                             Edit
                         </button>
                         <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] rounded-r-2xl">
@@ -139,7 +139,7 @@ const Subscriptions = () => {
                         <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] rounded-l-2xl ">
                             View
                         </button>
-                        <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500">
+                        <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500" onClick={editSubscription}>
                             Edit
                         </button>
                         <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] rounded-r-2xl">
@@ -152,34 +152,17 @@ const Subscriptions = () => {
         </div>
       </div>
       
-      {addPlanModal && (
+      {editPlanModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black opacity-50"></div>
   
           <div className="relative flex flex-col w-full max-w-3xl gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn">
-              <h1 className='text-3xl cursor-pointer font-Montserrat text-end' onClick={createSubscription}>X</h1>
+              <h1 className='text-3xl cursor-pointer font-Montserrat text-end' onClick={editSubscription}>X</h1>
               <h1 className="mt-0 text-[1.75rem] font-bold text-center"> 
                 Add Subscription Plan
               </h1>
             
             <div className="flex flex-col gap-4 mt-4 mb-12 sm:flex-row">      
-                  <select
-                    id="name"
-                    name="name"
-                    required
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                    value={selectedPlan} // Controlled value
-                    onChange={(e) => setSelectedPlan(e.target.value)} // Update state
-                  >
-                    <option value="" disabled>
-                      Plan Name
-                    </option>
-                    <option value="basic">Basic</option>
-                    <option value="standard">Standard</option>
-                    <option value="extended">Extended</option>
-                  </select>
-
-
 
                   <Input
                     id="price"

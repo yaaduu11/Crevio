@@ -3,11 +3,11 @@ import { SubscriptionType } from "../types/subscriptionType";
 
 const SubscriptionPlanSchema = new Schema<SubscriptionType>(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    // userId: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
     planName: {
       type: String,
       enum: ["Base", "Standard", "Extended"],

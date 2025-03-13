@@ -54,7 +54,6 @@ Api.interceptors.response.use(
             const { status, data } = error.response;
 
             if (status === 403 && data.message === messages.USER_BLOCKED) {
-                console.log('yeah yeah');
                 
                 store.dispatch(removeUser());
                 return Promise.reject(error);
