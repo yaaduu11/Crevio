@@ -1,3 +1,5 @@
+import { ObjectId } from "mongoose";
+
 interface SigninResponse {
     accessToken: string;
     admin: UserTypes
@@ -18,5 +20,21 @@ type UserTypes = {
     updatedAt?: Date;
 }
   
+export interface SubscriptionPlanType {
+    _id?: ObjectId;
+    planName: string;
+    price: number;
+    client_services: string[]; 
+    freelancer_services: string[];
+    status: string,
+    createdAt?: Date;
+    updatedAt?: Date;
+ }
 
-export type {SigninResponse, SigninResult, GetFreelancers, UserTypes}
+type SubscriptionPlan = {
+    price: number;
+    client_services: string[]; 
+    freelancer_services: string[];
+}
+
+export type {SigninResponse, SigninResult, GetFreelancers, UserTypes, SubscriptionPlan}

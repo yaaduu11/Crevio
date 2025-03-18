@@ -1,6 +1,8 @@
 import Api from "../services/axios";
 import { adminEndPoints } from "../constants/endpointUrl";
 import { SigninResponse, UserTypes } from "../types/adminTypes";
+import { SubscriptionPlan } from "../types/adminTypes";
+
 
 const headers = {
     'X-User-Level': 'admin'
@@ -65,5 +67,30 @@ export const logout = async() => {
     } catch (error) {
         const message = "Something went wrong"
         return { success:false, error:message};
+    }
+}
+
+
+
+
+export const addSubscriptionPlan = async(formData: SubscriptionPlan) => {
+    try {
+        const {data} = await Api.post(adminEndPoints.ADD_PLAN, {formData}, {headers})
+        return {success:true, data} 
+    } catch (error) {
+        const err = error as any
+        const message = err.response?.data?.error || "Something went wrong"
+        return { success:false, error:message }
+    }
+}
+
+export const getAllPlans = async() => {
+    try {
+        const {data} = await Api.get(adminEndPoints.FETCH_PLANS, {headers})
+        return {success: true, data} as any
+    } catch (error) {
+        const err = error as any
+        const message = err.response?.data?.error || "Something went wrong"
+        return { success:false, error:message }
     }
 }

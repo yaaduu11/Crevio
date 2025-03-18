@@ -17,7 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger, } from '../../components/ui/alertDialog';
   
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 5;
 
 const Freelancers = () => {
   const [freelancers, setFreelancers] = useState<UserTypes[]>([])
@@ -26,6 +26,7 @@ const Freelancers = () => {
   const totalPages = Math.ceil(freelancers.length / ITEMS_PER_PAGE);
   const [blockLoading, setBlockLoading]= useState<{ [key: string]: boolean }>({});
   const [showAlert, setShowAlert] = useState(false)
+  const [refresh, setRefresh] = useState(false);
   const {toast} = useToast()
 
 
@@ -57,11 +58,12 @@ const Freelancers = () => {
             duration: 1000
           })
           
-          setFreelancers(prevFreelancers =>
-            prevFreelancers.map(freelancer =>
-              freelancer._id === userId ? { ...freelancer, isBlocked: !freelancer.isBlocked } : freelancer
-            )
-          );
+          // setFreelancers(prevFreelancers =>
+          //   prevFreelancers.map(freelancer =>
+          //     freelancer._id === userId ? { ...freelancer, isBlocked: !freelancer.isBlocked } : freelancer
+          //   )
+          // );
+          setRefresh(prev => !prev); 
         }else{
           toast({
             variant: 'destructive',
@@ -86,7 +88,7 @@ const Freelancers = () => {
       }
     }
     getFreelancers()
-  },[]);
+  },[refresh]);
   
   return (
       <div className="flex h-screen">

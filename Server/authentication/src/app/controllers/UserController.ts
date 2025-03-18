@@ -4,6 +4,9 @@ import { httpStatusCodes } from "../../constants/statusCodes";
 import { IUserController } from "../../interfaces/user/IUserController";
 import { IUserService } from "../../interfaces/user/IUserService";
 import { GoogleAuthUserType } from "../../types/Type";
+import { env } from "../../config/env";
+import jwt from "jsonwebtoken";
+import { redisClient } from "../../config/redis";
 import { Messages } from "../../constants/messages";
 
 export class UserController implements IUserController{
@@ -153,12 +156,22 @@ export class UserController implements IUserController{
     }
 
     logout(req: Request, res: Response, next: NextFunction): Promise<void> {
-        return asyncHandler(async(req:Request, res:Response): Promise<void> => {            
+        return asyncHandler(async(req:Request, res:Response): Promise<void> => {      
+            const refreshToken = req.cookies?.refreshToken;
+        
+            if (refreshToken) {
+                const decoded = jwt.verify(refreshToken, env.JWT_REFRESH_TOKEN_SECRET as string) as { userId: string };
+                if (decoded?.userId) {
+                    await redisClient.del(decoded.userId);
+                }
+            }
+
             await res.clearCookie("refreshToken", {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict'
-            });            
+            });
+                     
             res.status(httpStatusCodes.OK).json({ success:true })
         })(req,res,next)
     }

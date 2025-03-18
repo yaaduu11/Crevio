@@ -11,7 +11,7 @@ class UserRepository implements IUserRepository {
             return userData 
         }catch (err) {
             console.error(err);
-            throw new Error("Error when crea    ting the user");
+            throw new Error("Error when creating the user");
         }
     }
 

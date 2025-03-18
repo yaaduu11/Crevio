@@ -7,5 +7,9 @@ export const env = {
 
     get MONGO_URI() {
         return process.env.MONGO_URI
+    },
+
+    get STRIPE_SECRET_KEY() {
+        return process.env.STRIPE_SECRET_KEY
     }
 }

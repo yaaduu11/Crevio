@@ -36,6 +36,7 @@ interface UserStoreType {
     email: string;
     role?: 'freelancer' | 'client' | 'admin' | 'none' | '';
     accessToken : null;
+    showToast? : null
 }
 
 export type { UserStoreType, UserSignupFormAction, UserSignupFormType, ErrorState}

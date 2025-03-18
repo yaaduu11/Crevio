@@ -4,6 +4,8 @@ import store from "../redux/storage";
 import { removeUser, setUser } from "../redux/userSlice";
 import { removeAdmin, setAdmin } from "../redux/adminSlice";
 import messages from "../constants/messages";
+import { useToast } from "../hooks/use-toast";
+
 
 const refreshToken = async(userLevel: "user" | "admin") => {
     const {data} = await Api.post(userEndPoints.REFRESH_TOKEN, {}, {withCredentials: true}) as any
@@ -53,9 +55,7 @@ Api.interceptors.response.use(
         if (error.response) {            
             const { status, data } = error.response;
 
-            if (status === 403 && data.message === messages.USER_BLOCKED) {
-                console.log('yeah yeah');
-                
+            if (status === 403 || data.message === messages.USER_BLOCKED) {
                 store.dispatch(removeUser());
                 return Promise.reject(error);
             }

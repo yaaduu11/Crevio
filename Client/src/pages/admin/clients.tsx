@@ -16,7 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger, } from '../../components/ui/alertDialog';
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 5;
 
 
 const Clients = () => {
@@ -26,6 +26,7 @@ const Clients = () => {
   const [blockLoading, setBlockLoading]= useState<{ [key: string]: boolean }>({});
   const [showAlert, setShowAlert] = useState(false)
   const totalPages = Math.ceil(clients.length / ITEMS_PER_PAGE);
+  const [refresh, setRefresh] = useState(false);
   const {toast} = useToast()
 
   const handlePageChange = (newPage:number) => {
@@ -56,11 +57,12 @@ const Clients = () => {
           duration: 2000
         })
         
-        setClients(prevClients =>
-          prevClients.map(client =>
-            client._id === userId ? { ...client, isBlocked: !client.isBlocked } : client
-          )
-        );
+        // setClients(prevClients =>
+        //   prevClients.map(client =>
+        //     client._id === userId ? { ...client, isBlocked: !client.isBlocked } : client
+        //   )
+        // );
+        setRefresh(prev => !prev); 
       }else{
         toast({
           variant: 'destructive',
@@ -85,7 +87,7 @@ const Clients = () => {
       }
     }
     getClients()
-  },[]);
+  },[refresh]);
     
   return (
     <div className="flex h-screen">

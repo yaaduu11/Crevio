@@ -116,9 +116,6 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
         });
 
         if (response.success) {
-          const accessToken = (response.data as { accessToken: string }).accessToken;
-          localStorage.setItem("accessToken", accessToken);
-          console.log(response.user);
            reduxDispatch(setUser({
               _id: response.data.user._id,
               name: response.data.user.name,

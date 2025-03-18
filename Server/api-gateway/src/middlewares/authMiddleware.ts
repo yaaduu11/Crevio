@@ -2,13 +2,16 @@ import Jwt, { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { env } from "../config/envValidator";
 import { isPublic } from "../utils/publicRoutes";
+import { initializeRedisClient } from "../config/redis";
 
+const redisClient = initializeRedisClient();
 
-export default function authMiddleware(req:Request, res: Response, next: NextFunction): void | Response {
+export default async function authMiddleware(req:Request, res: Response, next: NextFunction): Promise<void | Response> {
     try {
         if(isPublic(req)) {
             return next()
         }
+
         const authHeader = req.headers.authorization;
         if(!authHeader){
             return res.status(401).json({error: 'No token provided.'})
@@ -19,9 +22,16 @@ export default function authMiddleware(req:Request, res: Response, next: NextFun
             return res.status(401).json({error: 'No token provided.'})
         }
 
-        const payload = Jwt.verify(token, env.JWT_ACCESS_TOKEN_SECRET as string)
+        const payload = Jwt.verify(token, env.JWT_ACCESS_TOKEN_SECRET as string) as { userId: string };
+        req.headers["x-user-payload"] = JSON.stringify(payload);
 
-        req.headers['x-user-payload'] = JSON.stringify(payload)
+        const { userId } = payload;
+
+        const isBlocked = await redisClient.get(userId);
+        if (isBlocked) {
+            return res.status(403).json({ error: "You are blocked from Crevio." });
+        }
+
         next()
     } catch (error) {
         if (error instanceof TokenExpiredError) {

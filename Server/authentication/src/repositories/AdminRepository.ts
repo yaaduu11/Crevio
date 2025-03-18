@@ -1,7 +1,6 @@
 import { IAdminRepository } from "../interfaces/admin/IAdminRepository";
 import { UserType } from "../types/Type";
 import User from "../models/UserSchema";
-import e from "express";
 import { ObjectId } from "mongoose";
 
 class AdminRepository implements IAdminRepository {

@@ -11,8 +11,16 @@ export const env = {
         return process.env.AUTH
     },
 
+    get PAYMENT() {
+        return process.env.PAYMENT
+    },
+
     get CLIENT_PORT() {
         return process.env.CLIENT_PORT
+    },
+
+    get REDIS_URI() {
+        return process.env.REDIS_URI
     },
 
     get JWT_ACCESS_TOKEN_SECRET() {
@@ -29,8 +37,16 @@ export function envValidator() {
         throw new Error("AUTH is not found in env")
     }
 
+    if(!env.PAYMENT) {
+        throw new Error("PAYMENT is not found in env")
+    }
+
     if(!env.CLIENT_PORT) {
         throw new Error('CLIENT PORT is not found in env')
+    }
+
+    if(!env.REDIS_URI) {
+        throw new Error('REDIS_URI is not found in env')
     }
 
     if(!env.JWT_ACCESS_TOKEN_SECRET) {

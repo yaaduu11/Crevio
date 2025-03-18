@@ -71,7 +71,7 @@ export class UserService implements IUserService {
         const user = await this.userRepository.create(userObject)
 
         const accessToken = await generateAccessToken(user._id as ObjectId)
-        const refreshToken = await generateRefreshToken(user._id as ObjectId)
+        const refreshToken = await generateRefreshToken(user._id as ObjectId)  
 
         return {accessToken, refreshToken, user}
     }

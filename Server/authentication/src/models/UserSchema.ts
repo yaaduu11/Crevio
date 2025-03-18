@@ -4,7 +4,7 @@ import { UserType } from "../types/Type";
 const userSchema: Schema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true  
     },
     email: {
         type: String,
@@ -29,8 +29,8 @@ const userSchema: Schema = new Schema({
     },
     subscriptionType: {
         type: String,
-        enum: ['basic', 'standad', 'extended', 'none'],
-        default: 'none'
+        enum: ['Basic', 'Standard', 'Extended', 'None'],
+        default: 'None'
     }
 }, { timestamps: true })
 

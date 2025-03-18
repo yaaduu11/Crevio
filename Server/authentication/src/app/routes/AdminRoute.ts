@@ -8,34 +8,12 @@ const adminController = new AdminController(adminService)
 
 const router = Router()
 
-router.post(
-    '/login',
-    adminController.signin.bind(adminController)
-)
-
-router.get(
-    '/get-freelancers',
-    adminController.getFreelancers.bind(adminController)
-)
-
-router.get(
-    '/get-clients',
-    adminController.getClients.bind(adminController)
-)
-
-router.patch(
-    '/client-block-unblock',
-    adminController.clientBlockUnblock.bind(adminController)
-)
-
-router.patch(
-    '/freelancer-block-unblock',
-    adminController.freelancerBlockUnblock.bind(adminController)
-)
-
-router.delete(
-    '/logout',
-    adminController.logout.bind(adminController)
-)
+router
+    .post('/login', adminController.signin.bind(adminController))
+    .get('/freelancers', adminController.getFreelancers.bind(adminController))
+    .get('/clients', adminController.getClients.bind(adminController))
+    .patch('/clients/toggle-status', adminController.clientBlockUnblock.bind(adminController))
+    .patch('/freelancers/toggle-status', adminController.freelancerBlockUnblock.bind(adminController))
+    .delete('/logout', adminController.logout.bind(adminController));
 
 export default router

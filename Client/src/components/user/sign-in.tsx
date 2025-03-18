@@ -55,13 +55,12 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
     try {
       const response = await login(formData.email, formData.password);
 
-      if (response.success) {
-        localStorage.setItem('accessToken', response.data.accessToken);
-        
+      if (response.success) {        
         dispatch(setUser({
           _id: response.data.user._id,
           name: response.data.user.name,
           email: response.data.user.email,
+          role: response.data.user.role,
           accessToken: response.data.accessToken,
         }))
         
@@ -98,7 +97,6 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
 
         if (response.success) {
           const accessToken = (response.data as { accessToken: string }).accessToken;
-          localStorage.setItem("accessToken", accessToken);
           dispatch(setUser({
               _id: response.data.user._id,
               name: response.data.user.name,

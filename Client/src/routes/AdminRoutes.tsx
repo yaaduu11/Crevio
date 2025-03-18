@@ -33,7 +33,7 @@ export const AdminRoutes = ()=>{
                 />
                 <Route
                     path={adminRoutes.SUBSCRIPTIONS}
-                    element={<PrivateRoute> <Subscriptions/> </PrivateRoute>}
+                    element={<PrivateRoute> <Subscriptions/> </PrivateRoute> }
                 />
                 <Route
                     path={adminRoutes.FREELANCERS}

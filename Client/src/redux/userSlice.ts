@@ -6,7 +6,8 @@ const initialState : UserStoreType = {
     name : '',
     email : '',
     role : '',
-    accessToken : null
+    accessToken : null,
+    showToast: null
 }
 
 const userSlice = createSlice({
@@ -18,7 +19,7 @@ const userSlice = createSlice({
         },
         removeUser:() => {
             return initialState
-        }
+        },
     }
 })
 

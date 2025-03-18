@@ -7,6 +7,7 @@ import { generateHttpError } from "../utils/httpError";
 import { httpStatusCodes } from "../constants/statusCodes";
 import { Messages } from "../constants/messages";
 import { UserType } from '../types/Type';
+import { redisClient } from '../config/redis';
 
 
 export class AdminService implements IAdminService {
@@ -55,6 +56,11 @@ export class AdminService implements IAdminService {
         }
         client.isBlocked = !client.isBlocked;        
         await this.adminRepository.save(client)
+        if(client.isBlocked) {
+            if(client._id) await redisClient.set(client._id.toString(), JSON.stringify(client.isBlocked)) 
+        }else{
+            if(client._id) await redisClient.del(client._id.toString()) 
+        }
     }
 
     async freelancerBlockUnblock(userId: string): Promise<void> {
@@ -64,5 +70,10 @@ export class AdminService implements IAdminService {
         }
         freelancer.isBlocked = !freelancer.isBlocked
         await this.adminRepository.save(freelancer)
+        if(freelancer.isBlocked) {
+            if(freelancer._id) await redisClient.set(freelancer._id.toString(), JSON.stringify(freelancer.isBlocked)) 
+        }else{
+            if(freelancer._id) await redisClient.del(freelancer._id.toString()) 
+        }
     }
 }
