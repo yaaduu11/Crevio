@@ -65,7 +65,7 @@ export const UserRoutes = () => {
                 />
                 <Route
                     path={userRoutes.PRICING}
-                    element={<Pricing/>}
+                    element={<PrivateRoute> <Pricing/> </PrivateRoute>}
                 />
                 <Route
                     path={userRoutes.DASHBOARD}

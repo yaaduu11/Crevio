@@ -13,7 +13,9 @@ export const userEndPoints = {
     GET_PROFILE_IMAGE: '/auth/profile-image',
     EDIT_USER_NAME: '/auth/edit-user-name',
     REFRESH_TOKEN: '/auth/refreshToken',
-    LOGOUT: '/auth/logout'
+    LOGOUT: '/auth/logout',
+
+    STRIPE_CHECKOUT: '/payment/pricing/checkout'
 }
 
 export const adminEndPoints = {

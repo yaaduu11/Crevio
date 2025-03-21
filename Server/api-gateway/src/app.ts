@@ -1,10 +1,8 @@
 import express from 'express'
 import dotenv from "dotenv"
 import morgan from 'morgan'
-import { env, envValidator } from './config/envValidator'
-import { corsMiddleware } from './middlewares/cors'
-import { setupProxies } from './middlewares/proxy'
-import authMiddleware from './middlewares/authMiddleware'
+import { env, envValidator } from './config'
+import { authMiddleware, corsMiddleware, setupProxies } from './middlewares'
 
 dotenv.config()
 envValidator()

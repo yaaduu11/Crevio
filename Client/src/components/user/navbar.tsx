@@ -60,10 +60,14 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
               <button 
                 key={page} 
                 onClick={() => navigate(pageRoutes[page])} 
-                className={`relative inline-block text-md font-medium text-[#09573f] font-Montserrat ${pageFocus(page)} ${
-                  !isCurrentPage &&
-                  "after:content-[''] after:block after:h-[0.5px] after:bg-[#09573f] after:w-0 after:absolute after:bottom-0 after:left-1/2 after:transition-all after:duration-700 after:ease-out after:origin-center after:-translate-x-1/2 hover:after:w-full"
+                // className={`relative inline-block text-md font-medium text-[#09573f] font-Montserrat ${pageFocus(page)} ${
+                //   !isCurrentPage &&
+                //   "after:content-[''] after:block after:h-[0.5px] after:bg-[#09573f] after:w-0 after:absolute after:bottom-0 after:left-1/2 after:transition-all after:duration-700 after:ease-out after:origin-center after:-translate-x-1/2 hover:after:w-full"
+                // }`}
+                className={`relative inline-block text-md font-medium text-[#09573f] font-Montserrat ${pageFocus(page)} after:content-[''] after:block after:h-[0.5px] after:bg-[#09573f] after:absolute after:bottom-0 after:left-1/2 after:transition-all after:duration-700 after:ease-out after:origin-center after:-translate-x-1/2 ${
+                  isCurrentPage ? "after:w-full" : "after:w-0 hover:after:w-full"
                 }`}
+                
               >
                 {page}
               </button>

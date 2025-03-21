@@ -25,6 +25,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.5.1",
+    "@stripe/stripe-js": "^6.1.0",
     "@types/react-router-dom": "^5.3.3",
     "@types/redux-persist": "^4.0.0",
     "axios": "^1.7.9",

@@ -27,6 +27,7 @@ export interface SubscriptionPlanType {
     client_services: string[]; 
     freelancer_services: string[];
     status: string,
+    most_popular: boolean;
     createdAt?: Date;
     updatedAt?: Date;
  }

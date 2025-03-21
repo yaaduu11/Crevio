@@ -4,13 +4,11 @@ dotenv.config()
 import express, {Application} from 'express'
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import { env } from './config/env';
-import envValidator from './utils/envValidator';
+import { connectDB, initializeRedisClient, env } from './config';
+import {envValidator} from './utils';
 
-import connectDB from './config/mongodb';
-import { initializeRedisClient } from './config/redis';
-import userRouter from './app/routes/UserRoute';
-import adminRouter from './app/routes/AdminRoute'
+import userRouter from './routes/user.router';
+import adminRouter from './routes/admin.router'
 
 class App {
     public app: Application;

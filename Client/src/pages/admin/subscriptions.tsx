@@ -158,9 +158,9 @@ const Subscriptions = () => {
                             View
                           </button>
 
-                          <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500" onClick={editSubscription}>
+                          {/* <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500" onClick={editSubscription}>
                               Edit
-                          </button>
+                          </button> */}
                           <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] rounded-r-2xl">
                               {plan.status == 'Listed'? 'Unlist': 'List'}
                           </button>

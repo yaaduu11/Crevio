@@ -4,9 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { SubscriptionPlanType } from '../../types/adminTypes';
 import { getAllPlans } from '../../api/admin';
+import { handleCheckout } from '../../api/user';
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/storage";
 
 const PricingDetails = () => {
     const [plans, setPlans] = useState<SubscriptionPlanType[]>()
+    const user = useSelector((state: RootState) => state.user);
     
     useEffect(() => {
         const getPlans = async() => {
@@ -30,10 +34,15 @@ const PricingDetails = () => {
       </p>
       <div className="flex justify-center gap-6 mt-8">
         {plans?.map((plan, index) => (
-            <Card className="relative p-6 text-center border border-gray-300 w-80">
+            <Card className={`relative p-6 text-center border  w-80 ${plan.most_popular? 'border-yellow-400': 'border-gray-300' }`}>
             <div className="absolute px-2 py-1 text-xs font-semibold text-gray-700 bg-gray-200 rounded-md top-3 left-3">
                 {plan.planName}
             </div>
+            {plan.most_popular &&
+            <div className="absolute px-3 py-2 text-sm text-white bg-yellow-400 rounded-md right-5 -top-3">
+                Most Popular
+            </div>
+            }
             <CardHeader>
                 <p className="text-4xl font-normal text-black">
                     ₹{plan.price}<span className="text-base font-normal text-black">/month</span>
@@ -53,15 +62,14 @@ const PricingDetails = () => {
                         <span className="mr-2"><FontAwesomeIcon icon={faCheck} className="text-xl text-green-600" /></span>
                         {plan.client_services[2]}
                     </li>
-                    {/* <li className="flex items-center">
-                        <span className="mr-2"><FontAwesomeIcon icon={faCheck} className="text-xl text-green-600" /></span>
-                        {plan.client_services[0]}
-                    </li> */}
                 </ul>
             </CardContent>
             <CardFooter>
-                <button className="w-full px-4 py-2 text-green-700 border border-green-700 rounded-md hover:bg-green-100">
-                Go Premium
+                <button
+                    className={`w-full px-4 py-2 rounded-md ${plan.most_popular? 'text-white bg-[#1a664f] hover:bg-[#145240]' : 'text-green-700 border border-green-700 hover:bg-green-100'}`}
+                    onClick={() => handleCheckout(plan._id, plan.price, user._id)}
+                >
+                    Go Premium
                 </button>
             </CardFooter>
             </Card>

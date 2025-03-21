@@ -1,0 +1,63 @@
+import { IUserRepository } from "../interface/user-repository.interface";
+import { UserType } from "../../types";
+import User from '../../models/user.model'
+
+class UserRepository implements IUserRepository {
+
+    async create(user: UserType): Promise<UserType> {
+        try{
+            const userData = await User.create(user)
+            return userData 
+        }catch (err) {
+            console.error(err);
+            throw new Error("Error when creating the user");
+        }
+    }
+
+    async findByEmail(email: string): Promise<UserType | null> {
+        try {
+            const data = await User.findOne({email})
+            return data;
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error when finding the user by email");
+        }
+    }
+
+    async findById(Id: string): Promise<UserType | null> {
+        try {
+            const data = await User.findById(Id)
+            return data;
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error when finding the user by id");
+        }
+    }
+
+    async findUserRole(email: string): Promise<boolean> {
+        const data = await User.findOne({email})
+        if(data?.role !== 'freelancer' && data?.role !=='client' && data?.role !== 'admin') return true
+        return false
+    }
+
+    async updateUserRole(email: string, role: string): Promise<void> {
+        try {
+            await User.updateOne({ email }, { $set: { role } });
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error when updating the user's role");
+        }
+    }
+
+    async updateUser(user: UserType): Promise<void> {
+        try {
+            await User.findByIdAndUpdate(user._id, user)
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error when updating the user");
+        }
+    }
+    
+}
+
+export default new UserRepository

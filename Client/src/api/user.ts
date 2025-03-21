@@ -1,6 +1,7 @@
 import Api from "../services/axios";
 import { userEndPoints } from "../constants/endpointUrl";
 import { UserSignupFormType,UserType } from "../types/userTypes";
+import { ObjectId } from "mongoose";
 
 const headers= {
     'X-User-Level': 'user'
@@ -158,4 +159,16 @@ export const userLogout = async() =>{
 
 
 
-
+export const handleCheckout = async (planId: ObjectId | undefined, amount: number, userId: string) => {
+    try {
+      const {data} =  await Api.post<{ url: string }>(userEndPoints.STRIPE_CHECKOUT, {planId, amount, userId}, {headers})
+  
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+        const err = error as any
+        const message = err.respose?.data?.error || "Something went wrong"
+        return { success:false, error:message };
+    }
+};
