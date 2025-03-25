@@ -279,6 +279,39 @@ export class UserService implements IUserService {
         return {userDetails}
     }
 
+    async updateMoreInfo(userId: string, userData: Partial<IFreelancerDetail>): Promise<{ userDetails: Partial<IFreelancerDetail> }> {
+        const user = await this.userRepository.findById(userId);
+        if (!user) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND);
+        }
+    
+        const existingDetails = await this.userRepository.findDetailsByUserId(userId);
+        if (!existingDetails) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, "Freelancer details not found.");
+        }
+    
+        const updatedData: Partial<IFreelancerDetail> = {
+            profession: userData.profession ?? existingDetails.profession,
+            company: userData.company ?? existingDetails.company,
+            qualification: userData.qualification ?? existingDetails.qualification,
+            bio: userData.bio ?? existingDetails.bio,
+            work_experience: userData.work_experience ?? existingDetails.work_experience,
+            proficient_languages: userData.proficient_languages ?? existingDetails.proficient_languages,
+            skills: userData.skills ?? existingDetails.skills,
+            working_days: userData.working_days ?? existingDetails.working_days,
+            active_hours: userData.active_hours ?? existingDetails.active_hours,
+            basic_price: userData.basic_price ?? existingDetails.basic_price,
+            standard_price: userData.standard_price ?? existingDetails.standard_price,
+            premium_price: userData.premium_price ?? existingDetails.premium_price,
+            portfolio: userData.portfolio ?? existingDetails.portfolio,
+            linkedin: userData.linkedin ?? existingDetails.linkedin,
+            twitter: userData.twitter ?? existingDetails.twitter,
+        };
+    
+        const userDetails = await this.userRepository.updateMoreInfo(userId, updatedData);
+        return { userDetails };
+    }    
+
     async getMoreInfo(userId: string): Promise<{ userDetails: IFreelancerDetail }> {
         const userDetails = await this.userRepository.findDetailsByUserId(userId)
         if(!userDetails) {

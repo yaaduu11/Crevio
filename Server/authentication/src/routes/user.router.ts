@@ -25,6 +25,7 @@ router
     .get('/profile-image', userController.getProfileImage.bind(userController))
     .patch('/edit-user-name', userController.editUserName.bind(userController))
     .post('/add-more-info', userController.addMoreInfo.bind(userController))
+    .patch('/update-more-info', userController.updateMoreInfo.bind(userController))
     .get('/more-info', userController.getMoreInfo.bind(userController))
     .delete('/logout', userController.logout.bind(userController));
 

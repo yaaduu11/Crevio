@@ -1,17 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import { User, Mail, MapPin, Briefcase, Calendar, Link as LinkIcon } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
-import { changeProfile, editUserName, freelancerAddMoreInfo, getProfileImage } from '../../api/user';
+import { changeProfile, editUserName, freelancerAddMoreInfo, getProfileImage, getMoreInfo_F, updateFreelancerInfo } from '../../api/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/storage';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/userSlice';
 import { IFreelancerDetail, UserType } from '../../types/user.type';
-import { getMoreInfo_F } from '../../api/user';
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-
 
 interface ProfileProps {
   user: {
@@ -19,7 +15,6 @@ interface ProfileProps {
     email: string;
   };
 }
-
 
 const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
   const [fetchedUser, setFetchedUser] = useState<UserType>({} as UserType)
@@ -57,7 +52,6 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
     twitter: freelancerDetails?.twitter || '',
   });
   
-  
   useEffect(() => {
     const getProfile = async() =>{
        try {
@@ -87,7 +81,31 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
       }
     }
     getMoreDetails()
-  }, [profileImage])  
+  }, [])  
+  
+  useEffect(() => {
+    setFormData({
+      user_id: freelancerDetails?.user_id || '',
+      profession: freelancerDetails?.profession || '',
+      company: freelancerDetails?.company || '',
+      qualification: freelancerDetails?.qualification || '',
+      bio: freelancerDetails?.bio || '',
+      work_experience: freelancerDetails?.work_experience || '',
+      proficient_languages: freelancerDetails?.proficient_languages || [],
+      skills: freelancerDetails?.skills || [],
+      working_days: freelancerDetails?.working_days || '',
+      active_hours: freelancerDetails?.active_hours || '',
+      basic_price: freelancerDetails?.basic_price || 0,
+      standard_price: freelancerDetails?.standard_price || 0,
+      premium_price: freelancerDetails?.premium_price || 0,
+      portfolio: freelancerDetails?.portfolio || '',
+      linkedin: freelancerDetails?.linkedin || '',
+      twitter: freelancerDetails?.twitter || '',
+    });
+  
+    setLanguages(freelancerDetails?.proficient_languages || []);
+    setSkills(freelancerDetails?.skills || []);
+  }, [freelancerDetails]);  
     
   const HandleAddMoreInfoModal = () => {
     setAddMoreInfoModal((prev) => !prev)
@@ -118,10 +136,11 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
   const handleEditClick = () => {
     if (freelancerDetails) {
       setFormData(freelancerDetails);
-      setAddMoreInfoModal(true); 
+      setLanguages(freelancerDetails.proficient_languages || []);
+      setSkills(freelancerDetails.skills || []);
+      setAddMoreInfoModal(true);
     }
   };
-  
   
   const handleEditName = async() => {
     if (isEditing && editedName) {
@@ -153,7 +172,6 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
     }
   };
   
-
   const handleProfileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     
@@ -191,6 +209,10 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
       const response = await changeProfile(formData)              
       if (response.success) {
         setProfileImage(response.data.user.profilePicture)
+        setFetchedUser((prev) => ({
+          ...prev,
+          profilePicture: response.data.user.profilePicture
+        }));
         toast({
           variant: "success",
           description: "Profile successfully updated",
@@ -209,7 +231,8 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
     
     const formData = new FormData(event.target as HTMLFormElement);
 
-    const freelancerDetails = {
+    const freelancerDetailsData = {
+      user_id: freelancerDetails?.user_id || '',
       profession: formData.get("profession") as string,
       company: formData.get("company") as string,
       qualification: formData.get("qualification") as string,
@@ -226,18 +249,38 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
       linkedin: formData.get("linkedin") as string,
       twitter: formData.get("twitter") as string,
     };
-    
-    console.log("Submitting data:", freelancerDetails);
-    
+        
     try {
-      const response = await freelancerAddMoreInfo(freelancerDetails)
+      let response;
+      if (freelancerDetails?.user_id) {
+        response = await updateFreelancerInfo(freelancerDetailsData);  
+      } else {
+        response = await freelancerAddMoreInfo(freelancerDetailsData);
+      }
       if(response.success){
         setFreelancerDetails(response.data.userDetails)
+        setAddMoreInfoModal(false)
+        toast({
+          variant: "success",
+          description: freelancerDetails?.user_id 
+            ? "Profile updated successfully" 
+            : "Profile created successfully",
+          duration: 2500,
+        });
       }else{
-        alert('failed')
+        toast({
+          variant: "destructive",
+          description: "Failed to save details. Please try again.",
+          duration: 3000,
+        });
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
+      toast({
+        variant: "destructive",
+        description: "Something went wrong! Please try again.",
+        duration: 3000,
+      });
     }
   }
     
@@ -307,46 +350,42 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
                 <Mail className="w-4 h-4 mr-2 text-gray-400" />
                   <span>{fetchedUser.email}</span>
               </div>
-              
-              {/* <div className="flex items-center text-sm text-gray-600">
-                <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-                <span>{user.name}</span>
-              </div>
-             
-              <div className="flex items-center text-sm text-gray-600">
-                <Briefcase className="w-4 h-4 mr-2 text-gray-400" />
-                <span>{user.role}</span>
-              </div> */}
                
               <div className="flex items-center text-sm text-gray-600">
                 <Calendar className="w-4 h-4 mr-2 text-gray-400" />
                 <span>Joined  <span className='ml-1 font-semibold'>{fetchedUser.createdAt? new Date(fetchedUser.createdAt).toLocaleDateString(): 'N/A'} </span></span>
               </div>
               
-              {/* {user.website && (
-                <div className="flex items-center text-sm text-gray-600">
-                  <LinkIcon className="w-4 h-4 mr-2 text-gray-400" />
-                  <a href={user.website} className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
-                    {user.website.replace(/(^\w+:|^)\/\//, '')}
+              {freelancerDetails.user_id && <div>
+                <div className="flex flex-col gap-2 mt-2">
+                  <a href={freelancerDetails.portfolio} target="_blank" className="flex items-center font-semibold text-blue-500 hover:underline">
+                    <LinkIcon className="w-4 h-4 mr-2 text-gray-400" />
+                    Portfolio
+                  </a>
+                  <a href={freelancerDetails.linkedin} target="_blank" className="flex items-center font-semibold text-blue-500 hover:underline">
+                    <LinkIcon className="w-4 h-4 mr-2 text-gray-400" />
+                    LinkedIn
+                  </a>
+                  <a href={freelancerDetails.twitter} target="_blank" className="flex items-center font-semibold text-blue-500 hover:underline">
+                    <LinkIcon className="w-4 h-4 mr-2 text-gray-400" />
+                    Twitter
                   </a>
                 </div>
-              )} */}
+              </div>}
+              
+              
             </div>
-            
-            {/* <div className="mt-6">
-              <h3 className="mb-2 text-lg font-medium text-gray-800">Bio</h3>
-              <p className="text-sm text-gray-600">{user.bio}</p>
-            </div> */}
           </div>
         </div>
         
-        <div className="lg:col-span-3">
+        {freelancerDetails.user_id? 
+        (<div className="lg:col-span-3">
           <div className="p-6 bg-white rounded-lg shadow-md">
             <div className="flex items-center justify-between pb-4 border-b">
               <h2 className="text-xl font-semibold text-gray-800">Freelancer Details</h2>
-              <span className="px-3 py-1 text-sm font-medium text-white bg-green-500 rounded">
+              {/* <span className="px-3 py-1 text-sm font-medium text-white bg-green-500 rounded">
                 Available
-              </span>
+              </span> */}
             </div>
 
             <div className="mt-4 space-y-4">
@@ -404,26 +443,30 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <h3 className="text-lg font-medium text-gray-700 underline">Social Profiles</h3>
-                <div className="flex gap-4 mt-2">
-                  <a href={freelancerDetails.portfolio} target="_blank" className="text-blue-500 hover:underline">
+                <div className="flex flex-col gap-2 mt-2">
+                  <a href={freelancerDetails.portfolio} target="_blank" className="flex items-center font-semibold text-blue-500 hover:underline">
+                    <LinkIcon className="w-4 h-4 mr-2 text-gray-400" />
                     Portfolio
                   </a>
-                  <a href={freelancerDetails.linkedin} target="_blank" className="text-blue-500 hover:underline">
+                  <a href={freelancerDetails.linkedin} target="_blank" className="flex items-center font-semibold text-blue-500 hover:underline">
+                    <LinkIcon className="w-4 h-4 mr-2 text-gray-400" />
                     LinkedIn
                   </a>
-                  <a href={freelancerDetails.twitter} target="_blank" className="text-blue-500 hover:underline">
+                  <a href={freelancerDetails.twitter} target="_blank" className="flex items-center font-semibold text-blue-500 hover:underline">
+                    <LinkIcon className="w-4 h-4 mr-2 text-gray-400" />
                     Twitter
                   </a>
                 </div>
-              </div>
+              </div> */}
+
             </div>
           </div>
-        </div>
+        </div>)
+        : ('')
+        }
 
-        
-        
         {/* <div className="space-y-6 lg:col-span-1">
           <div className="w-3/4 p-6 bg-white rounded-lg shadow">
             <h2 className="mb-4 text-xl font-semibold text-gray-800">Recent Activity</h2>
@@ -462,12 +505,12 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
         </div> */}
       </div>
       
-      {<div className='flex justify-end mt-5'>
+      {fetchedUser.role=='freelancer' && <div className='flex justify-end mt-5'>
         <button
           className="h-8 px-4 text-white bg-black border border-black rounded-md w-fit hover:bg-gray-900"
-          onClick={freelancerDetails ? handleEditClick : HandleAddMoreInfoModal}
+          onClick={freelancerDetails.user_id ? handleEditClick : HandleAddMoreInfoModal}
         >
-          {freelancerDetails ? "Edit" : "Add More Info"}
+          {freelancerDetails.user_id ? "Edit" : "Add More Info"}
         </button>
       </div>}
       
@@ -540,7 +583,6 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    {/* Languages */}
                     <div>
                       <div className="flex gap-2">
                         <input
@@ -559,7 +601,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
                         </button>
                       </div>
                       <div className="flex flex-wrap gap-2 mt-2">
-                        {(freelancerDetails ? freelancerDetails.proficient_languages : languages).map((lang) => (
+                        {languages.map((lang) => (
                           <span key={lang} className="px-2 py-1 text-sm bg-blue-200 rounded-md">
                             {lang}
                             <button onClick={() => handleRemoveLanguage(lang)} className="ml-1 text-red-500">
@@ -570,7 +612,6 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
                       </div>
                     </div>
 
-                    {/* Skills */}
                     <div>
                       <div className="flex gap-2">
                         <input
@@ -589,7 +630,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
                         </button>
                       </div>
                       <div className="flex flex-wrap gap-2 mt-2">
-                        {(freelancerDetails ? freelancerDetails.skills : skills).map((skill) => (
+                        {skills.map((skill) => (
                           <span key={skill} className="px-2 py-1 text-sm bg-green-200 rounded-md">
                             {skill}
                             <button onClick={() => handleRemoveSkill(skill)} className="ml-1 text-red-500">
@@ -603,14 +644,17 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
 
 
                   <div className="grid grid-cols-3 gap-4">
-                    <input name="basic_price" type="number" placeholder="Basic Price" className="p-2 border rounded-md" required />
-                    <input name="standard_price" type="number" placeholder="Standard Price" className="p-2 border rounded-md" required />
-                    <input name="premium_price" type="number" placeholder="Premium Price" className="p-2 border rounded-md" required/>
+                    <input name="basic_price" type="number" placeholder="Basic Price" className="p-2 border rounded-md" value={formData.basic_price} onChange={(e)=> setFormData({...formData, basic_price: Number(e.target.value)})} required />
+                    <input name="standard_price" type="number" placeholder="Standard Price" className="p-2 border rounded-md" value={formData.standard_price} onChange={(e)=> setFormData({...formData, standard_price: Number(e.target.value)})} required />
+                    <input name="premium_price" type="number" placeholder="Premium Price" className="p-2 border rounded-md" value={formData.premium_price} onChange={(e)=> setFormData({...formData, premium_price: Number(e.target.value)})} required/>
                   </div>
                   
                   <div className="flex justify-between" >
                     <button className='px-6 py-2 text-white bg-black rounded hover:bg-slate-900' onClick={HandleAddMoreInfoModal}>Close</button>
-                    <button className='px-6 py-2 text-white bg-black rounded hover:bg-slate-900'>Save</button>
+                    <button className="px-6 py-2 text-white bg-black rounded hover:bg-slate-900">
+                      {freelancerDetails?.user_id ? "Update" : "Save"}
+                    </button>
+
                   </div>
                 </form>
               </div>

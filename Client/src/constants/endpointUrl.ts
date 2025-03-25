@@ -16,6 +16,7 @@ export const userEndPoints = {
     LOGOUT: '/auth/logout',
     ADD_MORE_INFO: '/auth/add-more-info',
     GET_MORE_INFO: '/auth/more-info',
+    UPDATE_MORE_INFO: '/auth/update-more-info',
 
     STRIPE_CHECKOUT: '/payment/pricing/checkout'
 }

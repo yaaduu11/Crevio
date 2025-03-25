@@ -166,6 +166,16 @@ export class UserController implements IUserController{
         })(req, res, next)
     }
 
+    updateMoreInfo(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const {userData} = req.body
+            const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
+            const {userDetails} = await this.userService.updateMoreInfo(userId, userData)
+
+            sendResponse(res, httpStatusCodes.OK, true, {userDetails})
+        })(req, res, next)
+    }
+
     getMoreInfo(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)

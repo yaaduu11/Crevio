@@ -184,6 +184,18 @@ export const freelancerAddMoreInfo = async(userData: Partial<IFreelancerDetail>)
     }
 }
 
+
+export const updateFreelancerInfo = async(userData: Partial<IFreelancerDetail>) => {
+    try {
+        const {data} = await Api.patch(userEndPoints.UPDATE_MORE_INFO, {userData}, {headers})
+        return {success: true, data} as any
+    } catch (error) {
+        const err = error as any
+        const message = err.response?.data?.error || 'Something went wrong'
+        return {success: false, error: message}
+    }
+}
+
 export const getMoreInfo_F = async() => {
     try {
         const {data} = await Api.get(userEndPoints.GET_MORE_INFO, {headers})

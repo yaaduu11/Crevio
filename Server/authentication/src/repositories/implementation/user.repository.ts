@@ -24,6 +24,25 @@ class UserRepository implements IUserRepository {
         }
     }
 
+    async updateMoreInfo(userId: string, userData: Partial<IFreelancerDetail>): Promise<Partial<IFreelancerDetail>> {
+        try {
+            const updatedUserDetails = await FreelancerDetail.findOneAndUpdate(
+                { user_id: userId },
+                { $set: userData },
+                { new: true }
+            );
+    
+            if (!updatedUserDetails) {
+                throw new Error("Freelancer details not found.");
+            }
+    
+            return updatedUserDetails;
+        } catch (error) {
+            throw new Error("Error updating freelancer details.");
+        }
+    }
+    
+
     async findDetailsByUserId(userId: string): Promise<IFreelancerDetail | null> {
         try {
             const userDetails = await FreelancerDetail.findOne({user_id: userId})

@@ -15,5 +15,6 @@ export interface IUserService {
     editUserName(userId:string, name: string): Promise<{ userName: string}>
     refreshToken(token: string): Promise<string>;
     addMoreInfo(userId: string, userData: Partial<IFreelancerDetail>): Promise<{userDetails: Partial<IFreelancerDetail>}>
+    updateMoreInfo(userId: string, userData: Partial<IFreelancerDetail>): Promise<{userDetails: Partial<IFreelancerDetail>}>
     getMoreInfo(userId: string): Promise<{userDetails:IFreelancerDetail}>
 }
