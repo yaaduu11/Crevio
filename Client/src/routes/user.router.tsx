@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { userRoutes } from "../constants/routeUrl";   
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/storage";
@@ -15,6 +15,7 @@ import NewPassword from "../pages/user/NewPassword";
 import Dashboard from "../pages/user/Dashboard";
 import Profile from "../pages/user/Profile";
 import Pricing from "../pages/user/Pricing";
+import SuccessPage from "../components/user/successPage";
 
 
 export const UserRoutes = () => {
@@ -74,6 +75,10 @@ export const UserRoutes = () => {
                 <Route
                     path={userRoutes.PROFILE}
                     element={<PrivateRoute> <Profile/> </PrivateRoute>}
+                />
+                <Route
+                    path={userRoutes.SUCCESS}
+                    element={<PrivateRoute> <SuccessPage/> </PrivateRoute>}
                 />
           </Routes>
         </>

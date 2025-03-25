@@ -9,6 +9,6 @@ const router = Router()
 
 router
     .post('/pricing/checkout', userController.createCheckoutSession.bind(userController))
-    .post("/pricing/webhook", express.raw({ type: "application/json" }), userController.handleWebhook.bind(userController))
+    .post("/pricing/webhook", userController.handleWebhook.bind(userController))
 
 export default router

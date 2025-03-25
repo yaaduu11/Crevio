@@ -2,7 +2,7 @@ import React,{ useEffect, useState } from 'react';
 import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../ui/card';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { SubscriptionPlanType } from '../../types/adminTypes';
+import { SubscriptionPlanType } from '../../types/admin.type';
 import { getAllPlans } from '../../api/admin';
 import { handleCheckout } from '../../api/user';
 import { useSelector } from "react-redux";

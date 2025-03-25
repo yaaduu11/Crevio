@@ -1,6 +1,7 @@
 import { IUserRepository } from "../interface/user-repository.interface";
-import { UserType } from "../../types";
+import { IFreelancerDetail, UserType } from "../../types";
 import User from '../../models/user.model'
+import FreelancerDetail from "../../models/freelancer-detail.model";
 
 class UserRepository implements IUserRepository {
 
@@ -11,6 +12,24 @@ class UserRepository implements IUserRepository {
         }catch (err) {
             console.error(err);
             throw new Error("Error when creating the user");
+        }
+    }
+
+    async addMoreInfo(userData: Partial<IFreelancerDetail>): Promise<Partial<IFreelancerDetail>> {
+        try {
+            const userDetails = await FreelancerDetail.create(userData)
+            return userDetails
+        } catch (error) {
+            throw new Error("Error when adding more info")
+        }
+    }
+
+    async findDetailsByUserId(userId: string): Promise<IFreelancerDetail | null> {
+        try {
+            const userDetails = await FreelancerDetail.findOne({user_id: userId})
+            return userDetails
+        } catch (error) {
+            throw new Error("error finding the freelancer details")
         }
     }
 

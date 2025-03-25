@@ -29,7 +29,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@radix-ui/react-popover
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { adminRoutes } from "../../constants/routeUrl";
+import { adminRoutes } from "../../constants";
 import { logout } from "../../api/admin";
 import { useDispatch } from "react-redux";
 import { removeAdmin } from "../../redux/adminSlice";

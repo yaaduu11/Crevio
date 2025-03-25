@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { env, redisClient } from "../../config"
 import { httpStatusCodes, Messages } from "../../constants";
 import { GoogleAuthUserType } from "../../types";
-import { asyncHandler } from "../../utils"
+import { asyncHandler, sendResponse } from "../../utils"
 import { IUserController } from "../interface/user-controller.interface";
 import { IUserService } from "../../services/interface/user-service.interface";
 import jwt from "jsonwebtoken";
@@ -13,7 +13,7 @@ export class UserController implements IUserController{
     register(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const email = await this.userService.register(req.body);
-            res.status(httpStatusCodes.OK).json({ email });
+            sendResponse(res, httpStatusCodes.OK, true, {email})
         })(req, res, next);
     }
 
@@ -28,8 +28,7 @@ export class UserController implements IUserController{
                 sameSite: "strict", 
                 maxAge: 7 * 24 * 60 * 60 * 1000 
             });
-
-            res.status(httpStatusCodes.OK).json({ success:true, accessToken, user });
+            sendResponse(res, httpStatusCodes.OK, true, {accessToken, user})
         })(req, res, next); 
     }
 
@@ -43,7 +42,7 @@ export class UserController implements IUserController{
             }
 
             await this.userService.resendOtp(email)
-            res.status(httpStatusCodes.OK).json({ success:true })
+            sendResponse(res, httpStatusCodes.OK, true)
         })(req,res,next)
     }
 
@@ -52,7 +51,7 @@ export class UserController implements IUserController{
             const {role, email} = req.body;
             const {userRole} = await this.userService.assignRole(role, email)
 
-            res.status(httpStatusCodes.OK).json({success:true, userRole});
+            sendResponse(res, httpStatusCodes.OK, true, {userRole})
         })(req, res, next);
     }
 
@@ -67,7 +66,7 @@ export class UserController implements IUserController{
                 sameSite: "strict", 
                 maxAge: 7 * 24 * 60 * 60 * 1000 
             });
-            res.status(httpStatusCodes.OK).json({ success:true, accessToken, user });
+            sendResponse(res, httpStatusCodes.OK, true, {accessToken, user})
         })(req, res, next); 
     }
 
@@ -83,7 +82,7 @@ export class UserController implements IUserController{
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             })
 
-            res.status(httpStatusCodes.OK).json({sucess:true, accessToken, user})
+            sendResponse(res, httpStatusCodes.OK, true, {accessToken, user})
         })(req, res, next)
     }
 
@@ -92,7 +91,7 @@ export class UserController implements IUserController{
             const {email} = req.body
             await this.userService.forgotPassword(email)
 
-            res.status(httpStatusCodes.OK).json({success:true })
+            sendResponse(res, httpStatusCodes.OK, true)
         })(req, res, next)
     }
 
@@ -101,7 +100,7 @@ export class UserController implements IUserController{
             const {otp, email} = req.body
             const {user} = await this.userService.verifyOtpFp(otp, email)
 
-            res.status(httpStatusCodes.OK).json({success:true, user})
+            sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
     }
 
@@ -109,7 +108,8 @@ export class UserController implements IUserController{
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {
             const {password, email} = req.body
             const {user} = await this.userService.newPassword(password, email)
-            res.status(httpStatusCodes.OK).json({success:true, user})
+
+            sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
     }
 
@@ -120,9 +120,9 @@ export class UserController implements IUserController{
                 res.status(httpStatusCodes.FORBIDDEN).json({error: Messages.TOKEN_EMPTY})
                 return;
             }
-
             const accessToken = await this.userService.refreshToken(refreshToken)
-            res.status(httpStatusCodes.OK).json({accessToken})
+
+            sendResponse(res, httpStatusCodes.OK, true, {accessToken})
         })(req, res, next)
     }
 
@@ -130,9 +130,9 @@ export class UserController implements IUserController{
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {
             const { userId } = JSON.parse(req.headers['x-user-payload'] as string);
             const profileImage = req.file
-
             const {user} = await this.userService.updateProfile(userId, profileImage)
-            res.status(httpStatusCodes.OK).json({user})
+
+            sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
     }
 
@@ -140,7 +140,9 @@ export class UserController implements IUserController{
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const { userId } = JSON.parse(req.headers['x-user-payload'] as string);
             const {user} = await this.userService.getProfileImage(userId)
-            res.status(httpStatusCodes.OK).json({user})
+            console.log('working');
+            
+            sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
     }
 
@@ -149,7 +151,27 @@ export class UserController implements IUserController{
             const {name} = req.body
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
             const {userName} = await this.userService.editUserName(userId, name)
-            res.status(httpStatusCodes.OK).json({userName})
+
+            sendResponse(res, httpStatusCodes.OK, true, {userName})
+        })(req, res, next)
+    }
+
+    addMoreInfo(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const {userData} = req.body
+            const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
+            const {userDetails} = await this.userService.addMoreInfo(userId, userData)
+
+            sendResponse(res, httpStatusCodes.OK, true, {userDetails})
+        })(req, res, next)
+    }
+
+    getMoreInfo(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
+            const {userDetails} = await this.userService.getMoreInfo(userId)
+
+            sendResponse(res, httpStatusCodes.OK, true, {userDetails})
         })(req, res, next)
     }
 
@@ -169,8 +191,8 @@ export class UserController implements IUserController{
                 secure: true,
                 sameSite: 'strict'
             });
-                     
-            res.status(httpStatusCodes.OK).json({ success:true })
+
+            sendResponse(res, httpStatusCodes.OK, true)
         })(req,res,next)
     }
 }

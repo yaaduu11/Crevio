@@ -1,7 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserRoutes } from '../../routes/UserRoutes';
-import { userRoutes } from '../../constants/routeUrl';
+import { userRoutes } from '../../constants';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/storage';
 

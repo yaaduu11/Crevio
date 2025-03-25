@@ -21,7 +21,7 @@ export class UserService implements IUserService {
                 payment_method_types: ["card"],
                 mode: "subscription",
                 line_items: [{ price: price.id, quantity: 1 }],
-                success_url: `http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}`,
+                success_url: `http://localhost:5173/success?Your%20payment%20is%20successfully%20completed`,
                 cancel_url: `http://localhost:5173/cancel`,
                 metadata: { userId, planId },
             });
@@ -35,29 +35,76 @@ export class UserService implements IUserService {
 
     verifyStripeWebhook(payload: Buffer, sig: string): Stripe.Event | null {
         try {
-            return env.STRIPE_WEBHOOK_SECRET 
-                ? stripe.webhooks.constructEvent(payload, sig, env.STRIPE_WEBHOOK_SECRET) 
-                : null;
+            console.log('in verify');
+            return stripe.webhooks.constructEvent(payload, sig, env.STRIPE_WEBHOOK_SECRET as string);
         } catch (err) {
             console.error("Webhook signature verification failed:", err);
             return null;
         }
     }
+    
 
-    async processStripeEvent(event: Stripe.Event): Promise<void> {
+    // async processStripeEvent(event: Stripe.Event): Promise<void> {
+    //     switch (event.type) {
+    //         case "checkout.session.completed":
+    //             await this.handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+    //             break;
+
+    //         case "invoice.payment_failed":
+    //             console.log("Payment failed:", event.data.object);
+    //             break;
+
+    //         default:
+    //             console.log(`Unhandled event type ${event.type}`);
+    //     }
+    // }
+
+
+
+    async processStripeEvent(event: Stripe.Event) {
         switch (event.type) {
             case "checkout.session.completed":
                 await this.handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
                 break;
-
-            case "invoice.payment_failed":
-                console.log("Payment failed:", event.data.object);
+            case "payment_intent.succeeded":
+                console.log("✅ Payment Intent Succeeded", event);
+                // Handle successful payment logic
                 break;
-
+    
+            case "customer.subscription.created":
+            case "customer.subscription.updated":
+                console.log("✅ Subscription Event", event);
+                // Handle subscription logic
+                break;
+    
+            case "invoice.payment_succeeded":
+                console.log("✅ Invoice Payment Succeeded", event);
+                // Update subscription status
+                break;
+            case 'plan.created':
+                console.log('New plan created:', event.data.object);
+                break;
+            case 'price.created':
+                console.log('New price created:', event.data.object);
+                break;
+            case 'customer.subscription.created':
+                console.log('New subscription created:', event.data.object);
+                break;
+            case 'invoice.payment_failed':
+                console.log('Payment failed:', event.data.object);
+                break;
+            case 'checkout.session.completed':
+                console.log('Checkout completed:', event.data.object);
+                break;
+            case 'charge.succeeded':
+                console.log('Charge successful:', event.data.object);
+                break;
             default:
-                console.log(`Unhandled event type ${event.type}`);
+                console.warn(`⚠️ Unhandled event type ${event.type}`);
+                break;
         }
     }
+    
 
     private async handleCheckoutCompleted(session: Stripe.Checkout.Session): Promise<void> {
         if (session.payment_status !== "paid") return;
@@ -87,7 +134,8 @@ export class UserService implements IUserService {
             createdAt: new Date(),
             updatedAt: new Date()
         };
-
+        console.log('going to create a plan');
+        
         await this.userRepository.createSubscription(subscriptionData)
     }
 }

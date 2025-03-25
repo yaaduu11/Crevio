@@ -28,13 +28,18 @@ export class UserController implements IUserController {
     handleWebhook(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const sig = req.headers["stripe-signature"] as string;
+    
+            console.log('before verifying');
             const event = this.userService.verifyStripeWebhook(req.body, sig);
-
+            console.log('after verifying');
+    
             if (!event) {
                 return sendResponse(res, httpStatusCodes.BAD_REQUEST, false, undefined, "Invalid Stripe event");
             }
-
+    
             await this.userService.processStripeEvent(event);
+            res.json({ received: true });
         })(req, res, next);
     }
+    
 }

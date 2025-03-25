@@ -14,5 +14,7 @@ export interface IUserController {
     updateProfile(req: Request, res: Response, next: NextFunction): Promise<void>;
     getProfileImage(req: Request, res: Response, next: NextFunction): Promise<void>;
     editUserName(req: Request, res: Response, next: NextFunction): Promise<void>;
+    addMoreInfo(req: Request, res: Response, next: NextFunction): Promise<void>;
+    getMoreInfo(req: Request, res: Response, next: NextFunction): Promise<void>;
     logout(req:Request, res:Response, next:NextFunction): Promise<void>;
 }

@@ -1,6 +1,13 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
+
+declare module "http" {
+    interface IncomingMessage {
+        rawBody?: Buffer;
+    }
+}
+
 import express, {Application} from 'express'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
@@ -25,6 +32,7 @@ class App {
     }
 
     private initializeMiddlewares(): void {
+        this.app.use("/pricing/webhook", express.raw({ type: "application/json" }));
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended:true}))
         this.app.use(cookieParser())

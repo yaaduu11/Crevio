@@ -4,7 +4,7 @@ import {
   TableCaption,
 } from '../../components/ui/table' 
 import { _getClients, clientBlock } from '../../api/admin'
-import { UserTypes } from '../../types/adminTypes'
+import { UserTypes } from '../../types/admin.type'
 import { useToast } from '../../hooks/use-toast'
 import {
   AlertDialog,

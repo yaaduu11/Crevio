@@ -14,10 +14,10 @@ import { useNavigate } from "react-router-dom"
 import { userRoutes } from "../../constants/routeUrl"
 import { googleAuth, login } from "../../api/user"
 import { useGoogleLogin } from '@react-oauth/google';
-import { decodeToken } from "../../utils/googleAuthToken"
-import { ErrorState } from "../../types/userTypes"
-import { emailRegex } from "../../validation/regex"
-import { Eye, EyeOff, Variable } from 'lucide-react'
+import { decodeToken } from "../../utils/google-authtoken.util"
+import { ErrorState } from "../../types/user.type"
+import { emailRegex } from "../..//utils/validation"
+import { Eye, EyeOff } from 'lucide-react'
 import { useToast } from "../../hooks/use-toast"
 import { useDispatch } from "react-redux"
 import { setUser } from "../../redux/userSlice"
@@ -96,7 +96,6 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
         });
 
         if (response.success) {
-          const accessToken = (response.data as { accessToken: string }).accessToken;
           dispatch(setUser({
               _id: response.data.user._id,
               name: response.data.user.name,

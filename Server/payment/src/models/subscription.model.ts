@@ -5,12 +5,14 @@ const SubscriptionSchema = new Schema<ISubscription>(
     {
         userId: { 
             type: Schema.Types.ObjectId, 
-            required: true 
+            required: true,
+            index: true 
         },
         planId: { 
             type: Schema.Types.ObjectId, 
-            required: true 
-        },
+            required: true,
+            index: true 
+        },        
         planName: { 
             type: String, 
             required: true 
@@ -25,7 +27,7 @@ const SubscriptionSchema = new Schema<ISubscription>(
         },
         status: { 
             type: String, 
-            enum: ["active", "canceled", "expired"], 
+            enum: ["active", "canceled", "expired", "trial"], 
             default: "active" 
         },
         paymentMethod: { 
@@ -40,10 +42,11 @@ const SubscriptionSchema = new Schema<ISubscription>(
         subscriptionStart: { 
             type: Date, 
             required: true 
-        },    
+        },
         subscriptionEnd: { 
             type: Date, 
-            required: true 
+            required: false,
+            default: null 
         },
         renewal: { 
             type: Boolean, 
@@ -51,7 +54,7 @@ const SubscriptionSchema = new Schema<ISubscription>(
         },
         paymentId: { 
             type: String, 
-            required: true 
+            required: false 
         },
     }, { timestamps: true }
 )

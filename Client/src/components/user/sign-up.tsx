@@ -11,13 +11,13 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { useNavigate } from "react-router-dom"
 import { useReducer, useState } from "react"
-import { UserSignupFormType, UserSignupFormAction } from "../../types/userTypes"
-import { validateForm } from "../../validation/formValidation"
-import { formSchema } from "../../validation/formSchema"
+import { UserSignupFormType, UserSignupFormAction } from "../../types/user.type"
+import { validateForm } from "../../utils/validation"
+import { formSchema } from "../../utils/validation"
 import { signup, googleAuth } from "../../api/user";
-import { userRoutes } from "../../constants/routeUrl"
+import { userRoutes } from "../../constants"
 import { useGoogleLogin } from '@react-oauth/google';
-import { decodeToken } from "../../utils/googleAuthToken"
+import { decodeToken } from "../../utils/google-authtoken.util"
 import { Eye, EyeOff } from 'lucide-react'
 import { useToast } from "../../hooks/use-toast"
 import { setUser } from "../../redux/userSlice"

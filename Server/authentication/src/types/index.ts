@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import mongoose,{ ObjectId } from "mongoose";
 
 export interface UserType {
     _id?: ObjectId;
@@ -27,4 +27,25 @@ export interface FileType {
     mimetype: string;
     buffer: Buffer;
     size: number;
-  }
+}
+
+export interface IFreelancerDetail extends Document {
+    user_id: mongoose.Schema.Types.ObjectId;
+    profession: string;
+    company: string;
+    qualification: string;
+    bio: string;
+    work_experience: string;
+    proficient_languages: string[];
+    skills: string[];
+    working_days: string;
+    active_hours: string;
+    basic_price: number;
+    standard_price: number;
+    premium_price: number;
+    portfolio: string;
+    linkedin: string;
+    twitter: string;
+    total_reviews: number;
+    availability_status: "available" | "busy" | "offline";
+}

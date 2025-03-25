@@ -24,6 +24,8 @@ router
     .post('/update-profile', upload.single('profileImage'), userController.updateProfile.bind(userController))
     .get('/profile-image', userController.getProfileImage.bind(userController))
     .patch('/edit-user-name', userController.editUserName.bind(userController))
+    .post('/add-more-info', userController.addMoreInfo.bind(userController))
+    .get('/more-info', userController.getMoreInfo.bind(userController))
     .delete('/logout', userController.logout.bind(userController));
 
 export default router

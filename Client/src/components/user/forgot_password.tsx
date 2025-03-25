@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import {
@@ -12,9 +12,9 @@ import {
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import { useNavigate } from "react-router-dom"
-import { userRoutes } from "../../constants/routeUrl"
+import { userRoutes } from "../../constants"
 import { useToast } from "../../hooks/use-toast"
-import { emailRegex } from "../../validation/regex"
+import { emailRegex } from "../../utils/validation"
 import { forgotPassword } from "../../api/user"
 
 export function ForgotPasswordCard({className,...props}: React.ComponentPropsWithoutRef<"div">) {

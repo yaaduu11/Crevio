@@ -14,6 +14,8 @@ import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { faPanorama } from '@fortawesome/free-solid-svg-icons';
 import { faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+
 import { userRoutes } from "../../constants/routeUrl";
 import Navbar from "../../components/user/navbar";
 import { assignRole } from "../../api/user";
@@ -237,8 +239,8 @@ const Home = () => {
               {user.name}, your account has been created!<br />
               What brings you to Crevio?
             </h1>
-            <h1 className="mb-4 text-lg font-medium text-center text-gray-500">
-              We want to tailor our experience so you'll feel right at home.
+            <h1 className="mb-4 font-medium text-center text-gray-500 text-md">
+              We want to tailor your experience so you'll feel right at home.
             </h1>
     
             <div className="flex flex-col gap-4 mt-4 mb-12 sm:flex-row">
@@ -325,7 +327,12 @@ const Home = () => {
               
             </div>
     
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2 px-3 py-0 text-sm leading-tight text-yellow-600 rounded-md w-fit">
+                <FontAwesomeIcon icon={faTriangleExclamation} className="text-yellow-400" />
+                <span><i>Your role cannot be changed later. Please choose carefully.</i></span>
+              </div>
+            
               <button
                 className={`px-6 py-2 bg-black text-white rounded hover:bg-slate-900 ${
                   !isNextEnabled ? "opacity-50 cursor-not-allowed" : ""

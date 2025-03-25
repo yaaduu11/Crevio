@@ -10,10 +10,11 @@ const public_routes: {method: string, path: string}[] = [
     {method: 'POST', path: '/auth/verifyOtpFP'},
     {method: 'PATCH', path: '/auth/new-password'},
     {method: 'POST', path: '/auth/refreshToken'},
+    {method: "POST", path: "/auth/admin/login"},
 
-    {method: "POST", path: "/auth/admin/login"}
+    {method: "POST", path: "/payment/pricing/webhook"}
 ]
 
 export function isPublic(req: Request): boolean {
-    return public_routes.some(route => route.method === req.method.toUpperCase() && route.path===req.path)
+    return public_routes.some(route => route.method === req.method.toUpperCase() && req.path.startsWith(route.path))
 }

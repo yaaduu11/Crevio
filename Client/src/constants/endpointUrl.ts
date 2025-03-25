@@ -14,6 +14,8 @@ export const userEndPoints = {
     EDIT_USER_NAME: '/auth/edit-user-name',
     REFRESH_TOKEN: '/auth/refreshToken',
     LOGOUT: '/auth/logout',
+    ADD_MORE_INFO: '/auth/add-more-info',
+    GET_MORE_INFO: '/auth/more-info',
 
     STRIPE_CHECKOUT: '/payment/pricing/checkout'
 }

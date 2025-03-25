@@ -1,7 +1,7 @@
 import Api from "../services/axios";
 import { adminEndPoints } from "../constants/endpointUrl";
-import { SigninResponse, UserTypes } from "../types/adminTypes";
-import { SubscriptionPlan } from "../types/adminTypes";
+import { SigninResponse, UserTypes } from "../types/admin.type";
+import { SubscriptionPlan } from "../types/admin.type";
 
 
 const headers = {

@@ -10,7 +10,8 @@ export const userRoutes = {
     CONTACT : '/contact',
     PRICING : '/pricing',
     PROFILE: '/profile',    
-    DASHBOARD: '/dashboard'
+    DASHBOARD: '/dashboard',
+    SUCCESS: '/success',
 }
 
 export const adminRoutes = {

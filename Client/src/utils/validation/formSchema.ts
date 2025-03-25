@@ -1,5 +1,5 @@
 import { nameRegex, emailRegex, passwordRegex } from "./regex";
-import Messages from "../constants/messages";
+import Messages from "../../constants/messages";
 
 export const formSchema = {
     name: {

@@ -2,7 +2,7 @@ import { AdminSidebar } from '../../components/admin/adminSidebar'
 import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { SubscriptionPlan, SubscriptionPlanType } from '../../types/adminTypes';
+import { SubscriptionPlan, SubscriptionPlanType } from '../../types/admin.type';
 import { ComboboxPopover } from '../../components/ui/combobox';
 import { useEffect, useState } from 'react';
 import { addSubscriptionPlan, getAllPlans } from '../../api/admin';

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { UserStoreType } from "../types/userTypes";
+import { UserStoreType } from "../types/user.type";
 
 const initialState : UserStoreType = {
     _id : '',

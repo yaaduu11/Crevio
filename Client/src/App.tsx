@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { UserRoutes } from './routes/UserRoutes';
-import { AdminRoutes } from './routes/AdminRoutes';
+import { UserRoutes } from './routes/user.router';
+import { AdminRoutes } from './routes/admin.router';
 import { Toaster } from './components/ui/toaster'
 
 

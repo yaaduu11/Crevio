@@ -10,12 +10,9 @@ import {
   CardTitle,
 } from "../ui/card"
 import { Input } from "../ui/input"
-import { Label } from "../ui/label"
 import { useNavigate } from "react-router-dom"
-import { userRoutes } from "../../constants/routeUrl"
-import { passwordRegex } from '../../validation/regex'
-import messages from '../../constants/messages'
-import { validatePassword } from '../../validation/fpValidation'
+import { userRoutes } from "../../constants"
+import { validatePassword } from '../../utils/validation'
 import { Eye, EyeOff } from 'lucide-react'
 import { newPassword } from '../../api/user'
 import { useToast } from '../../hooks/use-toast'

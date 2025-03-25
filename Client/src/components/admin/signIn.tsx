@@ -4,7 +4,7 @@ import { AdminInput } from "../ui/adminInput";
 import { useState } from "react";
 import { signin } from "../../api/admin";
 import { useNavigate } from "react-router-dom";
-import { adminRoutes } from "../../constants/routeUrl";
+import { adminRoutes } from "../../constants";
 import { useToast } from "../../hooks/use-toast";
 import { setAdmin } from "../../redux/adminSlice";
 import { useDispatch } from "react-redux";

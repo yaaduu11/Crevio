@@ -16,7 +16,7 @@ import {
   InputOTPSlot,
 } from "../ui/input-otp"
 import { useNavigate } from "react-router-dom"
-import { userRoutes } from "../../constants/routeUrl"
+import { userRoutes } from "../../constants"
 import { useToast } from "../../hooks/use-toast"
 import "react-toastify/dist/ReactToastify.css";
 import { resendOtp } from "../../api/user"

@@ -1,4 +1,4 @@
-import { FileType, GoogleAuthUserType, SigninResponse, UserType } from "../../types";
+import { FileType, GoogleAuthUserType, IFreelancerDetail, SigninResponse, UserType } from "../../types";
 
 export interface IUserService { 
     register(user: UserType): Promise<string>;
@@ -14,4 +14,6 @@ export interface IUserService {
     getProfileImage(userId: string): Promise<{user: UserType}>;
     editUserName(userId:string, name: string): Promise<{ userName: string}>
     refreshToken(token: string): Promise<string>;
+    addMoreInfo(userId: string, userData: Partial<IFreelancerDetail>): Promise<{userDetails: Partial<IFreelancerDetail>}>
+    getMoreInfo(userId: string): Promise<{userDetails:IFreelancerDetail}>
 }

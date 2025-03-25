@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs'
-import { ObjectId } from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import { transporter, env, redisClient, handleProfileImageUpload } from '../../config';
 import { Messages, httpStatusCodes } from '../../constants';
-import { FileType, GoogleAuthUserType, SigninResponse, UserType } from '../../types';
+import { FileType, GoogleAuthUserType, IFreelancerDetail, SigninResponse, UserType } from '../../types';
 import { generateOtp, generateOtpHtmlTemplate, generateHttpError, generateAccessToken, generateRefreshToken, verifyToken } from '../../utils';
 import { IUserRepository } from "../../repositories/interface/user-repository.interface";
 import { IUserService } from "../../services/interface/user-service.interface";
@@ -250,9 +250,46 @@ export class UserService implements IUserService {
         return {userName}
     }
 
+    async addMoreInfo(userId: string, userData: Partial<IFreelancerDetail>): Promise<{ userDetails: Partial<IFreelancerDetail>; }> {        
+        const user = await this.userRepository.findById(userId)
+
+        if(!user) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
+        }
+
+        const tempObject: Partial<IFreelancerDetail> = {
+            user_id: new mongoose.Types.ObjectId(userId) as unknown as mongoose.Schema.Types.ObjectId,
+            profession: userData.profession ?? "",
+            company: userData.company ?? "",
+            qualification: userData.qualification ?? "",
+            bio: userData.bio ?? "",
+            work_experience: userData.work_experience ?? "",
+            proficient_languages: userData.proficient_languages ?? [],
+            skills: userData.skills ?? [],
+            working_days: userData.working_days ?? "",
+            active_hours: userData.active_hours ?? "",
+            basic_price: userData.basic_price ?? 0,
+            standard_price: userData.standard_price ?? 0,
+            premium_price: userData.premium_price ?? 0,
+            portfolio: userData.portfolio ?? "nil",
+            linkedin: userData.linkedin ?? "nil",
+            twitter: userData.twitter ?? "nil",
+        };
+        const userDetails = await this.userRepository.addMoreInfo(tempObject)
+        return {userDetails}
+    }
+
+    async getMoreInfo(userId: string): Promise<{ userDetails: IFreelancerDetail }> {
+        const userDetails = await this.userRepository.findDetailsByUserId(userId)
+        if(!userDetails) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.DETAILS_NOT_FOUND_F)
+        }
+
+        return {userDetails}
+    }
+
     async refreshToken(token: string): Promise<string> {
         const payload = await verifyToken(token)
-
         if(!payload) {
             throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.INVALID_TOKEN)
         }

@@ -1,6 +1,6 @@
 import Api from "../services/axios";
 import { userEndPoints } from "../constants/endpointUrl";
-import { UserSignupFormType,UserType } from "../types/userTypes";
+import { IFreelancerDetail, UserSignupFormType } from "../types/user.type";
 import { ObjectId } from "mongoose";
 
 const headers= {
@@ -115,7 +115,7 @@ export const changeProfile = async (formData: FormData) => {
                 "Content-Type": "multipart/form-data",
             },
         });
-        return { success: true, data };
+        return { success: true, data } as any
     } catch (error) {
         const err = error as any;
         const message = err.response?.data?.error || "Something went wrong.";
@@ -172,3 +172,25 @@ export const handleCheckout = async (planId: ObjectId | undefined, amount: numbe
         return { success:false, error:message };
     }
 };
+
+export const freelancerAddMoreInfo = async(userData: Partial<IFreelancerDetail>) => {
+    try {
+        const {data} = await Api.post(userEndPoints.ADD_MORE_INFO, {userData}, {headers})
+        return {success: true, data} as any
+    } catch (error) {
+        const err = error as any
+        const message = err.response?.data?.error || 'Something went wrong'
+        return {success: false, error: message}
+    }
+}
+
+export const getMoreInfo_F = async() => {
+    try {
+        const {data} = await Api.get(userEndPoints.GET_MORE_INFO, {headers})
+        return {success: true, data} as any
+    } catch (error) {
+        const err = error as any
+        const message = err.response?.data?.error || 'Something went wrong'
+        return {success: false, error: message}
+    }
+}
