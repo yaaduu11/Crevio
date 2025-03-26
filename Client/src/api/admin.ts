@@ -28,6 +28,17 @@ export const _getFreelancers = async() => {
     }
 }
 
+export const getMoreInfo_F = async(userId: string) => {
+    try {
+        const {data} = await Api.get(`${adminEndPoints.GET_MORE_INFO}?userId=${userId}`, {headers})
+        return {success: true, data} as any
+    } catch (error) {
+        const err = error as any
+        const message = err.response?.data?.error || 'Something went wrong'
+        return {success: false, error: message}
+    }
+}
+
 export const _getClients = async() => {
     try {
         const {data} = await Api.get<UserTypes[]>(adminEndPoints.FETCH_CLIENTS, {headers})

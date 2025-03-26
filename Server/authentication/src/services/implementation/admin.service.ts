@@ -6,6 +6,7 @@ import { redisClient } from '../../config';
 import { Messages, httpStatusCodes } from "../../constants";
 import { UserType } from '../../types';
 import { generateAccessToken, generateRefreshToken, verifyToken, generateHttpError } from "../../utils";
+import { IFreelancerDetail } from '../../types';
 
 
 export class AdminService implements IAdminService {
@@ -73,5 +74,21 @@ export class AdminService implements IAdminService {
         }else{
             if(freelancer._id) await redisClient.del(freelancer._id.toString()) 
         }
+    }
+
+    async getMoreInfo(userId: string): Promise<{ userDetails: IFreelancerDetail }> {
+        console.log('in serv');
+        console.log(userId);
+        
+        const userDetails = await this.adminRepository.findDetailsByUserId(userId)
+        console.log('got it in ser', userDetails);
+        
+        if(!userDetails) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.DETAILS_NOT_FOUND_F)
+        }
+        console.log('in ser okkkk');
+        console.log('details', userDetails);
+        
+        return {userDetails}
     }
 }

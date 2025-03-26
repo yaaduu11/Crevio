@@ -10,7 +10,7 @@ export async function authMiddleware(req:Request, res: Response, next: NextFunct
         if(isPublic(req)) {
             return next()
         }
-
+        
         const authHeader = req.headers.authorization;
         if(!authHeader){
             return res.status(401).json({error: 'No token provided.'})

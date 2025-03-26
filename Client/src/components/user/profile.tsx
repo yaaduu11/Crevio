@@ -2,12 +2,9 @@ import React, {useEffect, useState} from 'react';
 import { User, Mail, MapPin, Briefcase, Calendar, Link as LinkIcon } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
 import { changeProfile, editUserName, freelancerAddMoreInfo, getProfileImage, getMoreInfo_F, updateFreelancerInfo } from '../../api/user';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/storage';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/userSlice';
 import { IFreelancerDetail, UserType } from '../../types/user.type';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface ProfileProps {
   user: {

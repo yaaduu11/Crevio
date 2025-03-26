@@ -27,6 +27,8 @@ router
     .post('/add-more-info', userController.addMoreInfo.bind(userController))
     .patch('/update-more-info', userController.updateMoreInfo.bind(userController))
     .get('/more-info', userController.getMoreInfo.bind(userController))
+    .get('/fetch-user', userController.getUserData.bind(userController))
+    .patch('/update-user-sub-status', userController.updateUserSubStatus.bind(userController))
     .delete('/logout', userController.logout.bind(userController));
 
 export default router

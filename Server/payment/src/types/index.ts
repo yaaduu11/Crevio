@@ -21,12 +21,11 @@ export interface SubscriptionType {
 export interface ISubscription {
   userId: Types.ObjectId;
   planId: Types.ObjectId;
-  planName: string;
   amount: number;
   currency: string;
   status: "active" | "canceled" | "expired";
   paymentMethod: string;
-  paymentStatus: "succeeded" | "pending" | "failed";
+  paymentStatus: "pending" | "failed" | "successful" | "paid";
   subscriptionStart: Date;
   subscriptionEnd: Date;
   renewal: boolean;

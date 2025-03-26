@@ -6,6 +6,7 @@ export const userEndPoints = {
     RESEND_OTP: "/auth/resendOtp",
     CHECK_ROLE: "/auth/check-role",
     ASSIGN_ROLE: "/auth/assign-role",
+    FETCH_USER_DATA: '/auth/fetch-user',
     GOOGLE_AUTH: '/auth/google-auth',
     FORGOT_PASSWORD: '/auth/forgot-password',
     NEW_PASSWORD: '/auth/new-password',
@@ -17,13 +18,16 @@ export const userEndPoints = {
     ADD_MORE_INFO: '/auth/add-more-info',
     GET_MORE_INFO: '/auth/more-info',
     UPDATE_MORE_INFO: '/auth/update-more-info',
+    UPDATE_USER_SUB_STATUS: '/auth/update-user-sub-status',
 
-    STRIPE_CHECKOUT: '/payment/pricing/checkout'
+    STRIPE_CHECKOUT: '/payment/pricing/checkout',
+    CHECK_USER_SUBSCRIBED: '/payment/pricing/check-user-subscribed'
 }
 
 export const adminEndPoints = {
     SIGNIN : "/auth/admin/login",
     FETCH_FREELANCERS : "/auth/admin/freelancers",
+    GET_MORE_INFO: '/auth/admin/more-info',
     FETCH_CLIENTS : "/auth/admin/clients",
     CLIENT_BLOCK: "/auth/admin/clients/toggle-status",
     FREELANCER_BLOCK: "/auth/admin/freelancers/toggle-status",
@@ -31,5 +35,4 @@ export const adminEndPoints = {
 
     FETCH_PLANS: 'payment/admin/subscription-plans',
     ADD_PLAN: '/payment/admin/subscription-plans/add-plan'
-
 }

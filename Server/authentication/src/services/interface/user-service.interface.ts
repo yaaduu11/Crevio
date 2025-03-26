@@ -12,9 +12,11 @@ export interface IUserService {
     newPassword(password:string, email:string): Promise<{user:UserType}>
     updateProfile(id: string, profileImage: FileType | undefined): Promise<{user: UserType}>;
     getProfileImage(userId: string): Promise<{user: UserType}>;
+    getUserData(userId: string): Promise<{user: UserType}>
     editUserName(userId:string, name: string): Promise<{ userName: string}>
     refreshToken(token: string): Promise<string>;
     addMoreInfo(userId: string, userData: Partial<IFreelancerDetail>): Promise<{userDetails: Partial<IFreelancerDetail>}>
     updateMoreInfo(userId: string, userData: Partial<IFreelancerDetail>): Promise<{userDetails: Partial<IFreelancerDetail>}>
+    updateUserSubStatus(userId: string, planName: string): Promise<void>
     getMoreInfo(userId: string): Promise<{userDetails:IFreelancerDetail}>
 }

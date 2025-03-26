@@ -52,6 +52,7 @@ class UserRepository implements IUserRepository {
         }
     }
 
+
     async findByEmail(email: string): Promise<UserType | null> {
         try {
             const data = await User.findOne({email})
@@ -95,6 +96,8 @@ class UserRepository implements IUserRepository {
             throw new Error("Error when updating the user");
         }
     }
+
+    
     
 }
 

@@ -96,6 +96,7 @@ export function OtpForm({className, handleOtpVerification, successRoute, ApiType
               name: response.data.user.name,
               email: response.data.user.email,
               role: response.data.user.role,
+              subscription: response.data.user.subscriptionType,
               accessToken: response.data.accessToken,
           }))
         }

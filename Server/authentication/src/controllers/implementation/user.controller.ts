@@ -140,7 +140,6 @@ export class UserController implements IUserController{
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const { userId } = JSON.parse(req.headers['x-user-payload'] as string);
             const {user} = await this.userService.getProfileImage(userId)
-            console.log('working');
             
             sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
@@ -182,6 +181,25 @@ export class UserController implements IUserController{
             const {userDetails} = await this.userService.getMoreInfo(userId)
 
             sendResponse(res, httpStatusCodes.OK, true, {userDetails})
+        })(req, res, next)
+    }
+
+    getUserData(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {            
+            const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
+            const {user} = await this.userService.getUserData(userId)
+            
+            sendResponse(res, httpStatusCodes.OK, true, {user})
+        })(req, res, next)
+    }
+
+    updateUserSubStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {            
+            const {planName} = req.body
+            const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
+            await this.userService.updateUserSubStatus(userId, planName)
+
+            sendResponse(res, httpStatusCodes.OK, true)
         })(req, res, next)
     }
 

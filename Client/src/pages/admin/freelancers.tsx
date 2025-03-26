@@ -3,8 +3,8 @@ import { AdminSidebar } from '../../components/admin/adminSidebar'
 import {
   TableCaption,
 } from '../../components/ui/table' 
-import { _getFreelancers, freelancerBlock } from '../../api/admin'
-import { UserTypes } from '../../types/admin.type'
+import { _getFreelancers, freelancerBlock, getMoreInfo_F } from '../../api/admin'
+import { IFreelancerDetail, UserTypes } from '../../types/admin.type'
 import { useToast } from '../../hooks/use-toast'
 import {
   AlertDialog,
@@ -21,15 +21,38 @@ const ITEMS_PER_PAGE = 5;
 
 const Freelancers = () => {
   const [freelancers, setFreelancers] = useState<UserTypes[]>([])
+  const [freelancerDetail, setFreelancerDetail] = useState<IFreelancerDetail>({} as IFreelancerDetail)
   const [freelancerId, setFreelancerId] = useState('')
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(freelancers.length / ITEMS_PER_PAGE);
   const [blockLoading, setBlockLoading]= useState<{ [key: string]: boolean }>({});
   const [showAlert, setShowAlert] = useState(false)
   const [refresh, setRefresh] = useState(false);
+  const [viewFreelancerModal, setViewFreelancerModal] = useState(false)
   const {toast} = useToast()
 
-
+  const handleViewFreelancerModal = async (userId: string) => {
+    setViewFreelancerModal(true)
+    await fetchFreelancerDetail(userId)
+  };
+  
+  const fetchFreelancerDetail = async (userId: string) => {
+    try {
+      const response = await getMoreInfo_F(userId);
+      if (response.success) {        
+        setFreelancerDetail(response.data.userDetails);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  const handleCloseModal = () => {
+    setViewFreelancerModal(false)
+    setFreelancerDetail({} as IFreelancerDetail)
+  };
+  
+  
   const handlePageChange = (newPage:number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -126,76 +149,99 @@ const Freelancers = () => {
                     <th className="px-6 py-3 font-bold text-gray-900 whitespace-nowrap dark:text-white">Name</th>
                     <th className="px-6 py-3 font-bold text-gray-900 whitespace-nowrap dark:text-white">Email</th>
                     <th className="px-6 py-3 font-bold text-gray-900 whitespace-nowrap dark:text-white">Status</th>
-                    <th className="px-6 py-3 font-bold text-gray-900 whitespace-nowrap dark:text-white">Subscribed</th>
+                    <th className="px-6 py-3 font-bold text-gray-900 whitespace-nowrap dark:text-white">Subscription Type</th>
                     <th className="px-6 py-3 font-bold text-gray-900 whitespace-nowrap dark:text-white">Registered Date</th>
                     <th className="px-6 py-3 font-bold text-gray-900 whitespace-nowrap dark:text-white">Actions</th>
                   </tr>
                 </thead>
                 
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {displayedUsers.map((user, index) => (
-                    <tr key={user._id}>
-                      <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">
-                        {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
-                      </td>
-                      <td className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{user.name}</td>
-                      <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">{user.email}</td>
-                      <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">{user.isBlocked ? "Blocked" : "Active"}</td>
-                      <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">{user.subscriptionType}</td>
-                      <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</td>
-                      <td>
-                        <div className="flex items-center space-x-3">
-                          <button
-                            className={user.isBlocked? `flex items-center justify-center h-6 text-white text-md rounded-md w-20 ${blockLoading[user._id]?'bg-green-400':'bg-green-600'}` : `flex items-center justify-center h-6 text-white text-md rounded-md w-16 ${blockLoading[user._id]?'bg-red-400':'bg-red-600'}`}
-                            key={user._id}
-                            onClick={()=>handleShowAlert(user._id)}
-                            disabled={blockLoading[user._id]}
-                          >
-                            {blockLoading[user._id] ? (
-                              <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-red-600 animate-spin"></div>
-                            ) : (
-                              user.isBlocked? 'Unblock': 'Block'
-                            )}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {displayedUsers.map((user, index) => (
+                  <tr key={user._id}>
+                    <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">
+                      {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                    </td>
+                    <td className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                      {user.name}
+                    </td>
+                    <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">
+                      {user.email}
+                    </td>
+                    <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">
+                      {user.isBlocked ? "Blocked" : "Active"}
+                    </td>
+                    <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">
+                      {user.subscriptionType}
+                    </td>
+                    <td className="px-6 py-2 text-gray-700 whitespace-nowrap dark:text-gray-200">
+                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}
+                    </td>
+                    <td>
+                      <div className="flex items-center space-x-3">
+                        <button
+                          className="flex items-center justify-center w-16 h-6 text-black bg-white rounded-md hover:bg-slate-200"
+                          onClick={() => handleViewFreelancerModal(user._id)}
+                        >
+                          View
+                        </button>
 
+                        <button
+                          className={`flex items-center justify-center h-6 text-white text-md rounded-md 
+                            ${user.isBlocked ? "w-20" : "w-16"} 
+                            ${blockLoading[user._id] ? (user.isBlocked ? "bg-green-400" : "bg-red-400") : (user.isBlocked ? "bg-green-600" : "bg-red-600")}`}
+                          onClick={() => handleShowAlert(user._id)}
+                          disabled={blockLoading[user._id]}
+                        >
+                          {blockLoading[user._id] ? (
+                            <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-red-600 animate-spin"></div>
+                          ) : (
+                            user.isBlocked ? "Unblock" : "Block"
+                          )}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+
+              </table>
             </div>
-            <div className="px-4 py-2 border-t border-gray-200 rounded-b-lg dark:border-gray-700 ">
+            
+            <div className="px-4 py-2 border-t border-gray-200 rounded-b-lg dark:border-gray-700">
               <ol className="flex justify-center gap-1 text-xs font-medium">
                 <li>
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`inline-flex items-center justify-center text-gray-900 bg-white border border-gray-100 rounded-sm size-7 rtl:rotate-180 dark:border-gray-800 dark:bg-gray-900 dark:text-white ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`inline-flex items-center justify-center text-gray-900 bg-white border border-gray-100 rounded-sm size-7 rtl:rotate-180 
+                    dark:border-gray-800 dark:bg-gray-900 dark:text-white 
+                    ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     &lt;
                   </button>
                 </li>
+
                 {Array.from({ length: totalPages }, (_, i) => (
                   <li key={i}>
                     <button
                       onClick={() => handlePageChange(i + 1)}
-                      className={`block leading-6 text-center rounded-sm size-7 ${
-                        currentPage === i + 1
-                          ? "bg-gray-100 text-black"
-                          // : "text-gray-900 bg-white border border-gray-100 dark:border-white dark:bg-gray-900 dark:text-white"
-                          : "text-gray-900 border border-gray-100 dark:border-gray-500 dark:text-white"
-                      }`}
+                      className={`block leading-6 text-center rounded-sm size-7 
+                      ${currentPage === i + 1 
+                        ? "bg-gray-100 text-black dark:bg-gray-700 dark:text-white" 
+                        : "text-gray-900 border border-gray-100 dark:border-gray-500 dark:text-white"}`}
                     >
                       {i + 1}
                     </button>
                   </li>
                 ))}
+
                 <li>
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`inline-flex items-center justify-center text-gray-900 bg-white border border-gray-100 rounded-sm size-7 rtl:rotate-180 dark:border-gray-800 dark:bg-gray-900 dark:text-white ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`inline-flex items-center justify-center text-gray-900 bg-white border border-gray-100 rounded-sm size-7 rtl:rotate-180 
+                    dark:border-gray-800 dark:bg-gray-900 dark:text-white 
+                    ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     &gt;
                   </button>
@@ -204,6 +250,105 @@ const Freelancers = () => {
             </div>
           </div>
         </div>
+        
+        {viewFreelancerModal && freelancerDetail && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black opacity-50"></div>
+            <div className="relative flex flex-col w-full max-w-3xl max-h-[80vh] gap-6 p-6 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg shadow-lg animate-slideIn">
+              
+              <h2 className="text-2xl font-bold text-center ">{freelancerDetail.profession}</h2>
+              {/* <p className="mt-0 text-lg text-center text-gray-600">{freelancerDetail.company || "Independent Freelancer"}</p> */}
+
+
+              <div className="mt-0 space-y-1">
+                <h3 className="text-lg font-semibold">About</h3>
+                <p className="text-gray-700">{freelancerDetail.bio}</p>
+
+                <h3 className="text-lg font-semibold">Company & Work Experience</h3>
+                <p className="text-gray-700">{freelancerDetail.company || "Independent Freelancer"} | {freelancerDetail.work_experience}</p>
+
+                <h3 className="text-lg font-semibold">Qualification</h3>
+                <p className="text-gray-700">{freelancerDetail.qualification}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-semibold">Skills</h3>
+                  <ul className="mt-1 space-y-1 text-gray-700">
+                    {freelancerDetail?.skills?.map((skill, index) => (
+                      <li key={index} className="p-1 bg-gray-100 rounded-md">{skill}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Proficient Languages</h3>
+                  <ul className="mt-1 space-y-1 text-gray-700">
+                    {freelancerDetail?.proficient_languages?.map((lang, index) => (
+                      <li key={index} className="p-1 bg-gray-100 rounded-md">{lang}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="flex justify-between mt-0">
+                <div>
+                  <h3 className="text-lg font-semibold">Working Days</h3>
+                  <p className="text-gray-700">{freelancerDetail.working_days}</p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Active Hours</h3>
+                  <p className="text-gray-700">{freelancerDetail.active_hours}</p>
+                </div>
+              </div>
+
+              <div className="mt-0">
+                <h3 className="text-lg font-semibold">Pricing</h3>
+                <div className="flex justify-between gap-4 text-white">
+                  <span className="px-2 py-1 bg-gray-400 rounded-lg">Basic: ₹{freelancerDetail.basic_price}</span>
+                  <span className="px-4 py-1 bg-gray-400 rounded-lg">Standard: ₹{freelancerDetail.standard_price}</span>
+                  <span className="px-4 py-1 bg-gray-400 rounded-lg">Premium: ₹{freelancerDetail.premium_price}</span>
+                </div>
+              </div>
+                    
+              <div className='flex justify-between'>
+                <div className="mt-0 space-y-0">
+                  {freelancerDetail.portfolio && (
+                    <a 
+                      href={freelancerDetail.portfolio}
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="block text-blue-600 hover:underline"
+                    >
+                      View Portfolio
+                    </a>
+                  )}
+                  <div className="flex gap-4">
+                    {freelancerDetail.linkedin && (
+                      <a href={freelancerDetail.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">
+                        LinkedIn
+                      </a>
+                    )}
+                    {freelancerDetail.twitter && (
+                      <a href={freelancerDetail.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                        Twitter
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-2 ">
+                  <button 
+                    className="px-4 py-2 text-white bg-black rounded-lg" 
+                    onClick={handleCloseModal}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
 
       </div>    
   )

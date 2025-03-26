@@ -18,7 +18,7 @@ import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 import { userRoutes } from "../../constants/routeUrl";
 import Navbar from "../../components/user/navbar";
-import { assignRole } from "../../api/user";
+import { assignRole, fetchUserData } from "../../api/user";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/userSlice";
 import { useSelector } from "react-redux";
@@ -40,6 +40,20 @@ const Home = () => {
   useEffect(() => {    
     if (user.role == 'none') {
       setShowModal(true);
+    }
+    
+    if(user && user.subscription == 'none') {
+      const fetchUser = async() => {
+         try {
+            const response = await fetchUserData()
+            if(response.success){              
+               dispatch(setUser({subscription: response.data.user.subscriptionType}))
+            }
+         } catch (error) {
+            console.error(error)
+         }
+      }
+      fetchUser()
     }
   }, []);
   

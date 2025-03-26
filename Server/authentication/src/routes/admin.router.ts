@@ -11,6 +11,7 @@ const router = Router()
 router
     .post('/login', adminController.signin.bind(adminController))
     .get('/freelancers', adminController.getFreelancers.bind(adminController))
+    .get('/more-info', adminController.getMoreInfo.bind(adminController))
     .get('/clients', adminController.getClients.bind(adminController))
     .patch('/clients/toggle-status', adminController.clientBlockUnblock.bind(adminController))
     .patch('/freelancers/toggle-status', adminController.freelancerBlockUnblock.bind(adminController))

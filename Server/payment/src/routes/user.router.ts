@@ -10,5 +10,6 @@ const router = Router()
 router
     .post('/pricing/checkout', userController.createCheckoutSession.bind(userController))
     .post("/pricing/webhook", userController.handleWebhook.bind(userController))
+    .get('/pricing/check-user-subscribed', userController.checkUserSubscribed.bind(userController))
 
 export default router

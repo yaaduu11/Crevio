@@ -12,14 +12,10 @@ export class AdminService implements IAdminService {
         return {plans}
     }
 
-    async createPlan(plan: SubscriptionType): Promise<{newPlan:SubscriptionType}> {
-        console.log('in service');
-        
+    async createPlan(plan: SubscriptionType): Promise<{newPlan:SubscriptionType}> {        
         if(!plan) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.PLAN_NOT_FOUND)
         }
-
-        console.log('to repo');
 
         const newPlanData: SubscriptionType = {
             price: plan.price,
@@ -28,7 +24,6 @@ export class AdminService implements IAdminService {
         };
         
         const newPlan = await this.adminRepository.create(newPlanData)
-        console.log('service ok')
         return {newPlan}
     }
 }

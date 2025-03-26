@@ -1,4 +1,5 @@
 import { UserType } from "../../types";
+import { IFreelancerDetail } from "../../types";
 
 export interface IAdminService {
     signin(email: string, password: string) : Promise<{accessToken: string, refreshToken:string, admin:UserType}>;
@@ -6,4 +7,5 @@ export interface IAdminService {
     getClients(userId:string): Promise<{clients: UserType[]}>;
     clientBlockUnblock(userId: string): Promise<void>;
     freelancerBlockUnblock(userId: string): Promise<void>;
+    getMoreInfo(userId: string): Promise<{userDetails:IFreelancerDetail}>
 }

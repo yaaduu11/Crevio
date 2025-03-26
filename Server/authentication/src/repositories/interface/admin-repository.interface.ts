@@ -1,5 +1,7 @@
 import { ObjectId } from "mongoose";
 import { UserType } from "../../types"
+import { IFreelancerDetail } from "../../types";
+
 
 export interface IAdminRepository {
     findByEmail(email: string) : Promise<UserType | null>;
@@ -8,4 +10,5 @@ export interface IAdminRepository {
     getFreelancers(): Promise<UserType[]>
     getClients(): Promise<UserType[]>
     save(user:UserType): Promise<boolean>;
+    findDetailsByUserId(userId: string): Promise<IFreelancerDetail | null>;
 }

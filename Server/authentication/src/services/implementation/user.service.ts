@@ -30,7 +30,7 @@ export class UserService implements IUserService {
         try {
             await transporter.sendMail(mailOptions)
         }catch (err) {
-            console.log(err);
+            console.error(err);
             throw generateHttpError(httpStatusCodes.INTERNAL_SERVER_ERROR, Messages.OTP_ERROR)
         }
 
@@ -92,7 +92,7 @@ export class UserService implements IUserService {
         try {
             await transporter.sendMail(mailOptions)
         } catch (error) {
-            console.log(error);
+            console.error(error);
             throw generateHttpError(httpStatusCodes.INTERNAL_SERVER_ERROR, Messages.OTP_ERROR)
         }
     }
@@ -182,7 +182,7 @@ export class UserService implements IUserService {
         try {
             await transporter.sendMail(mailOptions)
         } catch (error) {
-            console.log(error);
+            console.error(error);
             throw generateHttpError(httpStatusCodes.INTERNAL_SERVER_ERROR, Messages.OTP_ERROR)
         }
     }
@@ -208,9 +208,7 @@ export class UserService implements IUserService {
         return {user}
     }
 
-    async updateProfile(id: string, profileImage: FileType | undefined): Promise<{user: UserType}> {
-        console.log(id);
-        
+    async updateProfile(id: string, profileImage: FileType | undefined): Promise<{user: UserType}> {        
         if (!profileImage) {            
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, "Profile image is required")
         }
@@ -220,8 +218,6 @@ export class UserService implements IUserService {
         const user = await this.userRepository.findById(id);
 
         if (!user) {
-            console.log('second request');
-
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
         }
 
@@ -319,6 +315,29 @@ export class UserService implements IUserService {
         }
 
         return {userDetails}
+    }
+
+    async getUserData(userId: string): Promise<{ user: UserType; }> {
+        const user = await this.userRepository.findById(userId)
+        if(!user) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
+        }
+        
+        return {user}
+    }
+
+    async updateUserSubStatus(userId: string, planName: string): Promise<void> {        
+        if(!userId || !planName) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.DATA_NOT_FOUND)
+        } 
+
+        const user = await this.userRepository.findById(userId)
+        if(!user) {            
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
+        }
+
+        user.subscriptionType = planName
+        await this.userRepository.updateUser(user)
     }
 
     async refreshToken(token: string): Promise<string> {

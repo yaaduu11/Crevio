@@ -25,6 +25,7 @@ export interface UserType {
     password?: string;
     profilePicture?: string;
     role?: 'freelancer' | 'client' | 'admin';
+    subscriptionType? : string;
     isBlocked?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
@@ -35,6 +36,7 @@ interface UserStoreType {
     name: string;
     email: string;
     role?: 'freelancer' | 'client' | 'admin' | 'none' | '';
+    subscription?: 'none' | 'basic' | 'standard' | 'extended'
     accessToken : null;
     showToast? : null
 }

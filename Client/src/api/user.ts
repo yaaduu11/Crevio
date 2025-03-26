@@ -51,6 +51,17 @@ export const assignRole = async(role:string, email:string) => {
     }
 }
 
+export const fetchUserData = async() => {
+    try {
+        const {data} = await Api.get(userEndPoints.FETCH_USER_DATA, {headers})
+        return {success: true, data} as any
+    } catch (error) {
+        const err = error as any
+        const message = err.response?.data?.error || "Something went wrong"
+        return { success:false, error:message, data:{} };
+    }
+} 
+
 export const login = async(email:string, password:string) => {
     try {
         const {data} = await Api.post(userEndPoints.SIGNIN, {email, password}, {headers})
@@ -172,6 +183,28 @@ export const handleCheckout = async (planId: ObjectId | undefined, amount: numbe
         return { success:false, error:message };
     }
 };
+
+export const checkUserSubscribed = async() => {
+    try {
+        const {data} = await Api.get(userEndPoints.CHECK_USER_SUBSCRIBED, {headers})
+        return {success: true, data} as any
+    } catch (error) {
+        const err = error as any
+        const message = err.respose?.data?.error || "Something went wrong"
+        return { success:false, error:message };
+    }
+}
+
+export const updateUserSubStatus = async(planName: string) => {
+    try {
+        await Api.patch(userEndPoints.UPDATE_USER_SUB_STATUS, {planName}, {headers})
+        return {success: true}
+    } catch (error) {
+        const err = error as any
+        const message = err.respose?.data?.error || "Something went wrong"
+        return { success:false, error:message };
+    }
+}
 
 export const freelancerAddMoreInfo = async(userData: Partial<IFreelancerDetail>) => {
     try {

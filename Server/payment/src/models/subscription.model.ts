@@ -13,10 +13,6 @@ const SubscriptionSchema = new Schema<ISubscription>(
             required: true,
             index: true 
         },        
-        planName: { 
-            type: String, 
-            required: true 
-        },
         amount: { 
             type: Number, 
             required: true 
@@ -36,7 +32,7 @@ const SubscriptionSchema = new Schema<ISubscription>(
         },
         paymentStatus: { 
             type: String, 
-            enum: ["succeeded", "pending", "failed"], 
+            enum: ["pending", "failed", "successful", "paid"],
             required: true 
         },
         subscriptionStart: { 

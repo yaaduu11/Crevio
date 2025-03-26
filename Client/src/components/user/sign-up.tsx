@@ -121,6 +121,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
               name: response.data.user.name,
               email: response.data.user.email,
               role: response.data.user.role,
+              subscription: response.data.user.subscriptionType,
               accessToken: response.data.accessToken,
             }))
           navigate(userRoutes.HOME, {state: {fromOtp:true}});

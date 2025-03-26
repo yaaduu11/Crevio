@@ -31,6 +31,17 @@ export class AdminController implements IAdminController {
         })(req,res,next)
     }
 
+    getMoreInfo(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const userId = req.query.userId as string;
+            const {userDetails} = await this.adminService.getMoreInfo(userId)
+            console.log('success');
+
+
+            sendResponse(res, httpStatusCodes.OK, true, {userDetails})
+        })(req, res, next)
+    }
+
     getClients(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {
             const payload = JSON.parse(req.headers['x-user-payload'] as string)

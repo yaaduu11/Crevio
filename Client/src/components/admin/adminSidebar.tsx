@@ -95,8 +95,8 @@ export const AdminSidebar = ({currentPage} : {currentPage : string}) => {
                     <SidebarMenuButton isActive={currentPage=='Account'} className="text-lg text-white font-Rubik">Account</SidebarMenuButton>
                   </SidebarMenuItem>
 
-                  <SidebarMenuSkeleton showIcon />
-                  <SidebarMenuSkeleton />
+                  {/* <SidebarMenuSkeleton showIcon /> */}
+                  {/* <SidebarMenuSkeleton /> */}
                 </SidebarMenu>
               </SidebarContent>
     

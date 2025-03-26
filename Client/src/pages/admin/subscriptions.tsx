@@ -4,8 +4,9 @@ import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
 // import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { SubscriptionPlan, SubscriptionPlanType } from '../../types/admin.type';
 import { ComboboxPopover } from '../../components/ui/combobox';
-import { useEffect, useState } from 'react';
+import { Key, useEffect, useState } from 'react';
 import { addSubscriptionPlan, getAllPlans } from '../../api/admin';
+import { ObjectId } from 'mongoose';
 
 type Status = {
   label: string,
@@ -120,7 +121,7 @@ const Subscriptions = () => {
         <div className="flex flex-col items-center pt-4">
           <div className="flex justify-center gap-16 mt-8">
             {plans?.map((plan, index) => (
-              <Card className="relative p-6 text-center transition duration-500 ease-in-out transform border border-gray-300 shadow-md w-80 hover:-translate-y-4 ">
+              <Card key={plan._id?.toString()} className="relative p-6 text-center transition duration-500 ease-in-out transform border border-gray-300 shadow-md w-80 hover:-translate-y-4 ">
                   <div className="absolute px-2 py-1 text-xs font-semibold text-gray-700 bg-gray-200 rounded-md top-3 left-3">
                       {plan.planName}
                   </div>

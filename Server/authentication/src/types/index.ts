@@ -8,6 +8,7 @@ export interface UserType {
     profilePicture?: string;
     role?: 'freelancer' | 'client' | 'admin';
     isBlocked?: boolean;
+    subscriptionType? : string;
     createdAt?: Date;
     updatedAt?: Date;
 }

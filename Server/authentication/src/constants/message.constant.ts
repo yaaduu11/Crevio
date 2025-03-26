@@ -23,5 +23,6 @@ export const Messages = {
     LOGEDOUT_SUCCESS: "Logged out successfully",
     GOOGLE_ACC_FP : "Your account was created using Google. Please sign in with Google instead.",
     INVALID_FILE_FORMAT: "Invalid file format. Allowed: JPG, JPEG, PNG, WEBP.",
-    DETAILS_NOT_FOUND_F: "Freelancer details not found."
+    DETAILS_NOT_FOUND_F: "Freelancer details not found.",
+    DATA_NOT_FOUND: "Received data not found"
 }

@@ -1,6 +1,9 @@
 import { IAdminRepository } from "../interface/admin-repository.interface";
 import { UserType } from "../../types";
 import User from "../../models/user.model";
+import { IFreelancerDetail } from "../../types";
+import FreelancerDetail from "../../models/freelancer-detail.model";
+
 
 class AdminRepository implements IAdminRepository {
     
@@ -9,7 +12,7 @@ class AdminRepository implements IAdminRepository {
             const data = await User.findOne({email})
             return data
         } catch (error) {
-            console.log(error);
+            console.error(error);
             throw new Error("Error when finding the admin");
 
         }
@@ -20,7 +23,7 @@ class AdminRepository implements IAdminRepository {
             const data = await User.findById(Id)
             return data?.role == 'admin'
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return false
         }
     }
@@ -30,7 +33,7 @@ class AdminRepository implements IAdminRepository {
             const freelancers = await User.find({role:"freelancer"})
             return freelancers
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return []
         }
     }
@@ -40,7 +43,7 @@ class AdminRepository implements IAdminRepository {
             const clients = await User.find({role: 'client'})
             return clients
         }catch(error) {
-            console.log(error);
+            console.error(error);
             return []
         }
     }
@@ -50,7 +53,7 @@ class AdminRepository implements IAdminRepository {
             const client = await User.findById(userId)
             return client
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return null
         }
     }
@@ -60,8 +63,21 @@ class AdminRepository implements IAdminRepository {
             await User.findByIdAndUpdate(user._id, user)            
             return true
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return false
+        }
+    }
+
+    async findDetailsByUserId(userId: string): Promise<IFreelancerDetail | null> {
+        try {
+            console.log('in repo');
+            const userDetails = await FreelancerDetail.findOne({user_id: userId})
+            console.log('finded');
+            console.log('finded data', userDetails);
+            
+            return userDetails
+        } catch (error) {
+            throw new Error("error finding the freelancer details")
         }
     }
 }

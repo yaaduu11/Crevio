@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import mongoose, {ObjectId} from 'mongoose'
 
 interface SigninResponse {
     accessToken: string;
@@ -39,3 +39,22 @@ type SubscriptionPlan = {
 }
 
 export type {SigninResponse, SigninResult, GetFreelancers, UserTypes, SubscriptionPlan}
+
+export interface IFreelancerDetail {
+    user_id: mongoose.Schema.Types.ObjectId;
+    profession: string;
+    company: string;
+    qualification: string;
+    bio: string;
+    work_experience: string;
+    proficient_languages: string[];
+    skills: string[];
+    working_days: string;
+    active_hours: string;
+    basic_price: number;
+    standard_price: number;
+    premium_price: number;
+    portfolio: string;
+    linkedin: string;
+    twitter: string;
+}
