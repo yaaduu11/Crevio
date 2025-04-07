@@ -14,6 +14,10 @@ export default {
         Quicksand: ["Quicksand", "sans-serif"],
       },
       keyframes: {
+        scrollRight: {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0%)' },
+        },
         "caret-blink": {
           "0%,70%,100%": { opacity: "1" },
           "20%,50%": { opacity: "0" },
@@ -26,11 +30,13 @@ export default {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+
       },
       animation: {
-        slideIn: 'slideIn 0.5s ease-out forwards',
+        scrollRight: 'scrollRight 40s linear infinite',
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         marquee: 'marquee 10s linear infinite',
+        scrollRight: 'scrollRight 40s linear infinite',
       },
       transitionDuration: {
         '1500': '1500ms',

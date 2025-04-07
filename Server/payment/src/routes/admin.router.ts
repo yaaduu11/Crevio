@@ -9,6 +9,6 @@ const router = Router()
 
 router
     .get('/subscription-plans', adminController.getAllPlans.bind(adminController))
-    .post('/subscription-plans/add-plan', adminController.createPlan.bind(adminController))
+    .patch('/subscription-plans/edit-plan', adminController.editPlan.bind(adminController))
 
 export default router

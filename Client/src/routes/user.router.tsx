@@ -16,10 +16,15 @@ import Dashboard from "../pages/user/Dashboard";
 import Profile from "../pages/user/Profile";
 import Pricing from "../pages/user/Pricing";
 import SuccessPage from "../components/user/successPage";
+import MyProjects from "../pages/user/MyProjects";
 
 
 export const UserRoutes = () => {
     const user = useSelector((state: RootState) => state.user);
+
+    const RoleBasedRoute = ({ children, allowedRole }: { children: ReactNode; allowedRole: string }) => {
+        return user.role? allowedRole == user?.role ? <>{children}</> : <Navigate to={userRoutes.HOME} />: '';
+    };    
 
     const PrivateRoute = ({ children }: { children: ReactNode }) => {
         return user?.accessToken ? <>{children}</> : <Navigate to={userRoutes.HOME} />;
@@ -75,6 +80,10 @@ export const UserRoutes = () => {
                 <Route
                     path={userRoutes.PROFILE}
                     element={<PrivateRoute> <Profile/> </PrivateRoute>}
+                />
+                <Route
+                    path={userRoutes.MY_PROJECTS}
+                    element={<PrivateRoute> <RoleBasedRoute allowedRole={"client"}> <MyProjects /> </RoleBasedRoute> </PrivateRoute>}
                 />
                 <Route
                     path={userRoutes.SUCCESS}

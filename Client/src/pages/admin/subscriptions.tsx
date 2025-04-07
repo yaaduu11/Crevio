@@ -5,8 +5,9 @@ import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
 import { SubscriptionPlan, SubscriptionPlanType } from '../../types/admin.type';
 import { ComboboxPopover } from '../../components/ui/combobox';
 import { Key, useEffect, useState } from 'react';
-import { addSubscriptionPlan, getAllPlans } from '../../api/admin';
+import { editSubscriptionPlan, getAllPlans } from '../../api/admin';
 import { ObjectId } from 'mongoose';
+import { useToast } from '../../hooks/use-toast';
 
 type Status = {
   label: string,
@@ -33,6 +34,7 @@ const Subscriptions = () => {
     const [editPlanModal, setEditPlanModal] = useState(false)
     const [viewPlanModal, setViewPlanModal] = useState(false)
     const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlanType | null>(null);
+    const {toast} = useToast()
 
     const [formData, setFormData] = useState({
       freelancer_services: Array(4).fill(""),
@@ -53,7 +55,19 @@ const Subscriptions = () => {
       }
       getPlans()
     },[])
-  
+    
+    const openEditPlanModal = (plan: SubscriptionPlanType) => {
+      setSelectedPlan(plan);
+    
+      setFormData({
+        freelancer_services: plan.freelancer_services || ["", "", "", ""], 
+        client_services: plan.client_services || ["", "", "", ""],
+        price: plan.price.toString(),  
+      });
+    
+      setEditPlanModal(true);
+    };
+    
     const handleChange = (
       e: React.ChangeEvent<HTMLInputElement>,
       index: number,
@@ -70,9 +84,7 @@ const Subscriptions = () => {
       setFormData({ ...formData, price: e.target.value });
     };
     
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-  
+    const editSubscription = async (planId: string) => {  
       const subscriptionPlan: SubscriptionPlan = {
         price: Number(formData.price),
         freelancer_services: formData.freelancer_services.filter((s) => s.trim() !== ""),
@@ -80,9 +92,18 @@ const Subscriptions = () => {
       };
       
       try {
-        const response = await addSubscriptionPlan(subscriptionPlan)
+        console.log(subscriptionPlan);
+        const response = await editSubscriptionPlan(subscriptionPlan, planId)
+        
         if(response.success){
-          alert('success');
+          window.location.reload()
+
+          setEditPlanModal(false)
+          toast({
+            variant: 'success',
+            description: 'Plan updated successfull',
+            duration: 2500
+          })
         }else{
           alert('failed');
         }
@@ -91,9 +112,6 @@ const Subscriptions = () => {
       }
     };
     
-    const editSubscription = () => {
-      setEditPlanModal((prev) => !prev)
-    };
     
     const openViewPlanModal = (plan: SubscriptionPlanType) => {
       setSelectedPlan(plan);
@@ -104,6 +122,10 @@ const Subscriptions = () => {
       setViewPlanModal(false);
       setSelectedPlan(null);
     };
+    
+    const clostEditPlanModal = () => {
+      setEditPlanModal(false)
+    }
     
     
   return (
@@ -159,9 +181,14 @@ const Subscriptions = () => {
                             View
                           </button>
 
-                          {/* <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500" onClick={editSubscription}>
-                              Edit
-                          </button> */}
+                          <button 
+                            className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] border-l border-r border-gray-500"
+                            onClick={() => openEditPlanModal(plan)}
+                          >
+                            Edit
+                          </button>
+
+
                           <button className="flex-1 px-2 py-2 text-lg bg-black text-white hover:bg-[#222222] rounded-r-2xl">
                               {plan.status == 'Listed'? 'Unlist': 'List'}
                           </button>
@@ -181,7 +208,7 @@ const Subscriptions = () => {
                <div className="relative flex items-center justify-center">
                 <h1 
                   className="absolute right-0 text-3xl cursor-pointer font-Montserrat" 
-                  onClick={editSubscription}
+                  onClick={clostEditPlanModal}
                 >X
                 </h1>
 
@@ -216,17 +243,18 @@ const Subscriptions = () => {
                 </div>
               </div> */}
               
-              <form onSubmit={handleSubmit} className="w-full max-w-3xl p-8 bg-white rounded-lg">
+              <form className="w-full max-w-3xl p-8 bg-white rounded-lg">
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div className="flex flex-col gap-4">
                     <h3 className="text-lg font-semibold">Freelancer Services</h3>
-                    {formData.freelancer_services.map((_, index) => (
+                    {formData.freelancer_services.map((service, index) => (
                       <input
                         key={index}
                         name={`freelancer_service${index + 1}`}
                         type="text"
                         placeholder={`Freelancer Service ${index + 1}`}
+                        value={service}
                         required
                         onChange={(e) => handleChange(e, index, "freelancer")}
                       />
@@ -235,12 +263,13 @@ const Subscriptions = () => {
 
                   <div className="flex flex-col gap-4">
                     <h3 className="text-lg font-semibold">Client Services</h3>
-                    {formData.client_services.map((_, index) => (
+                    {formData.client_services.map((service, index) => (
                       <input
                         key={index}
                         name={`client_service${index + 1}`}
                         type="text"
                         placeholder={`Client Service ${index + 1}`}
+                        value={service}
                         required
                         onChange={(e) => handleChange(e, index, "client")}
                       />
@@ -255,13 +284,15 @@ const Subscriptions = () => {
                     type="number"
                     placeholder="Price (Monthly)"
                     className="w-1/2"
+                    value={formData.price}
                     required
                     onChange={handlePriceChange}
                   />
+
                 </div>
 
                 <div className="flex justify-end mt-4">
-                  <button type="submit" className="px-4 py-2 text-white bg-black rounded-lg">Edit</button>
+                  <button type="button" className="px-4 py-2 text-white bg-black rounded-lg" onClick={() => selectedPlan?._id ? editSubscription(selectedPlan._id.toString()) : null}>Edit</button> 
                 </div>
               </form>
 

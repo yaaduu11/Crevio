@@ -2,5 +2,5 @@ import { SubscriptionPlanType, SubscriptionType } from "../../types";
 
 export interface IAdminRepository {
     getAllPlans(): Promise<SubscriptionPlanType[]>
-    create(plan: SubscriptionType): Promise<SubscriptionType>;
+    editPlan(plan: SubscriptionType , planId: string): Promise<SubscriptionType>;
 }

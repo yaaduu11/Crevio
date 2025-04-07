@@ -18,7 +18,6 @@ export class UserController implements IUserController {
 
             sendResponse(res, httpStatusCodes.OK, true, { url: sessionUrl });
         })(req, res, next);
-
     }
 
     handleWebhook(req: Request, res: Response, next: NextFunction): Promise<void> {

@@ -15,10 +15,19 @@ class AdminRepository implements IAdminRepository {
     }
 
 
-    async create(plan: SubscriptionType) : Promise<SubscriptionType> {
+    async editPlan(plan: SubscriptionType , planId: string) : Promise<SubscriptionType> {
         try {
-            const newPlan = await SubscriptionPlan.create(plan)            
-            return newPlan
+            const updatedPlan = await SubscriptionPlan.findByIdAndUpdate(
+                planId,
+                { $set: plan },
+                { new: true }
+            );
+    
+            if (!updatedPlan) {
+                throw new Error("Plan not found");
+            }
+    
+            return updatedPlan;
         } catch (error) {
             console.error(error);
             throw new Error("Error when creating the plan")

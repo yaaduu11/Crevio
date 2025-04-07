@@ -12,7 +12,7 @@ export class AdminService implements IAdminService {
         return {plans}
     }
 
-    async createPlan(plan: SubscriptionType): Promise<{newPlan:SubscriptionType}> {        
+    async editPlan(plan: SubscriptionType, planId: string): Promise<{newPlan :SubscriptionType}> {        
         if(!plan) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.PLAN_NOT_FOUND)
         }
@@ -23,7 +23,7 @@ export class AdminService implements IAdminService {
             client_services: plan.client_services,
         };
         
-        const newPlan = await this.adminRepository.create(newPlanData)
+        const newPlan = await this.adminRepository.editPlan(newPlanData, planId)
         return {newPlan}
     }
 }

@@ -5,6 +5,8 @@ import { changeProfile, editUserName, freelancerAddMoreInfo, getProfileImage, ge
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/userSlice';
 import { IFreelancerDetail, UserType } from '../../types/user.type';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCrown } from "@fortawesome/free-solid-svg-icons";
 
 interface ProfileProps {
   user: {
@@ -12,6 +14,7 @@ interface ProfileProps {
     email: string;
   };
 }
+const allowedFormats = ["jpg", "jpeg", "png", "webp"];
 
 const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
   const [fetchedUser, setFetchedUser] = useState<UserType>({} as UserType)
@@ -26,7 +29,6 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
   const [skills, setSkills] = useState<string[]>(freelancerDetails?.skills || []);  
   const [languageInput, setLanguageInput] = useState("");
   const [skillInput, setSkillInput] = useState("");
-  const allowedFormats = ["jpg", "jpeg", "png", "webp"];
   const {toast} = useToast()
   const dispatch = useDispatch()
   
@@ -284,7 +286,18 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
   return (
     <div className="min-h-screen py-24 pr-4 ml-16">
       <div className="relative mb-16">
-        <div className="w-full h-48 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+        <div className="w-full h-48 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600">
+          {fetchedUser.subscriptionType!=='None' &&
+            <div className='flex justify-end pt-3 pr-3 '>
+              <button
+                className="flex items-center gap-2 px-2 font-semibold text-white border-2 border-white rounded-lg py-2/3 bg-amber-500"
+                >
+                <FontAwesomeIcon icon={faCrown} className="text-white" />
+                Premium
+              </button>
+            </div>}
+          
+        </div>
         <div className="absolute -bottom-12 left-8">
           <div className="w-40 h-40 overflow-hidden bg-white border-4 border-white rounded-full shadow-md">
             {profileImage ? (
@@ -352,6 +365,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
                 <Calendar className="w-4 h-4 mr-2 text-gray-400" />
                 <span>Joined  <span className='ml-1 font-semibold'>{fetchedUser.createdAt? new Date(fetchedUser.createdAt).toLocaleDateString(): 'N/A'} </span></span>
               </div>
+             
               
               {freelancerDetails.user_id && <div>
                 <div className="flex flex-col gap-2 mt-2">
@@ -516,7 +530,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black opacity-50"></div>
   
-          <div className="relative flex flex-col w-full max-w-5xl gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn">
+        <div className="relative flex flex-col w-full max-w-5xl h-[90vh] overflow-y-auto gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn">
             <h1 className="mt-2 text-[1.75rem] font-bold text-center" >
               Add More Info
             </h1>
@@ -641,6 +655,9 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
 
 
                   <div className="grid grid-cols-3 gap-4">
+                    <label htmlFor=""> basic price</label>
+                    <label htmlFor=""> standard price</label>
+                    <label htmlFor=""> premium price</label>
                     <input name="basic_price" type="number" placeholder="Basic Price" className="p-2 border rounded-md" value={formData.basic_price} onChange={(e)=> setFormData({...formData, basic_price: Number(e.target.value)})} required />
                     <input name="standard_price" type="number" placeholder="Standard Price" className="p-2 border rounded-md" value={formData.standard_price} onChange={(e)=> setFormData({...formData, standard_price: Number(e.target.value)})} required />
                     <input name="premium_price" type="number" placeholder="Premium Price" className="p-2 border rounded-md" value={formData.premium_price} onChange={(e)=> setFormData({...formData, premium_price: Number(e.target.value)})} required/>

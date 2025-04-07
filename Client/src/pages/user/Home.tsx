@@ -1,20 +1,39 @@
-import React, { useState, useEffect, useDebugValue } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../../components/user/button"
 import HomeImage_1 from '../../assets/user/freelancer-home.svg'
 import HomeImage_2 from '../../assets/user/freelancer-home2.svg'
 import Modal_left_side from '../../assets/user/modal_left.avif'
 import Modal_right_side from '../../assets/user/modal_right.avif'
-import { useLocation, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaintbrush } from "@fortawesome/free-solid-svg-icons";
-import { faComputer } from '@fortawesome/free-solid-svg-icons';
-import { faReceipt } from '@fortawesome/free-solid-svg-icons';
-import { faImage } from '@fortawesome/free-regular-svg-icons';
-import { faPanorama } from '@fortawesome/free-solid-svg-icons';
-import { faPenNib } from '@fortawesome/free-solid-svg-icons';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPaintbrush,
+  faComputer,
+  faReceipt,
+  faImage,
+  faPanorama,
+  faPenNib,
+  faBullhorn,
+  faChartLine,
+  faBriefcase,
+  faChalkboardTeacher,
+  faMusic,
+  faMicrophone,
+  faGamepad,
+  faRobot,
+  faBrain,
+  faChartBar,
+  faDatabase,
+  faHeadset,
+  faUserClock,
+  faComments,
+  faPhoneVolume,
+  faHeartbeat,
+  faSpa,
+  faCheck,
+  faTriangleExclamation
+} from "@fortawesome/free-solid-svg-icons";
 
 import { userRoutes } from "../../constants/routeUrl";
 import Navbar from "../../components/user/navbar";
@@ -23,6 +42,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/userSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/storage";
+import Footer from "../../components/user/footer";
 
 const Home = () => {
   const navigate = useNavigate()
@@ -34,8 +54,38 @@ const Home = () => {
   const [rightSelected, setRightSelected] = useState(false);
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
+  // const [displayedTitle, setDisplayedTitle] = useState("");
+  // const [displayedDescription, setDisplayedDescription] = useState("");
   
   const isNextEnabled = leftSelected || rightSelected;
+  
+  // const titleText = "Find the Right Talent,\nGet the Job Done.";
+  // const descriptionText =
+  //   "All-in-one platform to connect businesses with top freelancers for \nprojects, collaboration.";
+
+
+  // useEffect(() => {
+  //   let titleIndex = 0;
+  //   const titleInterval = setInterval(() => {
+  //     setDisplayedTitle((prev) => prev + titleText[titleIndex]);
+  //     titleIndex++;
+  //     if (titleIndex === titleText.length) {
+  //       clearInterval(titleInterval);
+  //       startDescriptionTyping();
+  //     }
+  //   }, 90); // speed of typing (ms)
+
+  //   const startDescriptionTyping = () => {
+  //     let descIndex = 0;
+  //     const descInterval = setInterval(() => {
+  //       setDisplayedDescription((prev) => prev + descriptionText[descIndex]);
+  //       descIndex++;
+  //       if (descIndex === descriptionText.length) {
+  //         clearInterval(descInterval);
+  //       }
+  //     }, 90); // speed of typing (ms)
+  //   };
+  // }, []);
   
   useEffect(() => {    
     if (user.role == 'none') {
@@ -86,6 +136,25 @@ const Home = () => {
     }
   };
   
+  const categoryData = [
+    { icon: faPaintbrush, title: "Graphic & Design" },
+    { icon: faComputer, title: "Programming & Tech" },
+    { icon: faReceipt, title: "Finance & Accounting" },
+    { icon: faImage, title: "Photography & Editing" },
+    { icon: faPanorama, title: "Video & Animation" },
+    { icon: faPenNib, title: "Writing & Translation" },
+    { icon: faBullhorn, title: "Marketing & Sales" },
+    { icon: faBriefcase, title: "Business & Consulting" },
+    { icon: faChalkboardTeacher, title: "Education & Training" },
+    { icon: faMusic, title: "Music & Audio" },
+    { icon: faGamepad, title: "Game Development" },
+    { icon: faRobot, title: "AI & Machine Learning" },
+    { icon: faChartBar, title: "Data Science & Analytics" },
+    { icon: faHeadset, title: "Virtual Assistance" },
+    { icon: faComments, title: "Customer Support" },
+    { icon: faHeartbeat, title: "Personal & Lifestyle" },
+  ];  
+  
   return (
     <>
       <div className="">
@@ -108,9 +177,9 @@ const Home = () => {
                 <Button
                   type="submit"
                   className="w-2/5 text-xl h-[68px] mt-12 rounded-2xl font-normal"
-                  onClick={()=>navigate(userRoutes.SIGNIN)}
+                  onClick={()=> user.email? navigate(userRoutes.PROJECTS) : navigate(userRoutes.SIGNIN)}
                   >
-                  Get Started
+                  {user.email? 'Explore projects' : 'Get Started'}
                 </Button>
               </div>
             </div>
@@ -137,76 +206,39 @@ const Home = () => {
             </p>
           </div>  
           
-          {/* <div className="overflow-hidden">
-            <div className="flex animate-marquee"> */}
-              <div className="bg-[#EDF3FD] rounded-2xl w-4/5 mx-auto p-4 text-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 px-[3%] items-center min-h-[300px] mt-6">
-                <div className="p-4 bg-[#EDF3FD] rounded-xl flex flex-col border border-[#EDF3FD]">
-                  <FontAwesomeIcon icon={faPaintbrush} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
+          <div className="relative w-4/5 mx-auto mt-6 overflow-hidden bg-[#EDF3FD] rounded-2xl p-4 min-h-[200px]">
+            <div className="absolute left-0 top-0 h-full w-[10%] bg-gradient-to-r from-[#EDF3FD] to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 h-full w-[10%] bg-gradient-to-l from-[#EDF3FD] to-transparent z-10 pointer-events-none" />
+            
+            <div className="flex animate-scrollRight gap-4 w-max hover:[animation-play-state:paused]">
+              {[...categoryData, ...categoryData].map((cat, i) => (
+                <div key={i} className="p-4 rounded-xl flex flex-col border border-[#EDF3FD] bg-[#EDF3FD] min-w-[200px] max-w-[200px]">
+                  <FontAwesomeIcon icon={cat.icon} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
                   <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                    Graphic &<br /> Design
+                    {cat.title}
                   </div>
-                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
                 </div>
-
-                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-                  <FontAwesomeIcon icon={faComputer} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                    Programming &<br /> Tech
-                  </div>
-                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-                  <FontAwesomeIcon icon={faReceipt} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                    Finance &<br /> Accounting
-                  </div>
-                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-                  <FontAwesomeIcon icon={faImage} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                    Photography &<br /> Editing
-                  </div>
-                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-                  <FontAwesomeIcon icon={faPanorama} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                    Video &<br /> Animation
-                  </div>
-                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl flex flex-col border border-[#E5E7EB]">
-                  <FontAwesomeIcon icon={faPenNib} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
-                    Writing &<br /> Translation
-                  </div>
-                  <p className="mt-1 text-left text-gray-400 text-md pl-2.5">3 services</p>
-                </div>
-              </div>
-           
+              ))}
+            </div>
+          </div>
 
         </div>
         
         
-        <div className="flex mt-52">
-          <div className="flex justify-end pl-[15%]">
+        <div className="flex mt-44">
+          <div className="flex justify-end pl-[18%]">
             <div className="relative">
               <img
                 src={HomeImage_2}
                 alt="Home image"
-                className="relative mt-[5%] w-[600px] h-[600px] object-contain"
+                className="relative mt-[5%] w-[500px] h-[500px] object-contain"
               />
             </div>
           </div>
             
           <div className="flex items-center justify-start pl-[14%]">
             <div className="flex flex-col">
-              <h1 className="justify-center text-2xl font-lighter sm:text-3xl md:text-4xl lg:text-5xl font-Inter">
+              <h1 className="justify-center text-2xl font-lighter sm:text-3xl md:text-4xl lg:text-5xl font-Inter text-[#0a5f45]">
                 Work Your Way
               </h1>
 
@@ -239,11 +271,8 @@ const Home = () => {
             </div>
           </div>
         </div>
-        
-
-        <h1 className="mt-40">hello</h1>
       </div>
-      
+
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -360,6 +389,10 @@ const Home = () => {
           </div>
         </div>
       )}
+      
+      <div className="pt-24">
+        <Footer />
+      </div>
     </>
   );
   

@@ -14,10 +14,10 @@ export class AdminController implements IAdminController {
         })(req, res, next)
     }
 
-    createPlan(req: Request, res: Response, next: NextFunction) : Promise<void> {
+    editPlan(req: Request, res: Response, next: NextFunction) : Promise<void> {
         return asyncHandler(async(req: Request, res: Response):Promise<void> => {
-            const {formData} = req.body
-            const {newPlan} = await this.adminService.createPlan(formData)
+            const {formData, planId} = req.body
+            const {newPlan} = await this.adminService.editPlan(formData, planId)
             
             sendResponse(res, httpStatusCodes.OK, true, {newPlan})
         })(req ,res ,next)

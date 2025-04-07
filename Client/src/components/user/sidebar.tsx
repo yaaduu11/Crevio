@@ -10,32 +10,31 @@ const Sidebar = ({currentPage}: {currentPage: string}) => {
   const menuItems = [
     { name: 'Dashboard', icon: '📊'}, 
     { name: 'Profile', icon: '👤' },
-    // { name: 'Projects', icon: '📁' },
     { name: 'Messages', icon: '💬' },
     { name: 'Wallet', icon: '💰' },
     { name: 'Reviews', icon: '⭐' }
   ];
+  
+  if (user?.role === "client") {
+    menuItems.splice(2, 0, { name: 'My Projects', icon: '📁' });
+  }
 
   return (
     <div className="h-screen p-4 pl-10 mt-12">
       <h1 className='pl-8 cursor-pointer text-md font-Montserrat' onClick={()=>navigate(userRoutes.HOME)}>&#10150; home</h1>
       <div className="flex flex-col p-6 mt-2 bg-white border shadow-xl w-60 h-5/6 rounded-2xl">
-        {/* <div className="mb-4">
-        </div> */}
+
         
         <nav className="flex-1">
           <ul className="space-y-2">
             {menuItems.map((item, index) => (
               <li key={index}>
                 <a 
-                  onClick={()=>navigate(`/${item.name.toLowerCase()}`)}
-                //   className={`flex items-center p-3 text-gray-700 border-black hover:text-white transition-all duration-200 rounded-xl font-Montserrat ${currentPage== item.name? 'bg-[#126d52] text-white':''}`}
+                  onClick={() => navigate(`/${item.name.toLowerCase().replace(/\s+/g, '')}`)}
                   className={`flex items-center p-3 text-gray-700 border-black transition-all duration-200 rounded-xl font-Montserrat transform hover:scale-110 hover:shadow-md ${currentPage === item.name ? 'bg-[#126d52] text-white' : 'hover:text-[#126d52] hover:font-semibold'}`}
-
                >
-                    {/* {user.role=='client' && item.name=='Projects'  }  */}
                       
-                      <span className="mr-3">{item.icon}</span>
+                  <span className="mr-3">{item.icon}</span>
                   <span>{item.name}</span>
                 </a>
               </li>

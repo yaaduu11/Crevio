@@ -1,16 +1,20 @@
 import React,{ useEffect, useState } from 'react';
-import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../ui/card';
+import { Card, CardHeader, CardFooter, CardContent } from '../ui/card';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { SubscriptionPlanType } from '../../types/admin.type';
 import { getAllPlans } from '../../api/admin';
-import { handleCheckout } from '../../api/user';
+import { checkUserSubscribed, handleCheckout } from '../../api/user';
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/storage";
+import { useToast } from '../../hooks/use-toast';
+
 
 const PricingDetails = () => {
     const [plans, setPlans] = useState<SubscriptionPlanType[]>()
     const user = useSelector((state: RootState) => state.user);
+    
+    const {toast} = useToast()
     
     useEffect(() => {
         const getPlans = async() => {
@@ -25,6 +29,24 @@ const PricingDetails = () => {
         }
         getPlans()
     },[])
+    
+    const handlePricingSubmit = async(planId, planPrice, userId) => {
+        try {
+            const response = await checkUserSubscribed()
+            if(response.success && response.data.planName == 'none') {
+                await handleCheckout(planId, planPrice, userId)
+            }else{
+                toast({
+                    variant: 'destructive',
+                    description: 'you already have a plan',
+                    duration: 3000
+                })
+            }
+        } catch (error) {
+            console.error(error);
+            
+        }
+    }
         
   return (
     <div className="flex flex-col items-center pt-44">
@@ -32,9 +54,14 @@ const PricingDetails = () => {
       <p className="mb-6 text-center text-gray-600">
           Find the perfect plan for your needs.
       </p>
+        {user.subscription !== "none" && (
+            <div className="px-4 py-2 mb-4 text-green-700 bg-green-100 border border-green-400 rounded-md">
+            You are currently on the <strong>{user.subscription}</strong> plan.
+            </div>
+        )}
       <div className="flex justify-center gap-6 mt-8">
-        {plans?.map((plan, index) => (
-            <Card className={`relative p-6 text-center border  w-80 ${plan.most_popular? 'border-yellow-400': 'border-gray-300' }`}>
+        {plans?.map((plan) => (
+            <Card className={`relative p-6 text-center border  w-80 ${plan.most_popular? 'border-yellow-400': 'border-gray-300' } `}>
             <div className="absolute px-2 py-1 text-xs font-semibold text-gray-700 bg-gray-200 rounded-md top-3 left-3">
                 {plan.planName}
             </div>
@@ -45,7 +72,7 @@ const PricingDetails = () => {
             }
             <CardHeader>
                 <p className="text-4xl font-normal text-black">
-                    ₹{plan.price}<span className="text-base font-normal text-black">/month</span>
+                    ₹ {plan.price}<span className="text-base font-normal text-black">/month</span>
                 </p>
             </CardHeader>
             <CardContent>
@@ -66,57 +93,17 @@ const PricingDetails = () => {
             </CardContent>
             <CardFooter>
                 <button
-                    className={`w-full px-4 py-2 rounded-md ${plan.most_popular? 'text-white bg-[#1a664f] hover:bg-[#145240]' : 'text-green-700 border border-green-700 hover:bg-green-100'}`}
-                    onClick={() => handleCheckout(plan._id, plan.price, user._id)}
+                    className={`w-full px-4 py-2 rounded-md ${plan.most_popular? 'text-white bg-[#1a664f] hover:bg-[#145240]' : 'text-green-700 border border-green-700 hover:bg-green-100'} ${user.subscription!=='none'? 'bg-slate-200 border-none': ''}`}
+                    onClick={() => handlePricingSubmit(plan._id, plan.price, user._id)}
+                    // disabled={user.subscription !== "none"}
                 >
                     Go Premium
                 </button>
             </CardFooter>
             </Card>
         ))}
-        {/* <Card className="relative p-6 text-center border border-yellow-400 w-80">
-        <div className="absolute px-2 py-1 text-xs font-semibold text-gray-700 bg-gray-200 rounded-md top-3 left-3">
-            standard
-        </div>
-        <div className="absolute px-3 py-2 text-sm text-white bg-yellow-400 rounded-md right-5 -top-3">
-            Most Popular
-        </div>
-        <CardHeader>
-            <p className="text-4xl font-normal text-black">
-                ₹399<span className="text-base font-normal text-black">/month</span>
-            </p>
-        </CardHeader>
-        <CardContent>
-            <ul className="space-y-3 text-left text-gray-700">
-                <li className="flex items-center">
-                    <span className="mr-2"><FontAwesomeIcon icon={faCheck} className="text-xl text-green-600" /></span>
-                    10 service postings
-                </li>
-                <li className="flex items-center">
-                    <span className="mr-2"><FontAwesomeIcon icon={faCheck} className="text-xl text-green-600" /></span>
-                    10 service postings
-                </li>
-                <li className="flex items-center">
-                    <span className="mr-2"><FontAwesomeIcon icon={faCheck} className="text-xl text-green-600" /></span>
-                    10 service postings
-                </li>
-                <li className="flex items-center">
-                    <span className="mr-2"><FontAwesomeIcon icon={faCheck} className="text-xl text-green-600" /></span>
-                    10 service postings
-                </li>
-            </ul>
-        </CardContent>
-        <CardFooter>
-            <button className="w-full px-4 py-2 text-white bg-[#1a664f] rounded-md hover:bg-[#145240]">
-            Go Premium
-            </button>
-        </CardFooter>
-        </Card> */}
-
-       
       </div>
     </div>
-
   );
 };
 

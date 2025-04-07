@@ -19,6 +19,7 @@ export const userEndPoints = {
     GET_MORE_INFO: '/auth/more-info',
     UPDATE_MORE_INFO: '/auth/update-more-info',
     UPDATE_USER_SUB_STATUS: '/auth/update-user-sub-status',
+    CHECK_USER_SUBSCRIBED_: '/auth/check-user-subscribed',
 
     STRIPE_CHECKOUT: '/payment/pricing/checkout',
     CHECK_USER_SUBSCRIBED: '/payment/pricing/check-user-subscribed'
@@ -34,5 +35,5 @@ export const adminEndPoints = {
     LOGOUT : '/auth/admin/logout',
 
     FETCH_PLANS: 'payment/admin/subscription-plans',
-    ADD_PLAN: '/payment/admin/subscription-plans/add-plan'
+    EDIT_PLAN: '/payment/admin/subscription-plans/edit-plan'
 }

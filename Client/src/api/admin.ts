@@ -84,9 +84,9 @@ export const logout = async() => {
 
 
 
-export const addSubscriptionPlan = async(formData: SubscriptionPlan) => {
+export const editSubscriptionPlan = async(formData: SubscriptionPlan, planId: string) => {
     try {
-        const {data} = await Api.post(adminEndPoints.ADD_PLAN, {formData}, {headers})
+        const {data} = await Api.patch(adminEndPoints.EDIT_PLAN, {formData, planId}, {headers})
         return {success:true, data} 
     } catch (error) {
         const err = error as any
