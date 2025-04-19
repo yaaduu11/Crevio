@@ -2,9 +2,18 @@ import Api from "../services/axios";
 import { userEndPoints } from "../constants/endpointUrl";
 import { IFreelancerDetail, UserSignupFormType } from "../types/user.type";
 import { ObjectId } from "mongoose";
+import axios from 'axios';
 
 const headers= {
     'X-User-Level': 'user'
+}
+
+interface GeminiResponse {
+    candidates?: {
+      content?: {
+        parts?: { text: string }[];
+      };
+    }[];
 }
 
 export const signup = async (userData: UserSignupFormType) => {
@@ -239,3 +248,25 @@ export const getMoreInfo_F = async() => {
         return {success: false, error: message}
     }
 }
+
+export const aichatbot = async (inputText: string) => {
+    try {
+      const { data } = await axios.post<GeminiResponse>(
+        userEndPoints.AI_CHATBOT,
+        {
+          contents: [{ parts: [{ text: `User: ${inputText}\nBot:` }] }],
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+  
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't respond.";
+      return { success: true, data: reply };
+    } catch (error: any) {
+      const message = error.response?.data?.error?.message || 'Something went wrong';
+      return { success: false, error: message };
+    }
+};

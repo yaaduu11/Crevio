@@ -43,6 +43,7 @@ import { setUser } from "../../redux/userSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/storage";
 import Footer from "../../components/user/footer";
+import Chatbot from "../../components/user/chatbot";
 
 const Home = () => {
   const navigate = useNavigate()
@@ -157,6 +158,7 @@ const Home = () => {
   
   return (
     <>
+      <Chatbot/>
       <div className="">
         <Navbar currentPage="home" />     
         <div className="w-full h-[800px] bg-[#D7FEC8] rounded-br-[160px] shadow-md top-0 pt-20">
@@ -277,8 +279,9 @@ const Home = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black opacity-50"></div>
   
-          <div className="relative flex flex-col w-full max-w-5xl gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn">
-            <h1 className="mt-12 text-[1.75rem] font-bold text-center">
+        <div className="relative flex flex-col w-full max-w-5xl h-[70vh] overflow-y-auto gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn">
+          {/* <div className="relative flex flex-col w-full max-w-5xl gap-4 p-8 mx-4 transition-all duration-500 ease-out transform bg-white rounded-lg animate-slideIn"> */}
+            <h1 className="mt-4 text-[1.75rem] font-bold text-center">
               {user.name}, your account has been created!<br />
               What brings you to Crevio?
             </h1>

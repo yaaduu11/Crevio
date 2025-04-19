@@ -1,3 +1,4 @@
+
 export const userEndPoints = {
     SIGNUP: "/auth/register",
     SIGNIN: "/auth/login",
@@ -22,7 +23,9 @@ export const userEndPoints = {
     CHECK_USER_SUBSCRIBED_: '/auth/check-user-subscribed',
 
     STRIPE_CHECKOUT: '/payment/pricing/checkout',
-    CHECK_USER_SUBSCRIBED: '/payment/pricing/check-user-subscribed'
+    CHECK_USER_SUBSCRIBED: '/payment/pricing/check-user-subscribed',
+
+    AI_CHATBOT: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`
 }
 
 export const adminEndPoints = {

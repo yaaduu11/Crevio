@@ -8,5 +8,9 @@ export const services = [
     {
         route: "/payment",
         target: env.PAYMENT
+    },
+    {
+        route: "/chatbot",
+        target: env.CHATBOT
     }
 ]

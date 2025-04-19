@@ -85,7 +85,6 @@ const MyProjectsSection = () => {
             <div className="lg:col-span-3">
                 <div className="w-full max-w-3xl mx-auto">
                 <form className="space-y-6">
-                {/* Project Title */}
                 <input
                     type="text"
                     name="title"
@@ -94,7 +93,6 @@ const MyProjectsSection = () => {
                     required
                 />
 
-                {/* Thumbnail Upload */}
                 <div>
                     <label className="block mb-1 font-medium">Thumbnail Image</label>
                     <input
@@ -106,7 +104,6 @@ const MyProjectsSection = () => {
                     />
                 </div>
 
-                {/* Description */}
                 <textarea
                     name="description"
                     placeholder="Describe your project in detail..."
@@ -114,7 +111,6 @@ const MyProjectsSection = () => {
                     required
                 />
 
-                {/* Category Select */}
                 <div>
                     <label className="block mb-1 font-medium">Category</label>
                     <select
@@ -132,7 +128,6 @@ const MyProjectsSection = () => {
                 </div>
 
 
-                {/* Dynamic Skills Input */}
                 <div>
                     <label className="block mb-1 font-medium">Skills Required</label>
                     <div className="flex gap-2">

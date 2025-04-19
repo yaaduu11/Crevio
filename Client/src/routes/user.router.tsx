@@ -17,6 +17,7 @@ import Profile from "../pages/user/Profile";
 import Pricing from "../pages/user/Pricing";
 import SuccessPage from "../components/user/successPage";
 import MyProjects from "../pages/user/MyProjects";
+import ProjectDetails from "../pages/user/ProjectDetails";
 
 
 export const UserRoutes = () => {
@@ -64,6 +65,10 @@ export const UserRoutes = () => {
                 <Route
                     path={userRoutes.PROJECTS}
                     element={<PrivateRoute> <Projects/> </PrivateRoute>}
+                />
+                <Route 
+                    path={userRoutes.PROJECT_DETAILS}
+                    element={<PrivateRoute> <ProjectDetails/> </PrivateRoute>}
                 />
                 <Route
                     path={userRoutes.ABOUT}

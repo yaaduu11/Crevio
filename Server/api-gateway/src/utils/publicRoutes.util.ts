@@ -12,7 +12,9 @@ const public_routes: {method: string, path: string}[] = [
     {method: 'POST', path: '/auth/refreshToken'},
     {method: "POST", path: "/auth/admin/login"},
 
-    {method: "POST", path: "/payment/pricing/webhook"}
+    {method: "POST", path: "/payment/pricing/webhook"},
+
+    {method: "POST", path: "/chatbot/message"}
 ]
 
 export function isPublic(req: Request): boolean {

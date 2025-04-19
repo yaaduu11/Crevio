@@ -4,6 +4,8 @@ import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Star } from "lucide-react";
 import Modal_right_side from '../../assets/user/modal_right.avif'
+import { useNavigate } from "react-router-dom";
+import { userRoutes } from "../../constants";
 
 const dummyProjects = Array.from({ length: 12 }, (_, i) => ({
   id: i + 1,
@@ -15,6 +17,7 @@ const dummyProjects = Array.from({ length: 12 }, (_, i) => ({
 }));
 
 export default function ProjectsPage() {
+  const navigate = useNavigate()
   return (
     <div className="flex min-h-screen p-6 bg-white">
       <aside className="w-1/5 pr-4">
@@ -37,7 +40,7 @@ export default function ProjectsPage() {
                       .fill(0)
                       .map((_, i) => (
                         <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                      ))}
+                    ))}
                   </span>
                 </label>
               ))}
@@ -62,7 +65,7 @@ export default function ProjectsPage() {
         <h1 className="mb-6 text-3xl font-bold">Projects</h1>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {dummyProjects.map((project) => (
-            <Card key={project.id} className="transition shadow-md rounded-2xl hover:shadow-lg">
+            <Card key={project.id} className="transition shadow-md rounded-2xl hover:shadow-lg" onClick={()=>navigate(userRoutes.PROJECT_DETAILS)}>
               <img
                 src={project.image}
                 alt={project.title}

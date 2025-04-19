@@ -13,6 +13,7 @@ export const userRoutes = {
     PROFILE: '/profile',    
     MY_PROJECTS: '/myprojects',
     SUCCESS: '/success',
+    PROJECT_DETAILS: '/project-details'
 }
 
 export const adminRoutes = {

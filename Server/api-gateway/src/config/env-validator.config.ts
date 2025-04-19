@@ -15,6 +15,10 @@ export const env = {
         return process.env.PAYMENT
     },
 
+    get CHATBOT() {
+        return process.env.CHATBOT
+    },
+
     get CLIENT_PORT() {
         return process.env.CLIENT_PORT
     },
