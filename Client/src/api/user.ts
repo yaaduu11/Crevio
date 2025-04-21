@@ -1,6 +1,6 @@
 import Api from "../services/axios";
 import { userEndPoints } from "../constants/endpointUrl";
-import { IFreelancerDetail, UserSignupFormType } from "../types/user.type";
+import { IFreelancerDetail, UserSignupFormType, ProjectType } from "../types/user.type";
 import { ObjectId } from "mongoose";
 import axios from 'axios';
 
@@ -270,3 +270,21 @@ export const aichatbot = async (inputText: string) => {
       return { success: false, error: message };
     }
 };
+
+
+export const addProject = async (formData: FormData) => {
+    try {
+      const { data } = await Api.post(userEndPoints.ADD_PROJECT, formData, {
+        headers: {
+            ...headers,
+            "Content-Type": "multipart/form-data",
+        },
+      });
+      return { success: true, data };
+    } catch (error) {
+      const err = error as any;
+      const message = err.response?.data?.error || "Something went wrong";
+      return { success: false, error: message };
+    }
+  };
+  

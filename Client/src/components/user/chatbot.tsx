@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeadset, faPaperPlane, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from 'framer-motion';
 import { aichatbot } from '../../api/user';
+import TypewriterText from './type_writter';
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,43 +53,44 @@ const Chatbot = () => {
     setInputText('');
     
     setIsLoading(true);
-    setMessages([...updatedMessages, { sender: 'chatbot', text: 'Thinking' }]);
+    // setMessages([...updatedMessages, { sender: 'chatbot', text: 'Thinking' }]);
+    const thinkingMessage = { sender: 'chatbot', text: 'Thinking' };
+    setMessages(prev => [...prev, thinkingMessage]);
+
 
     try {
-           
-        const prompt = `You are a helpful and professional chatbot for the Crevio web application. Your job is to answer user questions about how Crevio works, including features, navigation, subscription plans, and the founder.
+      const prompt = `You are a helpful and professional chatbot for the Crevio web application. Your job is to answer user questions about how Crevio works, including features, navigation, subscription plans, and the founder.
 
-            Respond in a clear, concise, and structured format. Use:
-            - Bullet points for lists
-            - Line breaks between paragraphs and steps
-            - Plain language — no need to make anything bold or italic
-            - Avoid any kind of opening like "Hello!", "Hi there!", or "I'd be happy to tell you..." in follow up or after frist questions — just give the answer directly after frist question , the first one should be like this 
+          Respond in a clear, concise, and structured format. Use:
+          - Bullet points for lists
+          - Line breaks between paragraphs and steps
+          - Plain language — no need to make anything bold or italic
+          - Avoid any kind of opening like "Hello!", "Hi there!", or "I'd be happy to tell you..." in follow up or after frist questions — just give the answer directly after frist question , the first one should be like this 
 
-            Here is some context you can use when replying:
-            - Crevio is a user-friendly, lightweight freelancer platform where clients and freelancers connect to get projects done efficiently.
-            - The name "Crevio" is derived from "Creativity + Vision."
-            - The founder of Crevio is Yadukrishnan, a software developer.
-            - Clients can create projects either from:
-                - Their profile → "My Projects" → "Add"
-                - Or the general "Projects" page → Click "Add Your Project" in the top-right corner.
-            - Freelancers can view project details and apply by clicking the "Apply" button on any project.
-            - Clients can view a list of applicants and choose a freelancer from the received applications.
-            - Once connected, clients and freelancers can:
-                - Use Live Chat (available with any subscription plan)
-                - Make Video Calls if both have a Standard or Extended subscription
-            - Subscription Plans:
-                - Basic, Standard, and Extended — all plans last for 1 month
-            - Messaging history (chat list) is accessible from the Messaging section
-            - Users can manage their profile by clicking their profile icon in the top-right corner
+          Here is some context you can use when replying:
+          - Crevio is a user-friendly, lightweight freelancer platform where clients and freelancers connect to get projects done efficiently.
+          - The name "Crevio" is derived from "Creativity + Vision."
+          - The founder of Crevio is Yadukrishnan, a software developer.
+          - Clients can create projects either from:
+              - Their profile → "My Projects" → "Add"
+              - Or the general "Projects" page → Click "Add Your Project" in the top-right corner.
+          - Freelancers can view project details and apply by clicking the "Apply" button on any project.
+          - Clients can view a list of applicants and choose a freelancer from the received applications.
+          - Once connected, clients and freelancers can:
+              - Use Live Chat (available with any subscription plan)
+              - Make Video Calls if both have a Standard or Extended subscription
+          - Subscription Plans:
+              - Basic, Standard, and Extended — all plans last for 1 month
+          - Messaging history (chat list) is accessible from the Messaging section
+          - Users can manage their profile by clicking their profile icon in the top-right corner
 
-            Important Notes:
-            - Always be respectful and informative
-            - If the question is not related to Crevio, respond: "I'm trained to assist with questions about the Crevio platform and its features. Please let me know how I can help you with anything related to Crevio."
+          Important Notes:
+          - Always be respectful and informative
+          - If the question is not related to Crevio, respond: "I'm trained to assist with questions about the Crevio platform and its features. Please let me know how I can help you with anything related to Crevio."
 
-            Now answer the following user question directly and clearly:
+          Now answer the following user question directly and clearly:
 
-            User Question: ${inputText}`;
-
+          User Question: ${inputText}`;
         
         const response = await aichatbot(prompt);
       
@@ -145,34 +147,45 @@ const Chatbot = () => {
             </div>
 
             <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+                
                 {messages.length === 0 ? (
                 <div className="mt-20 text-lg text-center text-gray-400">No messages yet.</div>
                 ) : (
-                messages.map((msg, index) => (
-                <div 
-                key={index} 
-                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                <div
-                    className={`inline-block max-w-xs px-4 py-2 rounded-xl ${
-                    msg.sender === 'user'
-                        ? 'bg-[#E8F8F5] text-left'
-                        : 'bg-[#F1F0F0] text-left'
-                    }`}
-                >
-                    {msg.text === 'Thinking' && isLoading ? (
+                
+                messages.map((msg, index) => {
+                const isLastBotMessage = 
+                  index === messages.length - 1 &&
+                  msg.sender === 'chatbot' &&
+                  msg.text !== 'Thinking';
+
+                return (
+                  <div 
+                    key={index} 
+                    className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`inline-block max-w-xs px-4 py-2 rounded-xl ${
+                        msg.sender === 'user' ? 'bg-[#E8F8F5]' : 'bg-[#F1F0F0]'
+                      }`}
+                    >
+                      {msg.text === 'Thinking' && isLoading ? (
                         <span className="text-gray-500">
-                            Thinking<span className="inline-block animate-pulse">...</span>
+                          Thinking<span className="inline-block animate-pulse">...</span>
                         </span>
-                    ) : (
-                        msg.text
-                    )}
-                    {msg.fullText && (
-                    <span className="ml-2 text-blue-500 cursor-pointer">more...</span>
-                    )}
-                </div>
-                </div>
-                ))
+                      ) : isLastBotMessage ? (
+                        <TypewriterText text={msg.text} />
+                      ) : (
+                        <span>{msg.text}</span>
+                      )}
+                      {msg.fullText && (
+                        <span className="ml-2 text-blue-500 cursor-pointer">more...</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+
+                
                 )}
                 <div ref={messagesEndRef} />
             </div>
@@ -210,3 +223,31 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
+
+
+// messages.map((msg, index) => (
+                // <div 
+                // key={index} 
+                // className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                // >
+                // <div
+                //     className={`inline-block max-w-xs px-4 py-2 rounded-xl ${
+                //     msg.sender === 'user'
+                //         ? 'bg-[#E8F8F5] text-left'
+                //         : 'bg-[#F1F0F0] text-left'
+                //     }`}
+                // >
+                //     {msg.text === 'Thinking' && isLoading ? (
+                //         <span className="text-gray-500">
+                //             Thinking<span className="inline-block animate-pulse">...</span>
+                //         </span>
+                //     ) : (
+                //       msg.text
+                //       // <TypewriterText text={msg.text} />
+                //     )}
+                //     {msg.fullText && (
+                //     <span className="ml-2 text-blue-500 cursor-pointer">more...</span>
+                //     )}
+                // </div>
+                // </div>
+                // ))

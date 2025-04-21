@@ -11,6 +11,16 @@ interface ErrorState {
     field?: string;
     message?: string;
 }
+
+export interface ProjectType {
+    title: string;
+    thumbnail: File | null;
+    description: string;
+    category: string;
+    skills: string[];
+    deadline: string;
+    additional_info: string;
+}
   
 type UserSignupFormAction =
     | { type: "SET_NAME"; payload: string }

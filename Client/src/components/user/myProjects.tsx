@@ -2,6 +2,9 @@ import { Card, CardContent } from "../ui/card";
 import { Star } from "lucide-react";
 import Modal_right_side from '../../assets/user/modal_right.avif'
 import { useState } from "react";
+import { addProject } from "../../api/user";
+import { ProjectType } from "../../types/user.type";
+import { useToast } from "../../hooks/use-toast";
 
 const dummyProjects = Array.from({ length: 6 }, (_, i) => ({
 id: i + 1,
@@ -31,11 +34,88 @@ const categoryData = [
     { title: "Personal & Lifestyle" },
   ];  
 
-const skills = ['js', 'ts']
-
 const MyProjectsSection = () => {
+    const {toast} = useToast()
     const [addProjectModal, setAddProjectModal] = useState(false)
-
+    const [formData, setFormData] = useState<ProjectType>({
+        title: "",
+        thumbnail: null,
+        description: "",
+        category: "",
+        skills: [],
+        deadline: "",
+        additional_info: "",
+      });      
+    
+      const [skillInput, setSkillInput] = useState("");
+      const [skills, setSkills] = useState<string[]>([]);
+    
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      };
+    
+      const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        setFormData((prev) => ({ ...prev, thumbnail: file }));
+      };
+    
+      const handleAddSkill = () => {
+        if (skillInput && !formData.skills.includes(skillInput)) {
+          setFormData((prev) => ({
+            ...prev,
+            skills: [...prev.skills, skillInput],
+          }));
+          setSkillInput("");
+        }
+      };
+      
+      const handleRemoveSkill = (skillToRemove: string) => {
+        setFormData((prev) => ({
+          ...prev,
+          skills: prev.skills.filter((skill) => skill !== skillToRemove),
+        }));
+      };
+    
+      const handleAddProject = async (e: React.FormEvent) => {
+        e.preventDefault();
+      
+        const payload = new FormData();
+        payload.append("title", formData.title);
+        if (formData.thumbnail) payload.append("thumbnail", formData.thumbnail);
+        payload.append("description", formData.description);
+        payload.append("category", formData.category);
+        payload.append("deadline", formData.deadline);
+        payload.append("additional_info", formData.additional_info);
+        payload.append("skills", JSON.stringify(formData.skills));
+      
+        const response = await addProject(payload);
+      
+        if (response.success) {
+          toast({
+            variant: "success",
+            description: "Project successfully added.",
+            duration: 2500,
+          });
+          setAddProjectModal(false);
+          setFormData({
+            title: "",
+            thumbnail: null,
+            description: "",
+            category: "",
+            skills: [],
+            deadline: "",
+            additional_info: "",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            description: `Failed to add project: ${response.error}`,
+            duration: 3000,
+          });
+        }
+      };
+      
     const handleModalOpen = () => {
         setAddProjectModal((prev) => !prev)
     }
@@ -84,7 +164,7 @@ const MyProjectsSection = () => {
 
             <div className="lg:col-span-3">
                 <div className="w-full max-w-3xl mx-auto">
-                <form className="space-y-6">
+                {/* <form className="space-y-6">
                 <input
                     type="text"
                     name="title"
@@ -147,21 +227,21 @@ const MyProjectsSection = () => {
                     </button>
                     </div>
                     <div className="flex flex-wrap gap-2 mt-2">
-                    {skills.map((skill) => (
-                        <span key={skill} className="px-2 py-1 text-sm bg-green-200 rounded-md">
-                        {skill}
-                        <button
-                            // onClick={() => handleRemoveSkill(skill)}
-                            className="ml-1 text-red-500"
-                        >
-                            ✕
-                        </button>
-                        </span>
-                    ))}
-                    </div>
+                        {formData.skills.map((skill) => (
+                            <span key={skill} className="px-2 py-1 text-sm bg-green-200 rounded-md">
+                            {skill}
+                            <button
+                                onClick={() => handleRemoveSkill(skill)}
+                                className="ml-1 text-red-500"
+                                type="button"
+                            >
+                                ✕
+                            </button>
+                            </span>
+                        ))}
+                        </div>
                 </div>
 
-                {/* Deadline */}
                 <div>
                     <label className="block mb-1 font-medium">Deadline</label>
                     <input
@@ -172,14 +252,12 @@ const MyProjectsSection = () => {
                     />
                 </div>
 
-                {/* Additional Info */}
                 <textarea
                     name="additional_info"
                     placeholder="Any other information you'd like to add..."
                     className="w-full h-20 p-2 border rounded-md"
                 />
 
-                {/* Buttons */}
                 <div className="flex justify-between">
                     <button
                     type="button"
@@ -195,7 +273,136 @@ const MyProjectsSection = () => {
                     Save
                     </button>
                 </div>
-                </form>
+                </form> */}
+                <form className="space-y-6" onSubmit={handleAddProject}>
+                    {/* Title */}
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="Project Title"
+                        className="w-full p-2 border rounded-md"
+                        value={formData.title}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    {/* Thumbnail */}
+                    <div>
+                        <label className="block mb-1 font-medium">Thumbnail Image</label>
+                        <input
+                        type="file"
+                        name="thumbnail"
+                        accept="image/*"
+                        className="w-full p-2 border rounded-md"
+                        onChange={handleFileChange}
+                        required
+                        />
+                    </div>
+
+                    {/* Description */}
+                    <textarea
+                        name="description"
+                        placeholder="Describe your project in detail..."
+                        className="w-full p-2 border rounded-md h-28"
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    {/* Category */}
+                    <div>
+                        <label className="block mb-1 font-medium">Category</label>
+                        <select
+                        name="category"
+                        className="w-full p-2 border rounded-md"
+                        value={formData.category}
+                        onChange={handleChange}
+                        required
+                        >
+                        <option value="">Select Category</option>
+                        {categoryData.map((category, index) => (
+                            <option key={index} value={category.title}>
+                            {category.title}
+                            </option>
+                        ))}
+                        </select>
+                    </div>
+
+                    {/* Skills */}
+                    <div>
+                        <label className="block mb-1 font-medium">Skills Required</label>
+                        <div className="flex gap-2">
+                        <input
+                            type="text"
+                            placeholder="Add a skill"
+                            className="w-full p-2 border rounded-md"
+                            value={skillInput}
+                            onChange={(e) => setSkillInput(e.target.value)}
+                        />
+                        <button
+                            type="button"
+                            onClick={handleAddSkill}
+                            className="px-3 py-2 text-white bg-blue-500 rounded-md"
+                        >
+                            Add
+                        </button>
+                        </div>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                        {formData.skills.map((skill) => (
+                            <span key={skill} className="px-2 py-1 text-sm bg-green-200 rounded-md">
+                            {skill}
+                            <button
+                                onClick={() => handleRemoveSkill(skill)}
+                                className="ml-1 text-red-500"
+                                type="button"
+                            >
+                                ✕
+                            </button>
+                            </span>
+                        ))}
+                        </div>
+                    </div>
+
+                    {/* Deadline */}
+                    <div>
+                        <label className="block mb-1 font-medium">Deadline</label>
+                        <input
+                        type="date"
+                        name="deadline"
+                        className="w-full p-2 border rounded-md"
+                        value={formData.deadline}
+                        onChange={handleChange}
+                        required
+                        />
+                    </div>
+
+                    {/* Additional Info */}
+                    <textarea
+                        name="additional_info"
+                        placeholder="Any other information you'd like to add..."
+                        className="w-full h-20 p-2 border rounded-md"
+                        value={formData.additional_info}
+                        onChange={handleChange}
+                    />
+
+                    {/* Buttons */}
+                    <div className="flex justify-between">
+                        <button
+                        type="button"
+                        className="px-6 py-2 text-white bg-black rounded hover:bg-slate-900"
+                        onClick={handleModalOpen}
+                        >
+                        Close
+                        </button>
+                        <button
+                        type="submit"
+                        className="px-6 py-2 text-white bg-black rounded hover:bg-slate-900"
+                        >
+                        Save
+                        </button>
+                    </div>
+                    </form>
+
             </div>
             </div>
         </div>

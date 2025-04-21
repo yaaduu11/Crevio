@@ -15,6 +15,10 @@ export const env = {
         return process.env.PAYMENT
     },
 
+    get PROJECT() {
+        return process.env.PROJECT
+    },
+
     get CHATBOT() {
         return process.env.CHATBOT
     },
