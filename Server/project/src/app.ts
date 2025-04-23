@@ -8,6 +8,7 @@ import { env } from './config';
 
 import { connectDB } from './config';
 import { envValidator } from './utils';
+import userRouter from './routes/user.router'
 
 
 class App {
@@ -31,7 +32,7 @@ class App {
     }
 
     private initializeRoutes(): void {
-        this.app.use('/', )
+        this.app.use('/', userRouter)
         this.app.use('/admin', )
     }
 

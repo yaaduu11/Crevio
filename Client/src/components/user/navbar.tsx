@@ -27,7 +27,7 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
   const pageRoutes: { [key: string]: string } = {
     "projects": userRoutes.PROJECTS,
     "about us": userRoutes.ABOUT,
-    "contact us": userRoutes.CONTACT,
+    "contact": userRoutes.CONTACT,
     "pricing": userRoutes.PRICING,
   };
 
@@ -46,7 +46,7 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
   
   return (
     <>
-      <div className={`fixed left-0 w-full z-50 h-[110px] bg-[#D7FEC8] rounded-br-[80px] top-0 flex items-center justify-between px-8`}>
+      <div className={`fixed left-0 w-full z-50 h-[110px] bg-[#D7FEC8] rounded-br-[80px] top-0 flex items-center justify-between px-8 `}>
         <h1 className="text-[#00835B] font-K2D text-5xl mb-2 font-semibold cursor-pointer" onClick={()=>navigate(userRoutes.HOME)}>
           Crevio
         </h1>

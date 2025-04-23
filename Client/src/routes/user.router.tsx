@@ -18,6 +18,8 @@ import Pricing from "../pages/user/Pricing";
 import SuccessPage from "../components/user/successPage";
 import MyProjects from "../pages/user/MyProjects";
 import ProjectDetails from "../pages/user/ProjectDetails";
+import ContactUs from "../pages/user/ContactUs";
+import Message from "../pages/user/Message";
 
 
 export const UserRoutes = () => {
@@ -75,6 +77,10 @@ export const UserRoutes = () => {
                     element={<PrivateRoute> <About/> </PrivateRoute>}
                 />
                 <Route
+                    path={userRoutes.CONTACT}
+                    element={<ContactUs/>}
+                />
+                <Route
                     path={userRoutes.PRICING}
                     element={<PrivateRoute> <Pricing/> </PrivateRoute>}
                 />
@@ -89,6 +95,10 @@ export const UserRoutes = () => {
                 <Route
                     path={userRoutes.MY_PROJECTS}
                     element={<PrivateRoute> <RoleBasedRoute allowedRole={"client"}> <MyProjects /> </RoleBasedRoute> </PrivateRoute>}
+                />
+                <Route
+                    path={userRoutes.MESSAGES}
+                    element={<Message/>}
                 />
                 <Route
                     path={userRoutes.SUCCESS}

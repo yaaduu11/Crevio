@@ -284,7 +284,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({user}) => {
   }
     
   return (
-    <div className="min-h-screen py-24 pr-4 ml-16">
+      <div className="min-h-screen px-4 py-10 md:px-8 lg:px-16 md:py-16 lg:py-24">
       <div className="relative mb-16">
         <div className="w-full h-48 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600">
           {fetchedUser.subscriptionType!=='None' &&

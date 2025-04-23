@@ -12,6 +12,7 @@ export const userRoutes = {
     DASHBOARD: '/dashboard',
     PROFILE: '/profile',    
     MY_PROJECTS: '/myprojects',
+    MESSAGES: '/messages',
     SUCCESS: '/success',
     PROJECT_DETAILS: '/project-details'
 }

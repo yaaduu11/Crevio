@@ -32,6 +32,7 @@ class UserRepository implements IUserRepository {
             throw new Error("Error when finding plan");
         }
     }
+
     
 }
 

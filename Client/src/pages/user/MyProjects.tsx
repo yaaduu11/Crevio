@@ -4,13 +4,17 @@ import MyProjectsSection from '../../components/user/myProjects';
 const MyProjects = () => {
   return (
     <>
-      <div className='flex bg-gray-100'>
-        <Sidebar currentPage={'My Projects'} />
-        <div className="w-full pt-24 ">
+      <div className='flex bg-white'>
+        <div className="fixed top-0 left-0 z-50 h-screen">
+          <Sidebar currentPage={'My Projects'} />
+        </div>
+
+        <div className="w-full pt-8 pl-[12%]">
           <MyProjectsSection />
         </div>
       </div>
     </>
+
   )
 }
 
