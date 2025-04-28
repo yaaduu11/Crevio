@@ -8,4 +8,6 @@ const userController = new UserController(userService)
 
 const router = Router()
 
+router.post('/projects/add-project', userController.addProject.bind(userController))
+
 export default router

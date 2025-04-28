@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Messages, httpStatusCodes } from "../constants";
+import { messages, httpStatusCodes } from "../constants";
 import { HttpError } from "./http-error.util";
 
 export const asyncHandler = (fn: Function) => {
@@ -10,7 +10,7 @@ export const asyncHandler = (fn: Function) => {
             if (err instanceof HttpError) {
                 res.status(err.statusCode).json({ error: err.message });
             } else {
-                res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: Messages.SERVER_ERROR });
+                res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: messages.SERVER_ERROR });
             }
         }
     };

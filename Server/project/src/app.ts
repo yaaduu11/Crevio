@@ -33,7 +33,6 @@ class App {
 
     private initializeRoutes(): void {
         this.app.use('/', userRouter)
-        this.app.use('/admin', )
     }
 
     private initializeDB(): void {

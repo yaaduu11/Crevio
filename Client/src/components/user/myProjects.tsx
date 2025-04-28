@@ -77,44 +77,104 @@ const MyProjectsSection = () => {
         }));
       };
     
-      const handleAddProject = async (e: React.FormEvent) => {
+    //   const handleAddProject = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+        
+    //     console.log(formData)
+      
+    //     const payload = new FormData();
+    //     payload.append("title", formData.title);
+    //     if (formData.thumbnail) payload.append("thumbnail", formData.thumbnail);
+    //     payload.append("description", formData.description);
+    //     payload.append("category", formData.category);
+    //     payload.append("deadline", formData.deadline);
+    //     payload.append("additional_info", formData.additional_info);
+    //     payload.append("skills", JSON.stringify(formData.skills));
+        
+    //     // console.log(payload);
+        
+    //     const response = await addProject(payload);
+      
+    //     if (response.success) {
+    //       toast({
+    //         variant: "success",
+    //         description: "Project successfully added.",
+    //         duration: 2500,
+    //       });
+    //       setAddProjectModal(false);
+    //       setFormData({
+    //         title: "",
+    //         thumbnail: null,
+    //         description: "",
+    //         category: "",
+    //         skills: [],
+    //         deadline: "",
+    //         additional_info: "",
+    //       });
+    //     } else {
+    //       toast({
+    //         variant: "destructive",
+    //         description: `Failed to add project: ${response.error}`,
+    //         duration: 3000,
+    //       });
+    //     }
+    //   };
+      
+    const handleAddProject = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log(formData);
+        
+        const form = new FormData();
+        form.append("title", formData.title);
+        form.append("description", formData.description);
+        form.append("category", formData.category);
+        form.append("deadline", formData.deadline);
+        form.append("additional_info", formData.additional_info);
+        form.append("skills", JSON.stringify(formData.skills));
       
-        const payload = new FormData();
-        payload.append("title", formData.title);
-        if (formData.thumbnail) payload.append("thumbnail", formData.thumbnail);
-        payload.append("description", formData.description);
-        payload.append("category", formData.category);
-        payload.append("deadline", formData.deadline);
-        payload.append("additional_info", formData.additional_info);
-        payload.append("skills", JSON.stringify(formData.skills));
+        if (formData.thumbnail) {
+          form.append("thumbnail", formData.thumbnail);
+        }
       
-        const response = await addProject(payload);
-      
-        if (response.success) {
-          toast({
-            variant: "success",
-            description: "Project successfully added.",
-            duration: 2500,
-          });
-          setAddProjectModal(false);
-          setFormData({
-            title: "",
-            thumbnail: null,
-            description: "",
-            category: "",
-            skills: [],
-            deadline: "",
-            additional_info: "",
-          });
-        } else {
+        try {
+            console.log(form);
+            
+          const response = await addProject(form);
+          if (response.success) {
+            toast({
+              variant: "success",
+              description: "Project successfully added.",
+              duration: 2500,
+            });
+            setAddProjectModal(false);
+            setFormData({
+              title: "",
+              thumbnail: null,
+              description: "",
+              category: "",
+              skills: [],
+              deadline: "",
+              additional_info: "",
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              description: `Failed to add project: ${response.error}`,
+              duration: 3000,
+            });
+          }
+        } catch (err) {
           toast({
             variant: "destructive",
-            description: `Failed to add project: ${response.error}`,
+            description: "Something went wrong. Please try again.",
             duration: 3000,
           });
+          console.error("Add project error:", err);
         }
       };
+      
+      
+      
       
     const handleModalOpen = () => {
         setAddProjectModal((prev) => !prev)
@@ -275,7 +335,6 @@ const MyProjectsSection = () => {
                 </div>
                 </form> */}
                 <form className="space-y-6" onSubmit={handleAddProject}>
-                    {/* Title */}
                     <input
                         type="text"
                         name="title"
@@ -286,7 +345,6 @@ const MyProjectsSection = () => {
                         required
                     />
 
-                    {/* Thumbnail */}
                     <div>
                         <label className="block mb-1 font-medium">Thumbnail Image</label>
                         <input
@@ -299,7 +357,6 @@ const MyProjectsSection = () => {
                         />
                     </div>
 
-                    {/* Description */}
                     <textarea
                         name="description"
                         placeholder="Describe your project in detail..."
@@ -309,7 +366,6 @@ const MyProjectsSection = () => {
                         required
                     />
 
-                    {/* Category */}
                     <div>
                         <label className="block mb-1 font-medium">Category</label>
                         <select
@@ -328,7 +384,6 @@ const MyProjectsSection = () => {
                         </select>
                     </div>
 
-                    {/* Skills */}
                     <div>
                         <label className="block mb-1 font-medium">Skills Required</label>
                         <div className="flex gap-2">
@@ -363,7 +418,6 @@ const MyProjectsSection = () => {
                         </div>
                     </div>
 
-                    {/* Deadline */}
                     <div>
                         <label className="block mb-1 font-medium">Deadline</label>
                         <input
@@ -376,7 +430,6 @@ const MyProjectsSection = () => {
                         />
                     </div>
 
-                    {/* Additional Info */}
                     <textarea
                         name="additional_info"
                         placeholder="Any other information you'd like to add..."
@@ -385,7 +438,6 @@ const MyProjectsSection = () => {
                         onChange={handleChange}
                     />
 
-                    {/* Buttons */}
                     <div className="flex justify-between">
                         <button
                         type="button"
