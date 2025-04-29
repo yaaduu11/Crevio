@@ -45,7 +45,7 @@ class UserRepository implements IUserRepository {
 
     async findDetailsByUserId(userId: string): Promise<IFreelancerDetail | null> {
         try {
-            const userDetails = await FreelancerDetail.findOne({user_id: userId})
+            const userDetails = await FreelancerDetail.findOne({user_id: userId}).lean() as IFreelancerDetail | null
             return userDetails
         } catch (error) {
             throw new Error("error finding the freelancer details")

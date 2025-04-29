@@ -8,11 +8,11 @@ import { IUserService } from "../../services/interface/user-service.interface";
 import jwt from "jsonwebtoken";
 
 export class UserController implements IUserController{
-    constructor(private userService: IUserService) {}
+    constructor(private _userService: IUserService) {}
 
     register(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
-            const email = await this.userService.register(req.body);
+            const email = await this._userService.register(req.body);
             sendResponse(res, httpStatusCodes.OK, true, {email})
         })(req, res, next);
     }
@@ -20,7 +20,7 @@ export class UserController implements IUserController{
     verifyOtp(req: Request, res:Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const {otp, email} = req.body
-            const {accessToken, refreshToken, user} = await this.userService.verifyOtp(otp, email)
+            const {accessToken, refreshToken, user} = await this._userService.verifyOtp(otp, email)
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true, 
@@ -41,7 +41,7 @@ export class UserController implements IUserController{
                 return;
             }
 
-            await this.userService.resendOtp(email)
+            await this._userService.resendOtp(email)
             sendResponse(res, httpStatusCodes.OK, true)
         })(req,res,next)
     }
@@ -49,7 +49,7 @@ export class UserController implements IUserController{
     assignRole(req: Request, res:Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const {role, email} = req.body;
-            const {userRole} = await this.userService.assignRole(role, email)
+            const {userRole} = await this._userService.assignRole(role, email)
 
             sendResponse(res, httpStatusCodes.OK, true, {userRole})
         })(req, res, next);
@@ -58,7 +58,7 @@ export class UserController implements IUserController{
     login(req: Request, res:Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const {email, password} = req.body
-            const {accessToken, refreshToken, user} = await this.userService.login(email, password)
+            const {accessToken, refreshToken, user} = await this._userService.login(email, password)
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true, 
@@ -73,7 +73,7 @@ export class UserController implements IUserController{
     googleAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res: Response):Promise<void> => {
             const {...userData} = req.body.user;            
-            const {accessToken, refreshToken, user} = await this.userService.googleAuth(userData as GoogleAuthUserType)
+            const {accessToken, refreshToken, user} = await this._userService.googleAuth(userData as GoogleAuthUserType)
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly:true,
@@ -89,7 +89,7 @@ export class UserController implements IUserController{
     forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res: Response): Promise<void> => {
             const {email} = req.body
-            await this.userService.forgotPassword(email)
+            await this._userService.forgotPassword(email)
 
             sendResponse(res, httpStatusCodes.OK, true)
         })(req, res, next)
@@ -98,7 +98,7 @@ export class UserController implements IUserController{
     verifyOtpFP(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {otp, email} = req.body
-            const {user} = await this.userService.verifyOtpFp(otp, email)
+            const {user} = await this._userService.verifyOtpFp(otp, email)
 
             sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
@@ -107,7 +107,7 @@ export class UserController implements IUserController{
     newPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {
             const {password, email} = req.body
-            const {user} = await this.userService.newPassword(password, email)
+            const {user} = await this._userService.newPassword(password, email)
 
             sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
@@ -120,7 +120,7 @@ export class UserController implements IUserController{
                 res.status(httpStatusCodes.FORBIDDEN).json({error: Messages.TOKEN_EMPTY})
                 return;
             }
-            const accessToken = await this.userService.refreshToken(refreshToken)
+            const accessToken = await this._userService.refreshToken(refreshToken)
 
             sendResponse(res, httpStatusCodes.OK, true, {accessToken})
         })(req, res, next)
@@ -130,7 +130,7 @@ export class UserController implements IUserController{
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {
             const { userId } = JSON.parse(req.headers['x-user-payload'] as string);
             const profileImage = req.file
-            const {user} = await this.userService.updateProfile(userId, profileImage)
+            const {user} = await this._userService.updateProfile(userId, profileImage)
 
             sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
@@ -139,7 +139,7 @@ export class UserController implements IUserController{
     getProfileImage(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const { userId } = JSON.parse(req.headers['x-user-payload'] as string);
-            const {user} = await this.userService.getProfileImage(userId)
+            const {user} = await this._userService.getProfileImage(userId)
             
             sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
@@ -149,7 +149,7 @@ export class UserController implements IUserController{
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {
             const {name} = req.body
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
-            const {userName} = await this.userService.editUserName(userId, name)
+            const {userName} = await this._userService.editUserName(userId, name)
 
             sendResponse(res, httpStatusCodes.OK, true, {userName})
         })(req, res, next)
@@ -159,7 +159,7 @@ export class UserController implements IUserController{
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {userData} = req.body
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
-            const {userDetails} = await this.userService.addMoreInfo(userId, userData)
+            const {userDetails} = await this._userService.addMoreInfo(userId, userData)
 
             sendResponse(res, httpStatusCodes.OK, true, {userDetails})
         })(req, res, next)
@@ -169,7 +169,7 @@ export class UserController implements IUserController{
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {userData} = req.body
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
-            const {userDetails} = await this.userService.updateMoreInfo(userId, userData)
+            const {userDetails} = await this._userService.updateMoreInfo(userId, userData)
 
             sendResponse(res, httpStatusCodes.OK, true, {userDetails})
         })(req, res, next)
@@ -178,7 +178,7 @@ export class UserController implements IUserController{
     getMoreInfo(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
-            const {userDetails} = await this.userService.getMoreInfo(userId)
+            const {userDetails} = await this._userService.getMoreInfo(userId)
 
             sendResponse(res, httpStatusCodes.OK, true, {userDetails})
         })(req, res, next)
@@ -187,7 +187,7 @@ export class UserController implements IUserController{
     getUserData(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {            
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
-            const {user} = await this.userService.getUserData(userId)
+            const {user} = await this._userService.getUserData(userId)
             
             sendResponse(res, httpStatusCodes.OK, true, {user})
         })(req, res, next)
@@ -197,7 +197,7 @@ export class UserController implements IUserController{
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {            
             const {planName} = req.body
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
-            await this.userService.updateUserSubStatus(userId, planName)
+            await this._userService.updateUserSubStatus(userId, planName)
 
             sendResponse(res, httpStatusCodes.OK, true)
         })(req, res, next)

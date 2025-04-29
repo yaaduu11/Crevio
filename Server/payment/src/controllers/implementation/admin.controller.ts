@@ -5,11 +5,11 @@ import { asyncHandler, sendResponse } from "../../utils";
 import { httpStatusCodes } from "../../constants";
 
 export class AdminController implements IAdminController {
-    constructor(private adminService: IAdminService) {}
+    constructor(private _adminService: IAdminService) {}
 
     getAllPlans(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res: Response): Promise<void> => {
-            const {plans} = await this.adminService.getAllPlans()
+            const {plans} = await this._adminService.getAllPlans()
             sendResponse(res, httpStatusCodes.OK, true, {plans})
         })(req, res, next)
     }
@@ -17,7 +17,7 @@ export class AdminController implements IAdminController {
     editPlan(req: Request, res: Response, next: NextFunction) : Promise<void> {
         return asyncHandler(async(req: Request, res: Response):Promise<void> => {
             const {formData, planId} = req.body
-            const {newPlan} = await this.adminService.editPlan(formData, planId)
+            const {newPlan} = await this._adminService.editPlan(formData, planId)
             
             sendResponse(res, httpStatusCodes.OK, true, {newPlan})
         })(req ,res ,next)

@@ -5,10 +5,10 @@ import { IAdminRepository } from "../../repositories/interface/admin-repository.
 import { IAdminService } from "../interface/admin-service.interface"
 
 export class AdminService implements IAdminService {
-    constructor(private adminRepository: IAdminRepository) {}
+    constructor(private _adminRepository: IAdminRepository) {}
 
     async getAllPlans(): Promise<{ plans: SubscriptionPlanType[]; }> {
-        const plans = await this.adminRepository.getAllPlans()
+        const plans = await this._adminRepository.getAllPlans()
         return {plans}
     }
 
@@ -23,7 +23,7 @@ export class AdminService implements IAdminService {
             client_services: plan.client_services,
         };
         
-        const newPlan = await this.adminRepository.editPlan(newPlanData, planId)
+        const newPlan = await this._adminRepository.editPlan(newPlanData, planId)
         return {newPlan}
     }
 }

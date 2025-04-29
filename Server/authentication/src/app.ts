@@ -10,6 +10,8 @@ import {envValidator} from './utils';
 import userRouter from './routes/user.router';
 import adminRouter from './routes/admin.router'
 
+import { createUserMappings, createFreelancerMappings } from './mappings'; 
+
 class App {
     public app: Application;
 
@@ -18,9 +20,15 @@ class App {
 
         this.app = express()
 
+        this.initializeMappings();
         this.initializeMiddlewares()
         this.initializeDB()
         this.initializeRoutes()
+    }
+
+    private initializeMappings(): void {
+        createUserMappings();
+        createFreelancerMappings()
     }
 
     private initializeMiddlewares(): void {

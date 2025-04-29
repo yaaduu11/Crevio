@@ -10,10 +10,10 @@ import { IFreelancerDetail } from '../../types';
 
 
 export class AdminService implements IAdminService {
-    constructor(private adminRepository: IAdminRepository) {}
+    constructor(private _adminRepository: IAdminRepository) {}
 
     async signin(email: string, password: string): Promise<{accessToken: string, refreshToken: string, admin: UserType}> {        
-        let admin = await this.adminRepository.findByEmail(email)        
+        let admin = await this._adminRepository.findByEmail(email)        
         if(!admin) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.ADMIN_NOT_FOUND)
         }
@@ -31,30 +31,30 @@ export class AdminService implements IAdminService {
     }
 
     async getFreelancers(userId: string): Promise<{ freelancers: UserType[]; }> {
-        const isAdmin = await this.adminRepository.verifyAdmin(userId)
+        const isAdmin = await this._adminRepository.verifyAdmin(userId)
         if(!isAdmin) {
             throw generateHttpError(httpStatusCodes.UNAUTHORIZED, Messages.NO_ACCESS)
         }
-        const freelancers = await this.adminRepository.getFreelancers()
+        const freelancers = await this._adminRepository.getFreelancers()
         return {freelancers}
     }
 
     async getClients(userId: string): Promise<{ clients: UserType[]; }> {
-        const isAdmin = await this.adminRepository.verifyAdmin(userId)
+        const isAdmin = await this._adminRepository.verifyAdmin(userId)
         if(!isAdmin){
             throw generateHttpError(httpStatusCodes.UNAUTHORIZED, Messages.NO_ACCESS)
         }
-        const clients = await this.adminRepository.getClients()
+        const clients = await this._adminRepository.getClients()
         return {clients}
     }
 
     async clientBlockUnblock(userId: string): Promise<void> {
-        const client = await this.adminRepository.findById(userId)        
+        const client = await this._adminRepository.findById(userId)        
         if(!client) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
         }
         client.isBlocked = !client.isBlocked;        
-        await this.adminRepository.save(client)
+        await this._adminRepository.save(client)
         if(client.isBlocked) {
             if(client._id) await redisClient.set(client._id.toString(), JSON.stringify(client.isBlocked)) 
         }else{
@@ -63,12 +63,12 @@ export class AdminService implements IAdminService {
     }
 
     async freelancerBlockUnblock(userId: string): Promise<void> {
-        const freelancer = await this.adminRepository.findById(userId)
+        const freelancer = await this._adminRepository.findById(userId)
         if(!freelancer) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
         }
         freelancer.isBlocked = !freelancer.isBlocked
-        await this.adminRepository.save(freelancer)
+        await this._adminRepository.save(freelancer)
         if(freelancer.isBlocked) {
             if(freelancer._id) await redisClient.set(freelancer._id.toString(), JSON.stringify(freelancer.isBlocked)) 
         }else{
@@ -80,7 +80,7 @@ export class AdminService implements IAdminService {
         console.log('in serv');
         console.log(userId);
         
-        const userDetails = await this.adminRepository.findDetailsByUserId(userId)
+        const userDetails = await this._adminRepository.findDetailsByUserId(userId)
         console.log('got it in ser', userDetails);
         
         if(!userDetails) {

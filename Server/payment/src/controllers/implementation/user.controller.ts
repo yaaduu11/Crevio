@@ -6,12 +6,12 @@ import { httpStatusCodes } from "../../constants";
 
 
 export class UserController implements IUserController {
-    constructor(private userService: IUserService) {}
+    constructor(private _userService: IUserService) {}
 
     createCheckoutSession(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const { planId, amount, userId } = req.body;
-            const sessionUrl = await this.userService.createStripeSession(planId, amount, userId);
+            const sessionUrl = await this._userService.createStripeSession(planId, amount, userId);
             if (!sessionUrl) {                
                 return sendResponse(res, httpStatusCodes.BAD_REQUEST, false, { error: "Failed to generate Stripe checkout URL" });
             }
@@ -23,13 +23,13 @@ export class UserController implements IUserController {
     handleWebhook(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const sig = req.headers["stripe-signature"] as string;    
-            const event = this.userService.verifyStripeWebhook(Buffer.from(req.body), sig);
+            const event = this._userService.verifyStripeWebhook(Buffer.from(req.body), sig);
             if (!event) {
                 return sendResponse(res, httpStatusCodes.BAD_REQUEST, false, undefined, "Invalid Stripe event");
             }
         
             res.json({ received: true });
-            this.userService.processStripeEvent(event);
+            this._userService.processStripeEvent(event);
         })(req, res, next);
     }
     
@@ -37,7 +37,7 @@ export class UserController implements IUserController {
     checkUserSubscribed(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
-            const {planName} = await this.userService.checkUserSubscribed(userId)
+            const {planName} = await this._userService.checkUserSubscribed(userId)
             
             sendResponse(res, httpStatusCodes.OK, true, {planName})
         })(req, res, next)

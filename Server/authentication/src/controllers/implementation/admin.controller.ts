@@ -5,12 +5,12 @@ import { IAdminController } from "../interface/admin-controller.interface";
 import { IAdminService } from "../../services/interface/admin-service.interface";
 
 export class AdminController implements IAdminController {
-    constructor(private adminService: IAdminService) {}
+    constructor(private _adminService: IAdminService) {}
 
     signin(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response):Promise<void> => {
             const {email, password} = req.body
-            const {accessToken, refreshToken, admin} = await this.adminService.signin(email, password)
+            const {accessToken, refreshToken, admin} = await this._adminService.signin(email, password)
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
@@ -26,7 +26,7 @@ export class AdminController implements IAdminController {
         return asyncHandler(async(req:Request, res:Response):Promise<void> => {
             const payload = JSON.parse(req.headers['x-user-payload'] as string); 
 
-            const {freelancers} = await this.adminService.getFreelancers(payload.userId)
+            const {freelancers} = await this._adminService.getFreelancers(payload.userId)
             sendResponse(res, httpStatusCodes.OK, true, {freelancers})
         })(req,res,next)
     }
@@ -34,7 +34,7 @@ export class AdminController implements IAdminController {
     getMoreInfo(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const userId = req.query.userId as string;
-            const {userDetails} = await this.adminService.getMoreInfo(userId)
+            const {userDetails} = await this._adminService.getMoreInfo(userId)
             console.log('success');
 
 
@@ -45,7 +45,7 @@ export class AdminController implements IAdminController {
     getClients(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {
             const payload = JSON.parse(req.headers['x-user-payload'] as string)
-            const {clients} = await this.adminService.getClients(payload.userId)
+            const {clients} = await this._adminService.getClients(payload.userId)
             sendResponse(res, httpStatusCodes.OK, true, {clients})
         })(req,res, next)
     }
@@ -53,7 +53,7 @@ export class AdminController implements IAdminController {
     clientBlockUnblock(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {userId} = req.body
-            await this.adminService.clientBlockUnblock(userId)
+            await this._adminService.clientBlockUnblock(userId)
             sendResponse(res, httpStatusCodes.OK, true)
         })(req, res, next)
     }
@@ -61,7 +61,7 @@ export class AdminController implements IAdminController {
     freelancerBlockUnblock(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
             const {userId} = req.body
-            await this.adminService.freelancerBlockUnblock(userId)
+            await this._adminService.freelancerBlockUnblock(userId)
             sendResponse(res, httpStatusCodes.OK, true)
         })(req, res, next)
     }

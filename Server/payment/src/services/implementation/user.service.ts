@@ -8,7 +8,7 @@ import { generateHttpError } from "../../utils";
 import { httpStatusCodes, Messages } from "../../constants";
 
 export class UserService implements IUserService {
-    constructor(private userRepository: IUserRepository) {}
+    constructor(private _userRepository: IUserRepository) {}
 
     async createStripeSession(planId: string, amount: number, userId: string): Promise<string | null> {
         try {
@@ -94,16 +94,16 @@ export class UserService implements IUserService {
             updatedAt: new Date()
         };
     
-        await this.userRepository.createSubscription(subscriptionData);
+        await this._userRepository.createSubscription(subscriptionData);
     }
 
     async checkUserSubscribed(userId: string): Promise<{planName: string}> {
-        const subscriptionData = await this.userRepository.findSubscriptionDataByUserId(userId)
+        const subscriptionData = await this._userRepository.findSubscriptionDataByUserId(userId)
         if(!subscriptionData) {
             throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.PLAN_NOT_FOUND)
         }
         
-        const planName = await this.userRepository.getPlansById(subscriptionData.planId?.toString())
+        const planName = await this._userRepository.getPlansById(subscriptionData.planId?.toString())
         if(!planName) {
             throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.PLAN_NOT_FOUND)
         }
