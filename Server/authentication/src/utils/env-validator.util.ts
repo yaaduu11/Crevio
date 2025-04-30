@@ -40,4 +40,8 @@ export function envValidator() {
     if(!env.CLOUDINARY_API_SECRET) {
         throw new Error('Cloudinary api secret is not found in the env')
     }
+
+    if(!env.LOKI_HOST) {
+        throw new Error('Loki Host is not found in env')
+    }
 }

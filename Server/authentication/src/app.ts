@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { connectDB, initializeRedisClient, env } from './config';
 import {envValidator} from './utils';
+import morganLogger from './loggers/morgan.logger';
 
 import userRouter from './routes/user.router';
 import adminRouter from './routes/admin.router'
@@ -35,7 +36,7 @@ class App {
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended:true}))
         this.app.use(cookieParser())
-        this.app.use(morgan('short'))
+        this.app.use(morganLogger)
     }
 
     private initializeRoutes(): void {
