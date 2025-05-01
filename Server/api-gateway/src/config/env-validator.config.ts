@@ -33,6 +33,14 @@ export const env = {
 
     get JWT_ACCESS_TOKEN_SECRET() {
         return process.env.JWT_ACCESS_TOKEN_SECRET
+    },
+
+    get LOKI_HOST() {
+        return process.env.LOKI_HOST
+    },
+
+    get SERVICE_NAME() {
+        return process.env.SERVICE_NAME
     }
 }
 
@@ -59,5 +67,9 @@ export function envValidator() {
 
     if(!env.JWT_ACCESS_TOKEN_SECRET) {
         throw new Error('JWT access token secret is not found in env')
+    }
+
+    if(!env.LOKI_HOST) {
+        throw new Error('Loki Host is not found in env')
     }
 }
