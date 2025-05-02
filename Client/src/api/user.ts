@@ -286,5 +286,4 @@ export const addProject = async (formData: FormData) => {
       const message = err.response?.data?.error || "Something went wrong";
       return { success: false, error: message };
     }
-  };
-  
+};

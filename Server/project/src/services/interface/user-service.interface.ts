@@ -1,5 +1,5 @@
-import { ProjectType } from "../../types";
+import { FileType, ProjectType } from "../../types";
 
 export interface IUserService {
-    addProject(formData: ProjectType, userId: string): Promise<{ createdProject: Partial<ProjectType> }>
+    addProject(formData: ProjectType, thumbnail: FileType | undefined, userId: string): Promise<{ createdProject: Partial<ProjectType> }>
 }

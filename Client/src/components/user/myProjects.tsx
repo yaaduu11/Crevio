@@ -133,12 +133,10 @@ const MyProjectsSection = () => {
         form.append("skills", JSON.stringify(formData.skills));
       
         if (formData.thumbnail) {
-          form.append("thumbnail", formData.thumbnail);
+          form.append("projectsImage", formData.thumbnail);
         }
-      
+        
         try {
-            console.log(form);
-            
           const response = await addProject(form);
           if (response.success) {
             toast({
@@ -146,6 +144,7 @@ const MyProjectsSection = () => {
               description: "Project successfully added.",
               duration: 2500,
             });
+            
             setAddProjectModal(false);
             setFormData({
               title: "",
@@ -453,7 +452,7 @@ const MyProjectsSection = () => {
                         Save
                         </button>
                     </div>
-                    </form>
+                </form>
 
             </div>
             </div>

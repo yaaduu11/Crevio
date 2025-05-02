@@ -4,7 +4,7 @@ import { ProjectType } from "../../types/index";
 import mongoose from "mongoose";
 
 class UserRepository implements IUserRepository {
-    async createProject(projectData: Partial<ProjectType> & { userId: mongoose.Types.ObjectId }): Promise<ProjectType> {
+    async createProject(projectData: ProjectType & { userId: mongoose.Types.ObjectId }): Promise<ProjectType> {
         return await Project.create(projectData);
     }
 }
