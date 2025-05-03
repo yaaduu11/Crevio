@@ -6,11 +6,11 @@ import { addProject } from "../../api/user";
 import { ProjectType } from "../../types/user.type";
 import { useToast } from "../../hooks/use-toast";
 
-const dummyProjects = Array.from({ length: 6 }, (_, i) => ({
+const dummyProjects = Array.from({ length: 16 }, (_, i) => ({
 id: i + 1,
 title: `project ${i + 1}`,
 description: "Looking for skilled freelancers to design a modern Figma UI.",
-price: 999,
+deadline: '25-01-2025',
 rating: 4.5,
 image: Modal_right_side,
 }));
@@ -181,7 +181,9 @@ const MyProjectsSection = () => {
 
     return (
         <> 
-        <main className="w-full px-4 sm:px-8">
+        <main className="w-full px-4 sm:px-8 ">
+        {/* <main className="min-h-screen px-4 py-10 md:px-8 lg:px-16 md:py-16 lg:py-24"> */}
+
             <div className="flex justify-between">
                 <h1 className="mb-6 text-3xl font-bold">My Projects</h1>
                 <button className="w-32 font-bold text-white bg-black border border-black h-9 rounded-xl" onClick={handleModalOpen}>+ Add Project</button>
@@ -200,7 +202,7 @@ const MyProjectsSection = () => {
                         {project.description}
                         </p>
                         <div className="flex items-center justify-between">
-                        <span className="font-bold text-indigo-600">₹{project.price}</span>
+                        <span className="font-bold text-indigo-600">₹{project.deadline}</span>
                         <span className="flex items-center text-sm text-yellow-500">
                             <Star className="w-4 h-4 fill-yellow-400" />
                             {project.rating}
