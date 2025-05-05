@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, request } from 'express';
 import { IUserService } from "../../services/interface/user-service.interface";
 import { IUserController } from "../interface/user-controller.interface";
 import { asyncHandler } from "../../utils/async-handler.util";
@@ -19,4 +19,24 @@ export class UserController implements IUserController {
             res.status(httpStatusCodes.OK).json({ project: createdProject });
         })(req, res, next);
     }
+
+    allProjects(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const allProjects = await this._userService.allProjects()
+
+            res.status(httpStatusCodes.OK).json(allProjects)
+        })(req, res, next)
+    }
+
+    allProjectsById(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async (req: Request, res: Response): Promise<void> => {
+            const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
+
+            const projects = await this._userService.allProjectsById(userId)
+
+            res.status(httpStatusCodes.OK).json(projects)
+        })(req, res, next)
+    }
+
+
 }

@@ -5,6 +5,7 @@ import { FileType, ProjectType } from "../../types";
 import { generateHttpError } from "../../utils/http-error.util";
 import { IUserService } from "../interface/user-service.interface";
 import { handleProfileImageUpload } from "../../config";
+import { log } from "console";
 
 
 export class UserService implements IUserService {
@@ -23,7 +24,8 @@ export class UserService implements IUserService {
                 throw generateHttpError(httpStatusCodes.BAD_REQUEST, "Thumbnail buffer is missing.");
             }
         }
-
+        console.log('>>>>>>>>>>>',formData.skills.length);
+        
         const projectData = {
             title: formData.title,
             thumbnail: imageURL,
@@ -40,5 +42,21 @@ export class UserService implements IUserService {
         
         const createdProject = await this._userRepository.createProject(projectData);
         return { createdProject };
+    }
+
+    async allProjects(): Promise<{ projects: ProjectType[]; }> {
+        const {projects} = await this._userRepository.findAllProjects()
+
+        return {projects}
+    }
+
+    async allProjectsById(userId: string): Promise<{ projects: ProjectType[] }> {
+        if(!userId) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, messages.DATA_EMPTY)
+        }
+
+        const {projects} = await this._userRepository.findProjectsByUserId(userId)
+
+        return {projects}
     }
 }

@@ -12,14 +12,28 @@ interface ErrorState {
     message?: string;
 }
 
+// export interface ProjectType {
+//     title: string;
+//     thumbnail: File | null;
+//     description: string;
+//     category: string;
+//     skills: string[];
+//     deadline: string;
+//     additional_info: string;
+// }
 export interface ProjectType {
+    userId?: mongoose.Types.ObjectId;
     title: string;
-    thumbnail: File | null;
+    thumbnail?: File | null | string;
     description: string;
     category: string;
     skills: string[];
     deadline: string;
     additional_info: string;
+    applicants?: {
+        userId: mongoose.Types.ObjectId;
+        appliedAt: Date;
+    }[];
 }
   
 type UserSignupFormAction =

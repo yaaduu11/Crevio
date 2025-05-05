@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
@@ -6,6 +6,8 @@ import { Star } from "lucide-react";
 import Modal_right_side from '../../assets/user/modal_right.avif'
 import { useNavigate } from "react-router-dom";
 import { userRoutes } from "../../constants";
+import { ProjectType } from '../../types/user.type';
+import { allProjects } from "../../api/user";
 
 const dummyProjects = Array.from({ length: 12 }, (_, i) => ({
   id: i + 1,
@@ -18,6 +20,24 @@ const dummyProjects = Array.from({ length: 12 }, (_, i) => ({
 
 export default function ProjectsPage() {
   const navigate = useNavigate()
+  const [projects, setProjects] = useState<ProjectType[]>()
+  
+  useEffect(() => {
+    const getAllProjects = async () => {
+      try {
+          const response = await allProjects()
+
+          if (response.success && response.data?.projects) {
+              setProjects(response.data.projects);
+          }
+      } catch (error) {
+          console.error("Error fetching projects:", error);
+      }
+    };
+  
+    getAllProjects();
+  }, []);
+  
   return (
     <div className="flex min-h-screen p-6 bg-white">
       <aside className="w-1/5 pr-4">

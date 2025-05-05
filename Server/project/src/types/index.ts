@@ -23,4 +23,3 @@ export interface ProjectType {
         appliedAt: Date;
     }[];
 }
-

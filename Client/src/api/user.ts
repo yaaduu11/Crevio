@@ -287,3 +287,25 @@ export const addProject = async (formData: FormData) => {
       return { success: false, error: message };
     }
 };
+
+export const allProjectsById = async () => {
+    try {
+        const {data} = await Api.get(userEndPoints.ALL_PROJECTS_BY_ID, {headers})
+        return {success: true, data} as any
+    } catch (error) {
+        const err = error as any;
+        const message = err.response?.data?.error || "Something went wrong";
+        return { success: false, error: message };
+    }
+}
+
+export const allProjects = async () => {
+    try {
+        const {data} = await Api.get(userEndPoints.ALL_PROJECTS, {headers})
+        return {success: true, data} as any
+    } catch (error) {
+        const err = error as any;
+        const message = err.response?.data?.error || "Something went wrong";
+        return { success: false, error: message };
+    }
+}

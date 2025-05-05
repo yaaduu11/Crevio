@@ -25,6 +25,8 @@ export const userEndPoints = {
     STRIPE_CHECKOUT: '/payment/pricing/checkout',
     CHECK_USER_SUBSCRIBED: '/payment/pricing/check-user-subscribed',
 
+    ALL_PROJECTS: '/project/projects',
+    ALL_PROJECTS_BY_ID: '/project/projects-by-id',
     ADD_PROJECT: '/project/projects/add-project',
 
     AI_CHATBOT: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`

@@ -6,7 +6,7 @@ const ProjectDetails = () => {
   return (
     <>
       <Navbar currentPage='projects'/>
-      <div className='pt-40'>
+      <div className='pt-24'>
         <Project_details/>
       </div>
     </>

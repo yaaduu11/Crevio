@@ -1,10 +1,13 @@
 import { Card, CardContent } from "../ui/card";
 import { Star } from "lucide-react";
 import Modal_right_side from '../../assets/user/modal_right.avif'
-import { useState } from "react";
-import { addProject } from "../../api/user";
+import { useEffect, useState } from "react";
+import { addProject, allProjectsById } from "../../api/user";
 import { ProjectType } from "../../types/user.type";
 import { useToast } from "../../hooks/use-toast";
+import { userRoutes } from '../../constants/routeUrl';
+import ProjectDetails from './project_details';
+import { useNavigate } from "react-router-dom";
 
 const dummyProjects = Array.from({ length: 16 }, (_, i) => ({
 id: i + 1,
@@ -32,10 +35,12 @@ const categoryData = [
     { title: "Virtual Assistance" },
     { title: "Customer Support" },
     { title: "Personal & Lifestyle" },
-  ];  
+];  
 
 const MyProjectsSection = () => {
     const {toast} = useToast()
+    const navigate = useNavigate()
+    const [projects, setProjects] = useState<ProjectType[]>([]);
     const [addProjectModal, setAddProjectModal] = useState(false)
     const [formData, setFormData] = useState<ProjectType>({
         title: "",
@@ -45,81 +50,37 @@ const MyProjectsSection = () => {
         skills: [],
         deadline: "",
         additional_info: "",
-      });      
+    });    
     
-      const [skillInput, setSkillInput] = useState("");
-      const [skills, setSkills] = useState<string[]>([]);
+    const [skillInput, setSkillInput] = useState("");
     
-      const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-      };
+    };
     
-      const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
         setFormData((prev) => ({ ...prev, thumbnail: file }));
-      };
+    };
     
-      const handleAddSkill = () => {
+    const handleAddSkill = () => {
         if (skillInput && !formData.skills.includes(skillInput)) {
-          setFormData((prev) => ({
+        setFormData((prev) => ({
             ...prev,
             skills: [...prev.skills, skillInput],
-          }));
-          setSkillInput("");
-        }
-      };
-      
-      const handleRemoveSkill = (skillToRemove: string) => {
-        setFormData((prev) => ({
-          ...prev,
-          skills: prev.skills.filter((skill) => skill !== skillToRemove),
         }));
-      };
+        setSkillInput("");
+        }
+    };
     
-    //   const handleAddProject = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-        
-    //     console.log(formData)
-      
-    //     const payload = new FormData();
-    //     payload.append("title", formData.title);
-    //     if (formData.thumbnail) payload.append("thumbnail", formData.thumbnail);
-    //     payload.append("description", formData.description);
-    //     payload.append("category", formData.category);
-    //     payload.append("deadline", formData.deadline);
-    //     payload.append("additional_info", formData.additional_info);
-    //     payload.append("skills", JSON.stringify(formData.skills));
-        
-    //     // console.log(payload);
-        
-    //     const response = await addProject(payload);
-      
-    //     if (response.success) {
-    //       toast({
-    //         variant: "success",
-    //         description: "Project successfully added.",
-    //         duration: 2500,
-    //       });
-    //       setAddProjectModal(false);
-    //       setFormData({
-    //         title: "",
-    //         thumbnail: null,
-    //         description: "",
-    //         category: "",
-    //         skills: [],
-    //         deadline: "",
-    //         additional_info: "",
-    //       });
-    //     } else {
-    //       toast({
-    //         variant: "destructive",
-    //         description: `Failed to add project: ${response.error}`,
-    //         duration: 3000,
-    //       });
-    //     }
-    //   };
-      
+    const handleRemoveSkill = (skillToRemove: string) => {
+        setFormData((prev) => ({
+        ...prev,
+        skills: prev.skills.filter((skill) => skill !== skillToRemove),
+        }));
+    };
+    
     const handleAddProject = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log(formData);
@@ -170,45 +131,68 @@ const MyProjectsSection = () => {
           });
           console.error("Add project error:", err);
         }
-      };
-      
-      
-      
+    };
       
     const handleModalOpen = () => {
         setAddProjectModal((prev) => !prev)
     }
+    
+    const handleViewClick = (project: ProjectType) => {
+        navigate(userRoutes.PROJECT_DETAILS, { state: { project } })
+    };
+    
+    useEffect(() => {
+        const getAllProjects = async () => {
+            try {
+                const response = await allProjectsById();
+    
+                if (response.success && response.data?.projects) {
+                    setProjects(response.data.projects);
+                }
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+            }
+        };
+    
+        getAllProjects();
+    }, []);
 
     return (
         <> 
         <main className="w-full px-4 sm:px-8 ">
-        {/* <main className="min-h-screen px-4 py-10 md:px-8 lg:px-16 md:py-16 lg:py-24"> */}
-
             <div className="flex justify-between">
                 <h1 className="mb-6 text-3xl font-bold">My Projects</h1>
                 <button className="w-32 font-bold text-white bg-black border border-black h-9 rounded-xl" onClick={handleModalOpen}>+ Add Project</button>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {dummyProjects.map((project) => (
-                    <Card key={project.id} className="transition shadow-md rounded-2xl hover:shadow-lg">
+                {projects.map((project) => (
+                    <Card key={1} className="transition shadow-md rounded-2xl hover:shadow-lg">
                     <img
-                        src={project.image}
+                        src={
+                            typeof project.thumbnail === "string"
+                            ? project.thumbnail
+                            : project.thumbnail instanceof File
+                                ? URL.createObjectURL(project.thumbnail)
+                                : undefined
+                        }
                         alt={project.title}
                         className="object-cover w-full h-40 rounded-t-2xl"
-                    />
+                        />
+
                     <CardContent className="p-4">
-                        <h3 className="text-lg font-semibold truncate">{project.title}</h3>
+                        <h3 className="text-xl font-semibold truncate ">{project.title}</h3>
                         <p className="mb-2 text-sm text-gray-500 truncate">
                         {project.description}
                         </p>
                         <div className="flex items-center justify-between">
-                        <span className="font-bold text-indigo-600">₹{project.deadline}</span>
-                        <span className="flex items-center text-sm text-yellow-500">
-                            <Star className="w-4 h-4 fill-yellow-400" />
-                            {project.rating}
+                        <span className="text-blue-600 ">{project.category}</span>
+                        <span className="flex gap-2 text-md">
+                            <button className="w-16 text-white bg-black rounded-lg h-7 hover:bg-slate-800" onClick={()=> handleViewClick(project)}>edit</button> 
+                            <button className="w-16 text-white bg-black rounded-lg h-7 hover:bg-slate-800" onClick={()=> handleViewClick(project)}>view</button> 
                         </span>
                         </div>
                     </CardContent>
+
                     </Card>
                 ))}
             </div>
@@ -225,116 +209,6 @@ const MyProjectsSection = () => {
 
             <div className="lg:col-span-3">
                 <div className="w-full max-w-3xl mx-auto">
-                {/* <form className="space-y-6">
-                <input
-                    type="text"
-                    name="title"
-                    placeholder="Project Title"
-                    className="w-full p-2 border rounded-md"
-                    required
-                />
-
-                <div>
-                    <label className="block mb-1 font-medium">Thumbnail Image</label>
-                    <input
-                    type="file"
-                    name="thumbnail"
-                    accept="image/*"
-                    className="w-full p-2 border rounded-md"
-                    required
-                    />
-                </div>
-
-                <textarea
-                    name="description"
-                    placeholder="Describe your project in detail..."
-                    className="w-full p-2 border rounded-md h-28"
-                    required
-                />
-
-                <div>
-                    <label className="block mb-1 font-medium">Category</label>
-                    <select
-                        name="category"
-                        className="w-full p-2 border rounded-md"
-                        required
-                    >
-                        <option value="">Select Category</option>
-                        {categoryData.map((category, index) => (
-                        <option key={index} value={category.title}>
-                            {category.title}
-                        </option>
-                        ))}
-                    </select>
-                </div>
-
-
-                <div>
-                    <label className="block mb-1 font-medium">Skills Required</label>
-                    <div className="flex gap-2">
-                    <input
-                        type="text"
-                        placeholder="Add a skill"
-                        className="w-full p-2 border rounded-md"
-                        // value={skillInput}
-                        // onChange={(e) => setSkillInput(e.target.value)}
-                    />
-                    <button
-                        type="button"
-                        // onClick={handleAddSkill}
-                        className="px-3 py-2 text-white bg-blue-500 rounded-md"
-                    >
-                        Add
-                    </button>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                        {formData.skills.map((skill) => (
-                            <span key={skill} className="px-2 py-1 text-sm bg-green-200 rounded-md">
-                            {skill}
-                            <button
-                                onClick={() => handleRemoveSkill(skill)}
-                                className="ml-1 text-red-500"
-                                type="button"
-                            >
-                                ✕
-                            </button>
-                            </span>
-                        ))}
-                        </div>
-                </div>
-
-                <div>
-                    <label className="block mb-1 font-medium">Deadline</label>
-                    <input
-                    type="date"
-                    name="deadline"
-                    className="w-full p-2 border rounded-md"
-                    required
-                    />
-                </div>
-
-                <textarea
-                    name="additional_info"
-                    placeholder="Any other information you'd like to add..."
-                    className="w-full h-20 p-2 border rounded-md"
-                />
-
-                <div className="flex justify-between">
-                    <button
-                    type="button"
-                    className="px-6 py-2 text-white bg-black rounded hover:bg-slate-900"
-                    onClick={handleModalOpen}
-                    >
-                    Close
-                    </button>
-                    <button
-                    type="submit"
-                    className="px-6 py-2 text-white bg-black rounded hover:bg-slate-900"
-                    >
-                    Save
-                    </button>
-                </div>
-                </form> */}
                 <form className="space-y-6" onSubmit={handleAddProject}>
                     <input
                         type="text"

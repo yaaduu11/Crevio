@@ -1,46 +1,151 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Star } from "lucide-react";
 import Modal_right_side from '../../assets/user/modal_right.avif';
+import { ProjectType } from "../../types/user.type";
+import { ArrowLeft, Calendar, Users, Briefcase, Code } from 'lucide-react';
 
-const project_details = () => {
-    const navigate = useNavigate();
 
-    return (
-      <div className="min-h-screen p-6 bg-white">
-        <Button variant="outline" className="mb-4" onClick={() => navigate(-1)}>
-          ← Back
-        </Button>
+
+const ProjectDetails = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const project = location.state?.project as ProjectType;
   
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <div>
-            <img
-              src={Modal_right_side}
-              alt="Project Thumbnail"
-              className="object-cover w-full h-80 rounded-2xl"
-            />
-          </div>
+  const handleBack = () => {
+    window.history.back();
+  };
   
-          <div className="flex flex-col justify-between">
-            <div>
-              <h1 className="mb-2 text-3xl font-bold">Project Title</h1>
-              <p className="mb-4 text-gray-600">
-             description for the project.
-              </p>
-  
-              <div className="flex items-center gap-2 mb-2">
-                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                <span className="text-sm font-medium text-yellow-600">4.5 Rating</span>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+
+      <button 
+        onClick={handleBack}
+        className="flex items-center gap-2 py-6 pt-12 text-gray-600 transition-all hover:text-blue-600 group pl-[6%]"
+      >
+        <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
+        <span className="font-medium">Back to Projects</span>
+      </button>
+
+      <main className="px-4 pb-12 mx-auto max-w-[90%] pt-1">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="space-y-8 lg:col-span-2">
+            <div className="overflow-hidden transition-all bg-white border border-gray-100 shadow-lg hover:shadow-xl rounded-2xl">
+              {project.thumbnail && (
+                <div className="relative overflow-hidden group">
+                  <img 
+                    src={typeof project.thumbnail === "string" ? project.thumbnail : "default-image.jpg"}
+                    alt={project.title}
+                    className="object-cover w-full transition-transform duration-700 h-80 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 transition-opacity opacity-0 bg-gradient-to-t from-black/50 to-transparent group-hover:opacity-100" />
+                </div>
+              )}
+              <div className="p-8">
+                <h1 className="mb-4 text-3xl font-bold text-gray-900 transition-colors hover:text-blue-600">
+                  {project.title}
+                </h1>
+                <p className="mb-8 text-lg leading-relaxed text-gray-600">
+                  {project.description}
+                </p>
+                
+                <div className="grid grid-cols-2 gap-6 mb-8">
+                  <div className="flex items-center p-4 transition-all bg-gray-50 rounded-xl hover:bg-blue-50 hover:text-blue-600 group">
+                    <Briefcase className="w-6 h-6 mr-3 transition-transform group-hover:scale-110" />
+                    <div>
+                      <p className="text-sm text-gray-500">Category</p>
+                      <p className="font-medium">{project.category}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center p-4 transition-all bg-gray-50 rounded-xl hover:bg-blue-50 hover:text-blue-600 group">
+                    <Calendar className="w-6 h-6 mr-3 transition-transform group-hover:scale-110"/>
+                    <div>
+                      <p className="text-sm text-gray-500">Deadline</p>
+                      <p className="font-medium">{new Date(project.deadline).toLocaleDateString('en-US', { 
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                      })}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6 mb-8 transition-colors border border-gray-100 rounded-xl hover:border-blue-100">
+                  <h3 className="flex items-center mb-4 text-xl font-semibold">
+                    <Code className="w-6 h-6 mr-3 text-blue-600" />
+                    Required Skills
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {project.skills.map((skill) => (
+                      <span 
+                        key={skill}
+                        className="px-4 py-2 text-sm font-medium text-blue-600 transition-all rounded-lg bg-blue-50 hover:bg-blue-100 hover:scale-105"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-6 bg-gray-50 rounded-xl">
+                  <h3 className="mb-3 text-xl font-semibold">Additional Information</h3>
+                  <p className="leading-relaxed text-gray-600">
+                    {project.additional_info}
+                  </p>
+                </div>
               </div>
-  
-              <div className="mb-6 text-lg font-semibold text-indigo-600">Budget: ₹999</div>
-  
-              <Button className="w-full sm:w-auto">Apply</Button>
+            </div>
+          </div>
+
+          <div className="lg:col-span-1">
+            <div className="sticky p-8 transition-all bg-white border border-gray-100 shadow-lg top-24 hover:shadow-xl rounded-2xl">
+              <h2 className="flex items-center mb-6 text-2xl font-semibold">
+                <Users className="w-6 h-6 mr-3 text-blue-600" />
+                Applicants
+              </h2>
+              
+              {project.applicants && project.applicants.length > 0 ? (
+                <div className="space-y-4">
+                  {project.applicants.map((applicant, index) => (
+                    <div 
+                      key={index}
+                      className="p-4 transition-all bg-gray-50 rounded-xl hover:bg-blue-50 hover:scale-[1.02]"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center justify-center w-10 h-10 text-white bg-blue-600 rounded-full">
+                          <span className="font-medium">{index + 1}</span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            Applicant {index + 1}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Applied: {new Date(applicant.appliedAt).toLocaleDateString('en-US', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-12 text-center">
+                  <div className="flex items-center justify-center w-20 h-20 p-6 mx-auto mb-4 rounded-full bg-blue-50">
+                    <Users className="w-10 h-10 text-blue-600" />
+                  </div>
+                  <p className="text-lg font-medium text-gray-900">No applicants yet</p>
+                  {/* <p className="text-gray-500">Be the first to apply!</p> */}
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </div>
-    );
+      </main>
+    </div>
+  );
 }
 
-export default project_details
+export default ProjectDetails
