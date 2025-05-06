@@ -193,6 +193,15 @@ export class UserController implements IUserController{
         })(req, res, next)
     }
 
+    getUserDataById(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {            
+            const userId = req.params.id;
+            const {user} = await this._userService.getUserData(userId)
+            
+            sendResponse(res, httpStatusCodes.OK, true, {user})
+        })(req, res, next)
+    }
+
     updateUserSubStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {            
             const {planName} = req.body

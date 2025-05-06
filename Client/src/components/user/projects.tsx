@@ -38,6 +38,10 @@ export default function ProjectsPage() {
     getAllProjects();
   }, []);
   
+  const handleViewClick = (project: ProjectType) => {
+    navigate(userRoutes.PROJECT_DETAILS, { state: { project } })
+  };
+  
   return (
     <div className="flex min-h-screen p-6 bg-white">
       <aside className="w-1/5 pr-4">
@@ -84,10 +88,10 @@ export default function ProjectsPage() {
       <main className="w-4/5">
         <h1 className="mb-6 text-3xl font-bold">Projects</h1>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {dummyProjects.map((project) => (
-            <Card key={project.id} className="transition shadow-md rounded-2xl hover:shadow-lg" onClick={()=>navigate(userRoutes.PROJECT_DETAILS)}>
+          {projects?.map((project) => (
+            <Card key={1} className="transition shadow-md rounded-2xl hover:shadow-lg" onClick={()=>handleViewClick(project)}>
               <img
-                src={project.image}
+                src={typeof project.thumbnail === "string" ? project.thumbnail : "default-image.jpg"}
                 alt={project.title}
                 className="object-cover w-full h-40 rounded-t-2xl"
               />
@@ -97,10 +101,10 @@ export default function ProjectsPage() {
                   {project.description}
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-indigo-600">₹{project.price}</span>
+                  <span className="font-bold text-indigo-600">{project.deadline}</span>
                   <span className="flex items-center text-sm text-yellow-500">
                     <Star className="w-4 h-4 fill-yellow-400" />
-                    {project.rating}
+                    {project.title}
                   </span>
                 </div>
               </CardContent>

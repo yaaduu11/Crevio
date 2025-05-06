@@ -28,6 +28,8 @@ router
     .patch('/update-more-info', userController.updateMoreInfo.bind(userController))
     .get('/more-info', userController.getMoreInfo.bind(userController))
     .get('/fetch-user', userController.getUserData.bind(userController))
+
+    .get('/fetch-user-by-id/:id', userController.getUserDataById.bind(userController))
     .patch('/update-user-sub-status', userController.updateUserSubStatus.bind(userController))
     .delete('/logout', userController.logout.bind(userController));
 

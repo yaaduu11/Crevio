@@ -1,16 +1,38 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "../ui/button";
-import { Star } from "lucide-react";
-import Modal_right_side from '../../assets/user/modal_right.avif';
-import { ProjectType } from "../../types/user.type";
+import { Divide, Star } from "lucide-react";
+import { ProjectType, UserType } from "../../types/user.type";
 import { ArrowLeft, Calendar, Users, Briefcase, Code } from 'lucide-react';
-
+import { useSelector } from "react-redux";
+import { RootState } from '../../redux/storage';
+import { fetchUserById } from "../../api/user";
+import { useEffect, useState } from "react";
+import { SheetDemo } from "../ui/sheetDemo";
 
 
 const ProjectDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const project = location.state?.project as ProjectType;
+  const user = useSelector((state: RootState)=> state.user)
+  const [uploadedUser, setUploadedUser] = useState<UserType>()
+  const [openSheet, setOpenSheet] = useState(false)
+
+  
+  useEffect(()=>{
+    const fetchUpoloadedUser = async() => {
+      try {
+        const response = await fetchUserById(project.userId? project.userId.toString(): '')
+        if(response.success) {
+          setUploadedUser(response.data.user)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    
+    fetchUpoloadedUser()
+  },[])
   
   const handleBack = () => {
     window.history.back();
@@ -42,9 +64,19 @@ const ProjectDetails = () => {
                 </div>
               )}
               <div className="p-8">
-                <h1 className="mb-4 text-3xl font-bold text-gray-900 transition-colors hover:text-blue-600">
-                  {project.title}
-                </h1>
+                <div className="flex justify-between">
+                  <h1 className="mb-4 text-3xl font-bold text-gray-900 transition-colors hover:text-blue-600">
+                    {project.title}
+                  </h1>
+                  {user.role=='freelancer'?
+                    (<button className="px-6 py-2 font-semibold text-white transition-all duration-300 rounded-full shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:shadow-xl hover:scale-105 active:scale-100 animate-pulse focus:outline-none">
+                      Apply
+                    </button>
+                    )
+                    :
+                    ('')
+                  }
+                </div>
                 <p className="mb-8 text-lg leading-relaxed text-gray-600">
                   {project.description}
                 </p>
@@ -97,51 +129,95 @@ const ProjectDetails = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-1">
-            <div className="sticky p-8 transition-all bg-white border border-gray-100 shadow-lg top-24 hover:shadow-xl rounded-2xl">
-              <h2 className="flex items-center mb-6 text-2xl font-semibold">
-                <Users className="w-6 h-6 mr-3 text-blue-600" />
-                Applicants
-              </h2>
-              
-              {project.applicants && project.applicants.length > 0 ? (
-                <div className="space-y-4">
-                  {project.applicants.map((applicant, index) => (
-                    <div 
-                      key={index}
-                      className="p-4 transition-all bg-gray-50 rounded-xl hover:bg-blue-50 hover:scale-[1.02]"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center justify-center w-10 h-10 text-white bg-blue-600 rounded-full">
-                          <span className="font-medium">{index + 1}</span>
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            Applicant {index + 1}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Applied: {new Date(applicant.appliedAt).toLocaleDateString('en-US', {
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric'
-                            })}
-                          </p>
+          {user.role=='client' && user._id==project.userId?.toString() ? 
+            (
+            <div className="lg:col-span-1">
+              <div className="sticky p-8 transition-all bg-white border border-gray-100 shadow-lg top-24 hover:shadow-xl rounded-2xl">
+                <h2 className="flex items-center mb-6 text-2xl font-semibold">
+                  <Users className="w-6 h-6 mr-3 text-blue-600" />
+                  Applicants
+                </h2>
+                
+                {project.applicants && project.applicants.length > 0 ? (
+                  <div className="space-y-4">
+                    {project.applicants.map((applicant, index) => (
+                      <div 
+                        key={index}
+                        className="p-4 transition-all bg-gray-50 rounded-xl hover:bg-blue-50 hover:scale-[1.02]"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center justify-center w-10 h-10 text-white bg-blue-600 rounded-full">
+                            <span className="font-medium">{index + 1}</span>
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-900">
+                              Applicant {index + 1}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Applied: {new Date(applicant.appliedAt).toLocaleDateString('en-US', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                              })}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="py-12 text-center">
-                  <div className="flex items-center justify-center w-20 h-20 p-6 mx-auto mb-4 rounded-full bg-blue-50">
-                    <Users className="w-10 h-10 text-blue-600" />
+                    ))}
                   </div>
-                  <p className="text-lg font-medium text-gray-900">No applicants yet</p>
-                  {/* <p className="text-gray-500">Be the first to apply!</p> */}
-                </div>
-              )}
+                ) : (
+                  <div className="py-12 text-center">
+                    <div className="flex items-center justify-center w-20 h-20 p-6 mx-auto mb-4 rounded-full bg-blue-50">
+                      <Users className="w-10 h-10 text-blue-600" />
+                    </div>
+                    <p className="text-lg font-medium text-gray-900">No applicants yet</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+            ) : (
+            <div className="lg:col-span-1">
+              <div className="sticky p-8 transition-all bg-white border border-gray-100 shadow-lg top-24 hover:shadow-xl rounded-2xl">
+                <h2 className="flex items-center mb-6 text-2xl font-semibold">
+                  <Users className="w-6 h-6 mr-3 text-blue-600" />
+                  Uploaded by
+                </h2>
+                
+                <div className="space-y-4">
+                  <div className="p-4 transition-all bg-gray-50 rounded-xl hover:bg-blue-50 hover:scale-[1.02]">
+                    <div className="flex items-center gap-4 mb-4">
+                      <img
+                        src={uploadedUser?.profilePicture}
+                        alt="Profile"
+                        className="object-cover w-10 h-10 rounded-full"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-900">{uploadedUser?.name}</p>
+                        <p className="text-sm text-gray-500">{uploadedUser?.email}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setOpenSheet(true)}
+                      className="w-full px-4 py-2 font-semibold text-white transition-all duration-200 bg-black rounded-full hover:bg-gray-800"
+                    >
+                      View Profile
+                    </button>
+                  </div>
+                </div>
+
+                {openSheet && uploadedUser && (
+                  <SheetDemo
+                    user={uploadedUser}
+                    open={openSheet}
+                    onOpenChange={setOpenSheet}
+                  />
+                )}
+
+              </div>
+            </div>
+            )
+          }
+          
         </div>
       </main>
     </div>

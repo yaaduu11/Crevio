@@ -8,6 +8,7 @@ export const userEndPoints = {
     CHECK_ROLE: "/auth/check-role",
     ASSIGN_ROLE: "/auth/assign-role",
     FETCH_USER_DATA: '/auth/fetch-user',
+    FETCH_USER_BY_ID: '/auth/fetch-user-by-id',
     GOOGLE_AUTH: '/auth/google-auth',
     FORGOT_PASSWORD: '/auth/forgot-password',
     NEW_PASSWORD: '/auth/new-password',

@@ -71,6 +71,18 @@ export const fetchUserData = async() => {
     }
 } 
 
+export const fetchUserById = async (userId: string) => {
+    try {
+      const { data } = await Api.get(`${userEndPoints.FETCH_USER_BY_ID}/${userId}`, {headers});
+      return { success: true, data } as any
+    } catch (error) {
+      const err = error as any;
+      const message = err.response?.data?.error || "Something went wrong";
+      return { success: false, error: message, data: {} };
+    }
+};
+  
+
 export const login = async(email:string, password:string) => {
     try {
         const {data} = await Api.post(userEndPoints.SIGNIN, {email, password}, {headers})
