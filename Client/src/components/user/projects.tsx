@@ -1,22 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Star } from "lucide-react";
-import Modal_right_side from '../../assets/user/modal_right.avif'
 import { useNavigate } from "react-router-dom";
 import { userRoutes } from "../../constants";
 import { ProjectType } from '../../types/user.type';
 import { allProjects } from "../../api/user";
-
-const dummyProjects = Array.from({ length: 12 }, (_, i) => ({
-  id: i + 1,
-  title: `project ${i + 1}`,
-  description: "Looking for skilled freelancers to design a modern Figma UI.",
-  price: 999,
-  rating: 4.5,
-  image: Modal_right_side,
-}));
 
 export default function ProjectsPage() {
   const navigate = useNavigate()
@@ -89,7 +79,7 @@ export default function ProjectsPage() {
         <h1 className="mb-6 text-3xl font-bold">Projects</h1>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {projects?.map((project) => (
-            <Card key={1} className="transition shadow-md rounded-2xl hover:shadow-lg" onClick={()=>handleViewClick(project)}>
+            <Card key={1} className="transition duration-700 ease-in-out transform shadow-md rounded-2xl hover:shadow-lg hover:-translate-y-2" onClick={()=>handleViewClick(project)}>
               <img
                 src={typeof project.thumbnail === "string" ? project.thumbnail : "default-image.jpg"}
                 alt={project.title}

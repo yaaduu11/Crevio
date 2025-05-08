@@ -25,13 +25,15 @@ export class UserService implements IUserService {
             }
         }
         console.log('>>>>>>>>>>>',formData.skills.length);
+
+        const parsedSkills = typeof formData.skills === 'string' ? JSON.parse(formData.skills) : formData.skills;
         
         const projectData = {
             title: formData.title,
             thumbnail: imageURL,
             description: formData.description,
             category: formData.category,
-            skills: formData.skills,
+            skills: parsedSkills,
             deadline: formData.deadline,
             additional_info: formData.additional_info,
             applicants: [],
@@ -59,4 +61,30 @@ export class UserService implements IUserService {
 
         return {projects}
     }
+
+    async applyToProject(userId: string, projectId: string): Promise<void> {
+        if (!userId || !projectId) {
+            throw generateHttpError(httpStatusCodes.BAD_REQUEST, messages.DATA_EMPTY);
+        }
+
+        const { project } = await this._userRepository.findProjectById(projectId);
+
+        if (!project) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, "Project not found");
+        }
+
+        const alreadyApplied = project.applicants.some(app => app.userId.toString() === userId);
+        if (alreadyApplied) {
+            throw generateHttpError(httpStatusCodes.CONFLICT, "You already applied to this project");
+        }
+
+        const applicant = {
+            userId: new mongoose.Types.ObjectId(userId),
+            appliedAt: new Date()
+        };
+
+        await this._userRepository.findProjectByIdAndUpdate(projectId, applicant);
+        console.log('service okayy');
+    }
+
 }

@@ -1,6 +1,5 @@
 import { Card, CardContent } from "../ui/card";
 import { Star } from "lucide-react";
-import Modal_right_side from '../../assets/user/modal_right.avif'
 import { useEffect, useState } from "react";
 import { addProject, allProjectsById } from "../../api/user";
 import { ProjectType } from "../../types/user.type";
@@ -8,15 +7,6 @@ import { useToast } from "../../hooks/use-toast";
 import { userRoutes } from '../../constants/routeUrl';
 import ProjectDetails from './project_details';
 import { useNavigate } from "react-router-dom";
-
-const dummyProjects = Array.from({ length: 16 }, (_, i) => ({
-id: i + 1,
-title: `project ${i + 1}`,
-description: "Looking for skilled freelancers to design a modern Figma UI.",
-deadline: '25-01-2025',
-rating: 4.5,
-image: Modal_right_side,
-}));
 
 const categoryData = [
     { title: "Graphic & Design" },
@@ -42,6 +32,7 @@ const MyProjectsSection = () => {
     const navigate = useNavigate()
     const [projects, setProjects] = useState<ProjectType[]>([]);
     const [addProjectModal, setAddProjectModal] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState<ProjectType>({
         title: "",
         thumbnail: null,
@@ -83,7 +74,7 @@ const MyProjectsSection = () => {
     
     const handleAddProject = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(formData);
+        setLoading(true)
         
         const form = new FormData();
         form.append("title", formData.title);
@@ -130,6 +121,9 @@ const MyProjectsSection = () => {
             duration: 3000,
           });
           console.error("Add project error:", err);
+        } finally {
+            setLoading(false)
+            window.location.reload()
         }
     };
       
@@ -187,7 +181,7 @@ const MyProjectsSection = () => {
                         <div className="flex items-center justify-between">
                         <span className="text-blue-600 ">{project.category}</span>
                         <span className="flex gap-2 text-md">
-                            <button className="w-16 text-white bg-black rounded-lg h-7 hover:bg-slate-800" onClick={()=> handleViewClick(project)}>edit</button> 
+                            {/* <button className="w-16 text-white bg-black rounded-lg h-7 hover:bg-slate-800" onClick={()=> handleViewClick(project)}>edit</button>  */}
                             <button className="w-16 text-white bg-black rounded-lg h-7 hover:bg-slate-800" onClick={()=> handleViewClick(project)}>view</button> 
                         </span>
                         </div>
@@ -325,7 +319,9 @@ const MyProjectsSection = () => {
                         type="submit"
                         className="px-6 py-2 text-white bg-black rounded hover:bg-slate-900"
                         >
-                        Save
+                        {loading? (
+                        <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>
+                        ): ('Save')}
                         </button>
                     </div>
                 </form>

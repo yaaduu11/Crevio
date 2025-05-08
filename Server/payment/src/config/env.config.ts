@@ -13,5 +13,13 @@ export const env = {
 
     get STRIPE_WEBHOOK_SECRET() {
         return process.env.STRIPE_WEBHOOK_SECRET
+    },
+
+    get LOKI_HOST() {
+        return process.env.LOKI_HOST
+    },
+
+    get SERVICE_NAME() {
+        return process.env.SERVICE_NAME
     }
 }

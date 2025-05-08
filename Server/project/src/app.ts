@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config()
 
 import express, {Application} from 'express'
-import morgan from 'morgan';
+import morganLogger from './loggers/morgan.logger';
 import cookieParser from 'cookie-parser';
 import { env } from './config';
 
@@ -28,7 +28,7 @@ class App {
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: true}))
         this.app.use(cookieParser())
-        this.app.use(morgan('short'))
+        this.app.use(morganLogger)
     }
 
     private initializeRoutes(): void {

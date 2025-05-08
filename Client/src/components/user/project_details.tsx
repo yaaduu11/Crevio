@@ -1,23 +1,51 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from "../ui/button";
-import { Divide, Star } from "lucide-react";
+import { useLocation } from "react-router-dom";
+// import { Button } from "../ui/button";
+// import { Divide, Star } from "lucide-react";
 import { ProjectType, UserType } from "../../types/user.type";
-import { ArrowLeft, Calendar, Users, Briefcase, Code } from 'lucide-react';
+import { ArrowLeft, Calendar, Users, Briefcase, Code, UndoIcon } from 'lucide-react';
 import { useSelector } from "react-redux";
 import { RootState } from '../../redux/storage';
-import { fetchUserById } from "../../api/user";
+import { applyToProject, fetchUserById } from "../../api/user";
 import { useEffect, useState } from "react";
 import { SheetDemo } from "../ui/sheetDemo";
+import { useToast } from "../../hooks/use-toast";
 
 
 const ProjectDetails = () => {
-  const navigate = useNavigate();
   const location = useLocation();
+  const {toast} = useToast()
   const project = location.state?.project as ProjectType;
   const user = useSelector((state: RootState)=> state.user)
   const [uploadedUser, setUploadedUser] = useState<UserType>()
   const [openSheet, setOpenSheet] = useState(false)
-
+  const [loading, setLoading] = useState(false)
+  
+  
+  const handleApplySubmit = async(projectId: string) => {
+    setLoading(true)
+    
+    const response = await applyToProject(projectId)
+    console.log(response)
+    try {
+      if(response.success) {
+         toast({
+          variant: 'success',
+          description: 'successfully apply to project.',
+          duration: 2500
+         })
+      }else {
+        toast({
+          variant: 'warning',
+          description: response.error,
+          duration: 2500
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }finally{
+      setLoading(false)
+    }
+  }
   
   useEffect(()=>{
     const fetchUpoloadedUser = async() => {
@@ -68,14 +96,21 @@ const ProjectDetails = () => {
                   <h1 className="mb-4 text-3xl font-bold text-gray-900 transition-colors hover:text-blue-600">
                     {project.title}
                   </h1>
-                  {user.role=='freelancer'?
-                    (<button className="px-6 py-2 font-semibold text-white transition-all duration-300 rounded-full shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:shadow-xl hover:scale-105 active:scale-100 animate-pulse focus:outline-none">
-                      Apply
-                    </button>
-                    )
-                    :
-                    ('')
-                  }
+                    {user.role === 'freelancer' && (
+                      loading ? (
+                        <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>
+                      ) : (
+                        <button className="px-6 py-2 font-semibold text-white transition-all duration-300 rounded-full shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:shadow-xl hover:scale-105 active:scale-100 animate-pulse focus:outline-none"
+                        onClick={() => {
+                            if (project._id) {
+                                handleApplySubmit(project._id.toString());
+                            }
+                        }}
+                        >
+                          Apply
+                        </button>
+                      )
+                    )}
                 </div>
                 <p className="mb-8 text-lg leading-relaxed text-gray-600">
                   {project.description}

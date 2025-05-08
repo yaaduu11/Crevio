@@ -38,5 +38,23 @@ export class UserController implements IUserController {
         })(req, res, next)
     }
 
+    applyToProject(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const {projectId} = req.body
+            const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
+
+            console.log(projectId, userId);
+            console.log(typeof projectId, typeof userId);
+            
+            
+
+            await this._userService.applyToProject(userId, projectId)
+
+            res.status(httpStatusCodes.OK).json({success: true})
+            console.log('ayachit undeda');
+            
+        })(req, res, next)
+    }
+
 
 }

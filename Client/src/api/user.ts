@@ -321,3 +321,14 @@ export const allProjects = async () => {
         return { success: false, error: message };
     }
 }
+
+export const applyToProject = async(projectId: string) => {
+    try {
+        await Api.post(userEndPoints.APPLY_TO_PROJECT, {projectId}, {headers})
+        return {success: true} 
+    } catch (error) {
+        const err = error as any;
+        const message = err.response?.data?.error || "Something went wrong";
+        return { success: false, error: message };
+    }
+}

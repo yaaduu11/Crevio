@@ -18,6 +18,17 @@ class UserRepository implements IUserRepository {
         }
     }
 
+    async findProjectById(projectId: string): Promise<{ project: ProjectType | null }> {
+        try {
+            const project = await Project.findById(projectId).lean().exec()
+
+            return { project: project as ProjectType | null };
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error when finding the project by Id")
+        }
+    }
+
     async findProjectsByUserId(userId: string): Promise<{ projects: ProjectType[]; }> {
         try {
             const projects = await Project.find({ userId }).lean().exec();
@@ -25,6 +36,20 @@ class UserRepository implements IUserRepository {
         } catch (error) {
             console.error(error);
             throw new Error("Error when finding the projects by userId");
+        }
+    }
+
+    async findProjectByIdAndUpdate(projectId: string, applicant: { userId: mongoose.Types.ObjectId; appliedAt: Date }): Promise<boolean> {
+        try {
+            await Project.findByIdAndUpdate(
+                projectId,
+                { $push: { applicants: applicant } },
+                { new: true }
+            ).exec();
+            return true;
+        } catch (error) {
+            console.error();
+            throw new Error("Error when updating project")
         }
     }
 }

@@ -22,6 +22,7 @@ interface ErrorState {
 //     additional_info: string;
 // }
 export interface ProjectType {
+    _id?: string | mongoose.Types.ObjectId;
     userId?: mongoose.Types.ObjectId;
     title: string;
     thumbnail?: File | null | string;
