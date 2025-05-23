@@ -10,7 +10,7 @@ const winstonLogger = winston.createLogger({
         new winston.transports.Console(),
         new LokiTransport({
             host: env.LOKI_HOST!,
-            labels: { job: env.SERVICE_NAME },
+            labels: { job: env.SERVICE_NAME, service: env.SERVICE_NAME },
             json: true,
             batching: false,
             interval: 5000,

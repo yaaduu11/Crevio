@@ -21,7 +21,6 @@ import ProjectDetails from "../pages/user/ProjectDetails";
 import ContactUs from "../pages/user/ContactUs";
 import Message from "../pages/user/Message";
 
-
 export const UserRoutes = () => {
     const user = useSelector((state: RootState) => state.user);
 

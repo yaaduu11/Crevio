@@ -30,7 +30,7 @@ const PricingDetails = () => {
         getPlans()
     },[])
     
-    const handlePricingSubmit = async(planId, planPrice, userId) => {
+    const handlePricingSubmit = async(planId: any, planPrice: any, userId: any) => {
         try {
             const response = await checkUserSubscribed()
             if(response.success && response.data.planName == 'none') {

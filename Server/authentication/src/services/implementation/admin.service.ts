@@ -56,9 +56,9 @@ export class AdminService implements IAdminService {
         client.isBlocked = !client.isBlocked;        
         await this._adminRepository.save(client)
         if(client.isBlocked) {
-            if(client._id) await redisClient.set(client._id.toString(), JSON.stringify(client.isBlocked)) 
+            if(client._id) await redisClient.set(client._id.toString(), JSON.stringify(client.isBlocked))
         }else{
-            if(client._id) await redisClient.del(client._id.toString()) 
+            if(client._id) await redisClient.del(client._id.toString())
         }
     }
 

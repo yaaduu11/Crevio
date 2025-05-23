@@ -5,6 +5,7 @@ import { GoogleAuthUserType } from "../../types";
 import { asyncHandler, sendResponse } from "../../utils"
 import { IUserController } from "../interface/user-controller.interface";
 import { IUserService } from "../../services/interface/user-service.interface";
+import { winstonInfo, winstonWarn } from '../../utils/log-helper.util';
 import jwt from "jsonwebtoken";
 
 export class UserController implements IUserController{
@@ -13,6 +14,8 @@ export class UserController implements IUserController{
     register(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async (req: Request, res: Response): Promise<void> => {
             const email = await this._userService.register(req.body);
+
+            winstonInfo('User Registered', {email});
             sendResponse(res, httpStatusCodes.OK, true, {email})
         })(req, res, next);
     }
@@ -28,6 +31,8 @@ export class UserController implements IUserController{
                 sameSite: "strict", 
                 maxAge: 7 * 24 * 60 * 60 * 1000 
             });
+
+            winstonInfo('User Verified', { userId: user._id, email: user.email });
             sendResponse(res, httpStatusCodes.OK, true, {accessToken, user})
         })(req, res, next); 
     }
@@ -51,6 +56,7 @@ export class UserController implements IUserController{
             const {role, email} = req.body;
             const {userRole} = await this._userService.assignRole(role, email)
 
+            winstonInfo('User Role Assigned', { role: userRole });
             sendResponse(res, httpStatusCodes.OK, true, {userRole})
         })(req, res, next);
     }
@@ -66,6 +72,8 @@ export class UserController implements IUserController{
                 sameSite: "strict", 
                 maxAge: 7 * 24 * 60 * 60 * 1000 
             });
+
+            winstonInfo('User logged in', { userId: user._id, email: user.email });
             sendResponse(res, httpStatusCodes.OK, true, {accessToken, user})
         })(req, res, next); 
     }
@@ -215,11 +223,21 @@ export class UserController implements IUserController{
     logout(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req:Request, res:Response): Promise<void> => {      
             const refreshToken = req.cookies?.refreshToken;
+
+            let decoded: { userId: string } | null = null;
         
-            if (refreshToken) {
-                const decoded = jwt.verify(refreshToken, env.JWT_REFRESH_TOKEN_SECRET as string) as { userId: string };
-                if (decoded?.userId) {
-                    await redisClient.del(decoded.userId);
+            if(refreshToken) {
+                try {
+                    decoded = jwt.verify(
+                        refreshToken,
+                        env.JWT_REFRESH_TOKEN_SECRET as string
+                    ) as { userId: string }
+
+                    if (decoded?.userId) {
+                        await redisClient.del(decoded.userId)
+                    }
+                } catch (err) {
+                    winstonWarn('Invalid refresh token during logout', { error: err })
                 }
             }
 
@@ -229,6 +247,7 @@ export class UserController implements IUserController{
                 sameSite: 'strict'
             });
 
+            winstonInfo('User logged out', { userId: decoded?.userId || 'Unknown' })
             sendResponse(res, httpStatusCodes.OK, true)
         })(req,res,next)
     }

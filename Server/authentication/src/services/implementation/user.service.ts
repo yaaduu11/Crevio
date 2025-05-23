@@ -8,6 +8,7 @@ import { IUserRepository } from "../../repositories/interface/user-repository.in
 import { IUserService } from "../../services/interface/user-service.interface";
 import { mapper } from '../../config';
 import { FreelancerDetailDTO, FreelancerDetailEntity, UserDTO, UserEntity } from '../../core';
+import { winstonWarn, winstonError } from '../../utils/log-helper.util';
 
 export class UserService implements IUserService {
     constructor(private _userRepository : IUserRepository) {}
@@ -15,6 +16,7 @@ export class UserService implements IUserService {
     async register(user: UserType): Promise<string> {
         const existingUser = await this._userRepository.findByEmail(user.email)
         if (existingUser) {
+            winstonWarn('Registration attempt with existing email', { email: user.email })
             throw generateHttpError(httpStatusCodes.CONFLICT, Messages.USER_EXIST)
         }
 
@@ -32,7 +34,7 @@ export class UserService implements IUserService {
         try {
             await transporter.sendMail(mailOptions)
         }catch (err) {
-            console.error(err);
+            winstonError('Failed to send OTP email', { email: user.email, error: err })
             throw generateHttpError(httpStatusCodes.INTERNAL_SERVER_ERROR, Messages.OTP_ERROR)
         }
 
@@ -49,11 +51,13 @@ export class UserService implements IUserService {
     async verifyOtp(otp: string, email: string): Promise<{accessToken:string, refreshToken:string, user: UserType}> {
         const storedData = await redisClient.get(email)
         if(!storedData) {
+            winstonWarn('OTP verification failed - expired', { email })
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.OTP_EXPIRED)
         }
 
         const {otp: storedOtp, userData} = JSON.parse(storedData)
         if(otp!==storedOtp) {
+            winstonWarn('OTP verification failed - incorrect OTP', { email })
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_OTP)
         }
 
@@ -109,19 +113,23 @@ export class UserService implements IUserService {
     async login(email:string, password:string): Promise<{accessToken: string, refreshToken: string, user:UserType}> {
         let user = await this._userRepository.findByEmail(email)
         if(!user) {
+            winstonWarn('Login failed - user not found', { email })
             throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
         }
 
         if(user.isBlocked) {
+            winstonWarn('Login attempt for blocked user', { email, userId: user._id })
             throw generateHttpError(httpStatusCodes.FORBIDDEN, Messages.USER_BLOCKED)
         }
 
         if(!user.password) {
+            winstonWarn('Login failed - attempted on Google account without password', { email, userId: user._id })
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.GOOGLE_ACC_FP)
         }
 
         const checkPassword = await bcrypt.compare(password, user.password as string)
         if(!checkPassword) {
+            winstonWarn('Login failed - incorrect password', { email, userId: user._id })
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.INCORRECT_PASSWORD)
         }
 
