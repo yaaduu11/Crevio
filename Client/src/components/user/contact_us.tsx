@@ -7,7 +7,7 @@ const contact_us = () => {
 
     return (
       <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-        <Navbar currentPage='contact'/>
+        <Navbar currentPage='contact us'/>
 
         <div className="px-4 py-16 pt-40 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="mb-16 text-center">

@@ -2,13 +2,6 @@ import morgan from "morgan";
 import winstonLogger from "./wintson.logger";
 import express from 'express';
 
-
-// const morganLogger = morgan('short', {
-//     stream: {
-//         write: (message) => winstonLogger.info(message.trim())
-//     }
-// })
-
 const morganLogger = morgan((tokens, req, res) => {
     const request = req as express.Request;
 

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { env, redisClient } from "../../config"
+import { env, getProfileImageStreamService, redisClient } from "../../config"
 import { httpStatusCodes, Messages } from "../../constants";
 import { GoogleAuthUserType } from "../../types";
 import { asyncHandler, sendResponse } from "../../utils"
@@ -7,6 +7,8 @@ import { IUserController } from "../interface/user-controller.interface";
 import { IUserService } from "../../services/interface/user-service.interface";
 import { winstonInfo, winstonWarn } from '../../utils/log-helper.util';
 import jwt from "jsonwebtoken";
+import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { s3 } from '../../config'; 
 
 export class UserController implements IUserController{
     constructor(private _userService: IUserService) {}
@@ -72,8 +74,9 @@ export class UserController implements IUserController{
                 sameSite: "strict", 
                 maxAge: 7 * 24 * 60 * 60 * 1000 
             });
+            const requestId = req.headers['x-request-id'] as string;
 
-            winstonInfo('User logged in', { userId: user._id, email: user.email });
+            winstonInfo('User logged in', { userId: user._id, email: user.email, requestId });
             sendResponse(res, httpStatusCodes.OK, true, {accessToken, user})
         })(req, res, next); 
     }
@@ -214,9 +217,43 @@ export class UserController implements IUserController{
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {            
             const {planName} = req.body
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
+
             await this._userService.updateUserSubStatus(userId, planName)
 
             sendResponse(res, httpStatusCodes.OK, true)
+        })(req, res, next)
+    }
+
+    // AccessProfileImageS3(req: Request, res: Response, next: NextFunction): Promise<void> {
+    //     return asyncHandler(async (req: Request, res: Response) => {
+    //         const { filename } = req.params;
+    //         const { hash } = req.query;
+
+    //         if (hash !== env.IMAGE_ACCESS_SECRET) {
+    //             res.status(403).send('Access Denied');
+    //             return;
+    //         }
+
+    //         const s3Response = await getProfileImageStreamService(filename);
+
+    //         res.setHeader('Content-Type', s3Response.ContentType || 'image/jpeg');
+    //         res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+
+    //         if (s3Response.Body) {
+    //             (s3Response.Body as NodeJS.ReadableStream).pipe(res);
+    //         } else {
+    //             res.status(404).send('Image body not found');
+    //         }
+    //     })(req, res, next);
+    // }
+
+    isBlocked(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const userId = req.params.userId
+            console.log('in auth',userId)
+            const {status} = await this._userService.isBlocked(userId)
+            console.log('in auth',status)
+            sendResponse(res, httpStatusCodes.OK, true, {status})
         })(req, res, next)
     }
 
@@ -246,8 +283,10 @@ export class UserController implements IUserController{
                 secure: true,
                 sameSite: 'strict'
             });
+            const requestId = req.headers['x-request-id'] as string;
 
-            winstonInfo('User logged out', { userId: decoded?.userId || 'Unknown' })
+
+            winstonInfo('User logged out', { userId: decoded?.userId || 'Unknown', requestId })
             sendResponse(res, httpStatusCodes.OK, true)
         })(req,res,next)
     }

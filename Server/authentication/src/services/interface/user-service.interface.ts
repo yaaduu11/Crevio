@@ -19,4 +19,5 @@ export interface IUserService {
     updateMoreInfo(userId: string, userData: Partial<IFreelancerDetail>): Promise<{userDetails: Partial<IFreelancerDetail>}>
     updateUserSubStatus(userId: string, planName: string): Promise<void>
     getMoreInfo(userId: string): Promise<{userDetails:IFreelancerDetail}>
+    isBlocked(userId: string): Promise<{status: boolean}>
 }

@@ -41,6 +41,10 @@ export const env = {
 
     get SERVICE_NAME() {
         return process.env.SERVICE_NAME
+    },
+
+    get IS_BLOCKED_ENDPOINT_URL() {
+        return process.env.IS_BLOCKED_ENDPOINT_URL
     }
 }
 
@@ -71,5 +75,9 @@ export function envValidator() {
 
     if(!env.LOKI_HOST) {
         throw new Error('Loki Host is not found in env')
+    }
+
+    if(!env.IS_BLOCKED_ENDPOINT_URL) {
+        throw new Error('IS_BLOCKED_ENDPOINT_URL is not found in env')
     }
 }

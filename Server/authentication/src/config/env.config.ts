@@ -46,5 +46,25 @@ export const env = {
 
     get SERVICE_NAME() {
         return process.env.SERVICE_NAME
+    },
+
+    get AWS_ACCESS_KEY_ID() {
+        return process.env.AWS_ACCESS_KEY_ID
+    },
+
+    get AWS_SECRET_ACCESS_KEY() {
+        return process.env.AWS_SECRET_ACCESS_KEY
+    },
+
+    get AWS_REGION() {
+        return process.env.AWS_REGION
+    },
+
+    get AWS_BUCKET_NAME() {
+        return process.env.AWS_BUCKET_NAME
+    },
+
+    get IMAGE_ACCESS_SECRET() {
+        return process.env.IMAGE_ACCESS_SECRET
     }
 }

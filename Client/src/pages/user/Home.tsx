@@ -44,6 +44,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/storage";
 import Footer from "../../components/user/footer";
 import Chatbot from "../../components/user/chatbot";
+import HowItWorks from "../../components/user/home-hiw";
+import Testimonials from "../../components/user/home-t";
+import PlatformStats from "../../components/user/home-ps";
 
 const Home = () => {
   const navigate = useNavigate()
@@ -198,6 +201,8 @@ const Home = () => {
           </div>
         </div>
         
+        
+        
         <div>
           <div className="flex flex-col w-full pl-[11%] mt-32">
             <h1 className="justify-center text-4xl font-medium font-Inter ">
@@ -208,15 +213,15 @@ const Home = () => {
             </p>
           </div>  
           
-          <div className="relative w-4/5 mx-auto mt-6 overflow-hidden bg-[#EDF3FD] rounded-2xl p-4 min-h-[200px]">
-            <div className="absolute left-0 top-0 h-full w-[10%] bg-gradient-to-r from-[#EDF3FD] to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 h-full w-[10%] bg-gradient-to-l from-[#EDF3FD] to-transparent z-10 pointer-events-none" />
+          <div className="relative w-4/5 mx-auto mt-6 overflow-hidden bg-black rounded-2xl p-4 min-h-[200px]">
+            <div className="absolute left-0 top-0 h-full w-[10%] bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 h-full w-[10%] bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
             
             <div className="flex animate-scrollRight gap-4 w-max hover:[animation-play-state:paused]">
               {[...categoryData, ...categoryData].map((cat, i) => (
-                <div key={i} className="p-4 rounded-xl flex flex-col border border-[#EDF3FD] bg-[#EDF3FD] min-w-[200px] max-w-[200px]">
-                  <FontAwesomeIcon icon={cat.icon} className="self-start pl-4 mt-2 mb-2 text-2xl text-black" />
-                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide">
+                <div key={i} className="p-4 rounded-xl flex flex-col bg-black min-w-[200px] max-w-[200px]">
+                  <FontAwesomeIcon icon={cat.icon} className="self-start pl-4 mt-2 mb-2 text-2xl text-white" />
+                  <div className="mt-4 text-xl font-medium text-left pl-2.5 tracking-wide text-white">
                     {cat.title}
                   </div>
                 </div>
@@ -225,54 +230,65 @@ const Home = () => {
           </div>
 
         </div>
+        <div className="mt-24">
+          <HowItWorks />
+        </div>
+        <div className="mt-24">
+          <Testimonials/>
+        </div>
+        <div className="mt-24">
+          <PlatformStats/>
+        </div>
         
-        
-        <div className="flex mt-44">
-          <div className="flex justify-end pl-[18%]">
-            <div className="relative">
-              <img
-                src={HomeImage_2}
-                alt="Home image"
-                className="relative mt-[5%] w-[500px] h-[500px] object-contain"
-              />
-            </div>
-          </div>
-            
-          <div className="flex items-center justify-start pl-[14%]">
-            <div className="flex flex-col">
-              <h1 className="justify-center text-2xl font-lighter sm:text-3xl md:text-4xl lg:text-5xl font-Inter text-[#0a5f45]">
-                Work Your Way
-              </h1>
-
-              <p className="mt-3 ml-1 text-sm text-gray-600 sm:text-md md:text-lg lg:text-xl">
-                You bring the skill. We'll make earning easy.
-              </p>
-              
-              <div className="mt-8">
-                <div className="flex">
-                  <FontAwesomeIcon icon={faCheck} className="self-start pl-1 mt-1 text-2xl text-green-600"/>
-                  <p className="ml-4 text-sm tracking-wide sm:text-md md:text-lg lg:text-xl">Save your budget</p>
-                </div>
-                
-                <div className="flex mt-3">
-                  <FontAwesomeIcon icon={faCheck} className="self-start pl-1 mt-1 text-2xl text-green-600"/>
-                  <p className="ml-4 text-sm tracking-wide sm:text-md md:text-lg lg:text-xl">Completed work quickly</p>
-                </div>
-                
-                <div className="flex mt-3">
-                  <FontAwesomeIcon icon={faCheck} className="self-start pl-1 mt-1 text-2xl text-green-600"/>
-                  <p className="ml-4 text-sm tracking-wide sm:text-md md:text-lg lg:text-xl">Safe and secure</p>
-                </div>
-                
-                <div className="flex mt-3">
-                  <FontAwesomeIcon icon={faCheck} className="self-start pl-1 mt-1 text-2xl text-green-600"/>
-                  <p className="ml-4 text-sm tracking-wide sm:text-md md:text-lg lg:text-xl">24/7 support</p>
-                </div>
+        <div className="w-full bg-gradient-to-b from-white via-[#e3ffe3] to-white">
+          <div className="flex mt-24">
+            <div className="flex justify-end pl-[18%]">
+              <div className="relative">
+                <img
+                  src={HomeImage_2}
+                  alt="Home image"
+                  className="relative mt-[5%] w-[500px] h-[500px] object-contain"
+                />
               </div>
+            </div>
               
+            <div className="flex items-center justify-start pl-[14%]">
+              <div className="flex flex-col">
+                <h1 className="justify-center text-2xl font-lighter sm:text-3xl md:text-4xl lg:text-5xl font-Inter text-[#0a5f45]">
+                  Work Your Way
+                </h1>
+
+                <p className="mt-3 ml-1 text-sm text-gray-600 sm:text-md md:text-lg lg:text-xl">
+                  You bring the skill. We'll make earning easy.
+                </p>
+                
+                <div className="mt-8">
+                  <div className="flex">
+                    <FontAwesomeIcon icon={faCheck} className="self-start pl-1 mt-1 text-2xl text-green-600"/>
+                    <p className="ml-4 text-sm tracking-wide sm:text-md md:text-lg lg:text-xl">Save your budget</p>
+                  </div>
+                  
+                  <div className="flex mt-3">
+                    <FontAwesomeIcon icon={faCheck} className="self-start pl-1 mt-1 text-2xl text-green-600"/>
+                    <p className="ml-4 text-sm tracking-wide sm:text-md md:text-lg lg:text-xl">Completed work quickly</p>
+                  </div>
+                  
+                  <div className="flex mt-3">
+                    <FontAwesomeIcon icon={faCheck} className="self-start pl-1 mt-1 text-2xl text-green-600"/>
+                    <p className="ml-4 text-sm tracking-wide sm:text-md md:text-lg lg:text-xl">Safe and secure</p>
+                  </div>
+                  
+                  <div className="flex mt-3">
+                    <FontAwesomeIcon icon={faCheck} className="self-start pl-1 mt-1 text-2xl text-green-600"/>
+                    <p className="ml-4 text-sm tracking-wide sm:text-md md:text-lg lg:text-xl">24/7 support</p>
+                  </div>
+                </div>
+                
+              </div>
             </div>
           </div>
         </div>
+
       </div>
 
       {showModal && (

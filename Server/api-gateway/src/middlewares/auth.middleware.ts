@@ -26,10 +26,33 @@ export async function authMiddleware(req:Request, res: Response, next: NextFunct
 
         const { userId } = payload;
 
-        const isBlocked = await redisClient.get(userId);
-        if (isBlocked) {
+        let isBlocked = null
+
+        try {
+            isBlocked = await redisClient.get(userId)
+        } catch (error) {
+            console.warn("Redis unavailable. Trying internal fallback.");
+        }
+
+        if (isBlocked === "true") {
             return res.status(403).json({ error: "You are blocked from Crevio." });
         }
+
+        if (isBlocked === null) {
+            const response = await fetch(`${env.IS_BLOCKED_ENDPOINT_URL}/${userId}`);
+            const data = await response.json();
+
+            const isBlockedUser = data?.data?.status === true
+
+            if (isBlockedUser) {
+                await redisClient.set(userId, 'true');
+                return res.status(403).json({ error: "You are blocked from Crevio." });
+            }
+        }
+        // const isBlocked = await redisClient.get(userId);
+        // if (isBlocked) {
+        //     return res.status(403).json({ error: "You are blocked from Crevio." });
+        // }
 
         next()
     } catch (error) {

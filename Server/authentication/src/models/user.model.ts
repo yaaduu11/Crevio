@@ -25,6 +25,7 @@ const userSchema: Schema = new Schema({
     },
     isBlocked: {
         type : Boolean,
+        required: true,
         default: false
     },
     subscriptionType: {

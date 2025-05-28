@@ -3,10 +3,10 @@ import { faFacebook, faLinkedin, faInstagram, faXTwitter } from "@fortawesome/fr
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-t from-[#dbffcf] to-white text-[#09573f] px-8 pt-20 pb-6 font-Montserrat rounded-t-[4rem]">
+    <footer className="bg-gradient-to-t text-black px-8 pt-20 pb-6 font-Montserrat rounded-tl-[4rem] bg-[#dbffcf]">
       <div className="grid grid-cols-1 gap-6 pb-8 border-b border-gray-300 md:grid-cols-5">
         <div>
-          <h1 className="text-5xl font-K2D font-semibold text-[#00835B] mb-4">Crevio</h1>
+          <h1 className="mb-4 text-5xl font-semibold font-K2D">Crevio</h1>
           <div className="flex ml-2 space-x-4 text-xl">
             <FontAwesomeIcon icon={faXTwitter} className="hover:text-[#127a5b] cursor-pointer" />
             <FontAwesomeIcon icon={faLinkedin} className="hover:text-[#127a5b] cursor-pointer" />

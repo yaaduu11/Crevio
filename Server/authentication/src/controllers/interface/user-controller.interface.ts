@@ -20,5 +20,7 @@ export interface IUserController {
     getUserData(req: Request, res: Response, next: NextFunction): Promise<void>;
     getUserDataById(req: Request, res: Response, next: NextFunction): Promise<void>;
     updateUserSubStatus(req: Request, res: Response, next: NextFunction): Promise<void>;
+    isBlocked(req: Request, res: Response, next: NextFunction): Promise<void>;
     logout(req:Request, res:Response, next:NextFunction): Promise<void>;
+    // AccessProfileImageS3(req: Request, res: Response, next: NextFunction): Promise<void>;
 }

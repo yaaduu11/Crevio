@@ -4,9 +4,7 @@ import store from "../redux/storage";
 import { removeUser, setUser } from "../redux/userSlice";
 import { removeAdmin, setAdmin } from "../redux/adminSlice";
 import messages from "../constants/messages";
-
-import { useToast } from "../hooks/use-toast";
-
+import { v4 as uuidv4 } from 'uuid';
 
 const refreshToken = async(userLevel: "user" | "admin") => {
     const {data} = await Api.post(userEndPoints.REFRESH_TOKEN, {}, {withCredentials: true}) as any
@@ -36,7 +34,10 @@ const Api = axios.create({
 
 Api.interceptors.request.use(
     (config) => {
-        config.headers = config.headers || {}        
+        config.headers = config.headers || {};
+        
+        config.headers['x-request-id'] = uuidv4();
+        
         const userLevel = config.headers["X-User-Level"];
         const token = getTokenByUserLevel(userLevel);
 

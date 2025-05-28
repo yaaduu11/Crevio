@@ -9,6 +9,7 @@ import { IUserService } from "../../services/interface/user-service.interface";
 import { mapper } from '../../config';
 import { FreelancerDetailDTO, FreelancerDetailEntity, UserDTO, UserEntity } from '../../core';
 import { winstonWarn, winstonError } from '../../utils/log-helper.util';
+import { handleProfileImageUpload_s3 } from '../../config/s3-bucket.config';
 
 export class UserService implements IUserService {
     constructor(private _userRepository : IUserRepository) {}
@@ -220,7 +221,10 @@ export class UserService implements IUserService {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, "Profile image is required")
         }
 
+        // const s3imageURL = await handleProfileImageUpload_s3(profileImage.buffer)
         const imageURL = await handleProfileImageUpload(profileImage.buffer)
+
+        // console.log(s3imageURL)
         
         const user = await this._userRepository.findById(id);
 
@@ -334,6 +338,19 @@ export class UserService implements IUserService {
 
         user.subscriptionType = planName
         await this._userRepository.updateUser(user)
+    }
+
+    async isBlocked(userId: string): Promise<{ status: boolean; }> {
+        if(!userId) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.DATA_NOT_FOUND)
+        }
+        
+        const user = await this._userRepository.findById(userId)
+        if(!user) {            
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, Messages.USER_NOT_FOUND)
+        }
+
+        return {status: user.isBlocked?? false}
     }
 
     async refreshToken(token: string): Promise<string> {
