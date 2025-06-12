@@ -9,6 +9,7 @@ import { applyToProject, fetchUserById } from "../../api/user";
 import { useEffect, useState } from "react";
 import { SheetDemo } from "../ui/sheetDemo";
 import { useToast } from "../../hooks/use-toast";
+import Dialog_modal from "./dialog-modal";
 
 
 const ProjectDetails = () => {
@@ -17,6 +18,7 @@ const ProjectDetails = () => {
   const project = location.state?.project as ProjectType;
   const user = useSelector((state: RootState)=> state.user)
   const [uploadedUser, setUploadedUser] = useState<UserType>()
+  const [dialogModal, setDialogModal] = useState(false)
   const [openSheet, setOpenSheet] = useState(false)
   const [loading, setLoading] = useState(false)
   
@@ -47,6 +49,14 @@ const ProjectDetails = () => {
     }
   }
   
+  const handleDialogModal = () => {
+    setDialogModal(true);
+  }
+
+  const handleCloseDialog = () => {
+      setDialogModal(false);
+  }
+  
   useEffect(()=>{
     const fetchUpoloadedUser = async() => {
       try {
@@ -68,7 +78,8 @@ const ProjectDetails = () => {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-
+      <Dialog_modal open={dialogModal} onOpenChange={setDialogModal} />
+      
       <button 
         onClick={handleBack}
         className="flex items-center gap-2 py-6 pt-12 text-gray-600 transition-all hover:text-blue-600 group pl-[6%]"
@@ -103,7 +114,8 @@ const ProjectDetails = () => {
                         <button className="px-6 py-2 font-semibold text-white transition-all duration-300 rounded-full shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:shadow-xl hover:scale-105 active:scale-100 animate-pulse focus:outline-none"
                         onClick={() => {
                             if (project._id) {
-                                handleApplySubmit(project._id.toString());
+                                // handleApplySubmit(project._id.toString());
+                                handleDialogModal()
                             }
                         }}
                         >

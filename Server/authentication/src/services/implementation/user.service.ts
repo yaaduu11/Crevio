@@ -9,7 +9,7 @@ import { IUserService } from "../../services/interface/user-service.interface";
 import { mapper } from '../../config';
 import { FreelancerDetailDTO, FreelancerDetailEntity, UserDTO, UserEntity } from '../../core';
 import { winstonWarn, winstonError } from '../../utils/log-helper.util';
-import { handleProfileImageUpload_s3 } from '../../config/s3-bucket.config';
+import { handleProfileImageUpload_s3, generatePresignedImageURL } from '../../config/s3-bucket.config';
 
 export class UserService implements IUserService {
     constructor(private _userRepository : IUserRepository) {}
@@ -237,11 +237,38 @@ export class UserService implements IUserService {
         return {user}
     }
 
+    // async updateProfile(id: string, profileImage: FileType | undefined): Promise<{ user: UserType }> {
+    //     if (!profileImage) {
+    //         throw generateHttpError(httpStatusCodes.BAD_REQUEST, "Profile image is required");
+    //     }
+
+    //     const uploadedS3Url = await handleProfileImageUpload_s3(profileImage.buffer);
+    //     console.log(uploadedS3Url)
+    //     const fileKey = uploadedS3Url.split(".amazonaws.com/")[1];
+    //     console.log('this is filekey',fileKey)
+    //     const user = await this._userRepository.findById(id);
+    //     if (!user) {
+    //         throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND);
+    //     }
+
+    //     user.profilePicture = fileKey;
+    //     await this._userRepository.updateUser(user);
+
+    //     return { user };
+    // }
+
+
     async getProfileImage(userId: string): Promise<{ user: UserType; }> {
         const user = await this._userRepository.findById(userId)
         if(!user) {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, Messages.USER_NOT_FOUND)
         }
+
+        if (!user.profilePicture) {
+            throw generateHttpError(httpStatusCodes.NOT_FOUND, "User has no profile picture");
+        }
+
+        user.profilePicture = await generatePresignedImageURL(user.profilePicture)
         return {user}
     }
 

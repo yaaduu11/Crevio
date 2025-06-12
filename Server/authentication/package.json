@@ -11,6 +11,7 @@
     "@automapper/classes": "^8.8.1",
     "@automapper/core": "^8.8.1",
     "@aws-sdk/client-s3": "^3.816.0",
+    "@aws-sdk/s3-request-presigner": "^3.824.0",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",

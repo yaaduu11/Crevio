@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand, ObjectCannedACL, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { env } from './env.config';
 
 export const s3 = new S3Client({
@@ -43,4 +44,17 @@ export async function getProfileImageStreamService(filename: string) {
 
 export async function handleProfileImageUpload_s3(fileBuffer: Buffer): Promise<string> {
     return uploadToS3(fileBuffer);
+}
+
+export async function generatePresignedImageURL(filename: string): Promise<string> {
+    const command = new GetObjectCommand({
+        Bucket: env.AWS_BUCKET_NAME!,
+        Key: `profile_images/${filename}`,
+    });
+
+    const signedUrl = await getSignedUrl(s3, command, {
+        expiresIn: 60 * 5,
+    });
+
+    return signedUrl;
 }
