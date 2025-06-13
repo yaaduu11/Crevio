@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ApplicationType } from "../models/applicants.model";
 
 export interface FileType {
     fieldname: string;
@@ -7,6 +8,14 @@ export interface FileType {
     mimetype: string;
     buffer: Buffer;
     size: number;
+}
+
+export interface ApplyFileType {
+    userId: string;
+    projectId: string;
+    coverLetter: string;
+    resume?: FileType ;
+    resumeUrl? : string
 }
 
 export interface ProjectType {

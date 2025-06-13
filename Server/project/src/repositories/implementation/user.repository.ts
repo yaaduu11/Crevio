@@ -1,12 +1,24 @@
 import { IUserRepository } from "../interface/user-respository.interface";
 import Project from '../../models/project.model';
-import { ProjectType } from "../../types/index";
+import Application, { ApplicationType } from '../../models/applicants.model'
+import { ApplyFileType, ProjectType } from "../../types/index";
 import mongoose from "mongoose";
 
 class UserRepository implements IUserRepository {
     async createProject(projectData: ProjectType & { userId: mongoose.Types.ObjectId }): Promise<ProjectType> {
         return await Project.create(projectData);
     }
+
+    async create(data: ApplyFileType): Promise<ApplicationType> {
+        try{
+            const AppliedData = await Application.create(data)
+            return AppliedData 
+        }catch (err) {
+            console.error(err);
+            throw new Error("Error when creating the application");
+        }
+    }
+    
 
     async findAllProjects(): Promise<{ projects: ProjectType[]; }> {
         try {
@@ -48,10 +60,26 @@ class UserRepository implements IUserRepository {
             ).exec();
             return true;
         } catch (error) {
-            console.error();
+            console.error(error);
             throw new Error("Error when updating project")
         }
     }
+
+    async hasUserAlreadyApplied(userId: string, projectId: string): Promise<boolean> {
+        try {
+            const existing = await Application.findOne({
+                userId: new mongoose.Types.ObjectId(userId),
+                projectId: new mongoose.Types.ObjectId(projectId),
+            });
+
+            return !!existing;
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error while checking if user already applied.");
+        }
+    }
+
+
 }
 
 export default new UserRepository;

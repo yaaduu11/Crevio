@@ -2,7 +2,7 @@ import multer from "multer";
 import { httpStatusCodes, messages } from "../constants";
 import { generateHttpError } from "../utils/http-error.util";
 
-const allowedFormats = ['jpg', 'jpeg', 'png', 'webp']
+const allowedFormats = ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
 const storage = multer.memoryStorage()
 
 export const upload = multer({
@@ -15,3 +15,4 @@ export const upload = multer({
         callback(null, true)
     }
 })
+

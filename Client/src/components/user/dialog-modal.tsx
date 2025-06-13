@@ -80,7 +80,6 @@ const Dialog_modal = ({ open, onOpenChange }: DialogModalProps) => {
                     </DialogHeader>
                     
                     <div className="grid gap-6 py-4">
-                        {/* Description Input */}
                         <div className="grid gap-3">
                             <Label htmlFor="description" className="font-medium text-black">
                                 Description <span className="text-red-500">*</span>
@@ -96,7 +95,6 @@ const Dialog_modal = ({ open, onOpenChange }: DialogModalProps) => {
                             />
                         </div>
 
-                        {/* Resume Upload */}
                         <div className="grid gap-3">
                             <Label htmlFor="resume-upload" className="font-medium text-black">
                                 Resume <span className="text-red-500">*</span>
