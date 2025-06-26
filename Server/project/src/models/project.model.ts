@@ -9,10 +9,10 @@ export interface ProjectType extends Document {
     skills: string[];
     deadline: string;
     additional_info: string;
-    applicants: {
-        userId: mongoose.Types.ObjectId;
-        appliedAt: Date;
-    }[];
+    // applicants: {
+    //     userId: mongoose.Types.ObjectId;
+    //     appliedAt: Date;
+    // }[];
 }
 
 const projectSchema: Schema = new Schema({
@@ -44,18 +44,18 @@ const projectSchema: Schema = new Schema({
         type: String,
         default: ""
     },
-    applicants: [
-        {
-            userId: {
-                type: mongoose.Schema.Types.ObjectId,
-                required: false,
-            },
-            appliedAt: {
-                type: Date,
-                default: Date.now,
-            }
-        }
-    ],
+    // applicants: [
+    //     {
+    //         userId: {
+    //             type: mongoose.Schema.Types.ObjectId,
+    //             required: false,
+    //         },
+    //         appliedAt: {
+    //             type: Date,
+    //             default: Date.now,
+    //         }
+    //     }
+    // ],
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,

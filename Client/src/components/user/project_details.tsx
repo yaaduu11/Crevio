@@ -23,31 +23,31 @@ const ProjectDetails = () => {
   const [loading, setLoading] = useState(false)
   
   
-  const handleApplySubmit = async(projectId: string) => {
-    setLoading(true)
+  // const handleApplySubmit = async(projectId: string) => {
+  //   setLoading(true)
     
-    const response = await applyToProject(projectId)
-    console.log(response)
-    try {
-      if(response.success) {
-         toast({
-          variant: 'success',
-          description: 'successfully apply to project.',
-          duration: 2500
-         })
-      }else {
-        toast({
-          variant: 'warning',
-          description: response.error,
-          duration: 2500
-        })
-      }
-    } catch (error) {
-      console.error(error)
-    }finally{
-      setLoading(false)
-    }
-  }
+  //   const response = await applyToProject(projectId)
+  //   console.log(response)
+  //   try {
+  //     if(response.success) {
+  //        toast({
+  //         variant: 'success',
+  //         description: 'successfully apply to project.',
+  //         duration: 2500
+  //        })
+  //     }else {
+  //       toast({
+  //         variant: 'warning',
+  //         description: response.error,
+  //         duration: 2500
+  //       })
+  //     }
+  //   } catch (error) {
+  //     console.error(error)
+  //   }finally{
+  //     setLoading(false)
+  //   }
+  // }
   
   const handleDialogModal = () => {
     setDialogModal(true);
@@ -78,7 +78,7 @@ const ProjectDetails = () => {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Dialog_modal open={dialogModal} onOpenChange={setDialogModal} />
+      <Dialog_modal open={dialogModal} onOpenChange={setDialogModal} projectId={project._id}/>
       
       <button 
         onClick={handleBack}

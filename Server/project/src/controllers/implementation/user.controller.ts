@@ -3,6 +3,7 @@ import { IUserService } from "../../services/interface/user-service.interface";
 import { IUserController } from "../interface/user-controller.interface";
 import { asyncHandler } from "../../utils/async-handler.util";
 import { httpStatusCodes } from "../../constants";
+import { ApplyFileType } from '../../types';
 
 export class UserController implements IUserController {
     constructor(private _userService: IUserService) {}
@@ -40,15 +41,22 @@ export class UserController implements IUserController {
 
     applyToProject(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
-            const {projectId} = req.body
+            const {projectId, coverLetter} = req.body
+            const resume = req.file
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
 
             console.log(projectId, userId);
             console.log(typeof projectId, typeof userId);
             
-            
+            const data : ApplyFileType= {
+                userId,
+                projectId,
+                coverLetter,
+                resume
+            }
+            console.log(data)
 
-            await this._userService.applyToProject(userId, projectId)
+            await this._userService.applyToProject(data)
 
             res.status(httpStatusCodes.OK).json({success: true})
             console.log('ayachit undeda');

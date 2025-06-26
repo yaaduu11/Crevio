@@ -67,6 +67,8 @@ class UserRepository implements IUserRepository {
 
     async hasUserAlreadyApplied(userId: string, projectId: string): Promise<boolean> {
         try {
+            console.log('in repooo>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', userId, projectId);
+            
             const existing = await Application.findOne({
                 userId: new mongoose.Types.ObjectId(userId),
                 projectId: new mongoose.Types.ObjectId(projectId),

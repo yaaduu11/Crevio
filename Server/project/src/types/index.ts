@@ -27,8 +27,8 @@ export interface ProjectType {
     skills: string[];
     deadline: string;
     additional_info: string;
-    applicants: {
-        userId: mongoose.Types.ObjectId;
-        appliedAt: Date;
-    }[];
+    // applicants: {
+    //     userId: mongoose.Types.ObjectId;
+    //     appliedAt: Date;
+    // }[];
 }

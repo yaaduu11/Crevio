@@ -4,24 +4,30 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
 import { X, Upload, FileText } from "lucide-react"
+import { applyToProject } from '../../api/user'
+import { Types } from 'mongoose';
+import { useToast } from '../../hooks/use-toast'
 
 interface DialogModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  projectId: string | Types.ObjectId | undefined
 }
 
-const Dialog_modal = ({ open, onOpenChange }: DialogModalProps) => {
-    const [description, setDescription] = useState('');
+const Dialog_modal = ({ open, onOpenChange, projectId }: DialogModalProps) => {
+    const [coverLetter, setCoverLetter] = useState('');
     const [resume, setResume] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false)
+    const {toast} = useToast()
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -36,36 +42,61 @@ const Dialog_modal = ({ open, onOpenChange }: DialogModalProps) => {
 
     const removeResume = () => {
         setResume(null);
-        // Reset the file input
         const fileInput = document.getElementById('resume-upload') as HTMLInputElement;
         if (fileInput) {
             fileInput.value = '';
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true)
         
-        if (!description.trim()) {
-            alert('Please provide a description');
+        if (!coverLetter.trim()) {
+            alert('Please provide a Cover letter.');
             return;
         }
         
         if (!resume) {
-            alert('Please upload your resume');
+            alert('Please upload your Resume');
+            return;
+        }
+        
+        if (!projectId) {
+            console.error("Project Id is undefined");
             return;
         }
 
-        // Handle form submission here
-        console.log('Description:', description);
+        const response = await applyToProject(projectId.toString(), coverLetter, resume);
+
+        try {
+            if(response.success) {
+                toast({
+                variant: 'success',
+                description: 'successfully apply to project.',
+                duration: 2500
+                })
+            }else {
+                toast({
+                variant: 'warning',
+                description: response.error,
+                duration: 2500
+                })
+            }
+        } catch (error) {
+            console.error(error)
+        }finally{
+            setLoading(false)
+            onOpenChange(false);
+            setCoverLetter('');
+            setResume(null);
+        }
+        console.log('description:', coverLetter);
         console.log('Resume:', resume);
         
-        // Close modal after successful submission
-        onOpenChange(false);
-        
-        // Reset form
-        setDescription('');
-        setResume(null);
+        // onOpenChange(false);
+        // setCoverLetter('');
+        // setResume(null);
     };
 
     return (
@@ -82,14 +113,14 @@ const Dialog_modal = ({ open, onOpenChange }: DialogModalProps) => {
                     <div className="grid gap-6 py-4">
                         <div className="grid gap-3">
                             <Label htmlFor="description" className="font-medium text-black">
-                                Description <span className="text-red-500">*</span>
+                                description <span className="text-red-500">*</span>
                             </Label>
                             <Textarea
                                 id="description"
                                 name="description"
                                 placeholder="Tell us why you're interested in this position and what makes you a great fit..."
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                value={coverLetter}
+                                onChange={(e) => setCoverLetter(e.target.value)}
                                 className="bg-white text-black border-gray-300 min-h-[120px] resize-none"
                                 required
                             />
@@ -157,7 +188,9 @@ const Dialog_modal = ({ open, onOpenChange }: DialogModalProps) => {
                             </Button>
                         </DialogClose>
                         <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                            Apply
+                            {loading? (
+                            <div className="w-4 h-4 border-2 border-gray-300 rounded-full border-t-black animate-spin"></div>
+                            ): ('Apply')}
                         </Button>
                     </DialogFooter>
                 </form>

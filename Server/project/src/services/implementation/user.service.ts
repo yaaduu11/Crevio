@@ -94,7 +94,7 @@ export class UserService implements IUserService {
 
         const hasUserApplied = await this._userRepository.hasUserAlreadyApplied(userId, projectId)
 
-        if(!hasUserApplied) {
+        if(hasUserApplied) {            
             throw generateHttpError(httpStatusCodes.CONFLICT, "You already applied to this project");
         }
 
@@ -109,6 +109,8 @@ export class UserService implements IUserService {
             resumeUrl,
         };
 
+        console.log('in service--', applicationData);
+        
         await this._userRepository.create(applicationData)
     }
 }
