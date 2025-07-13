@@ -13,5 +13,6 @@ router.get('/projects', userController.allProjects.bind(userController))
 router.get('/projects-by-id', userController.allProjectsById.bind(userController))
 router.post('/projects/add-project',upload.single('projectsImage'), userController.addProject.bind(userController))
 router.post('/projects/apply',upload.single('resume'), userController.applyToProject.bind(userController))
+router.get('/projects/applicants', userController.getApplicants.bind(userController))
 
 export default router

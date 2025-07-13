@@ -13,20 +13,23 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
 import { X, Upload, FileText } from "lucide-react"
-import { applyToProject } from '../../api/user'
+import { aichatbot, applyToProject } from '../../api/user'
 import { Types } from 'mongoose';
 import { useToast } from '../../hooks/use-toast'
+import { ProjectType } from '../../types/user.type'
 
 interface DialogModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  projectId: string | Types.ObjectId | undefined
+//   projectId?: string | Types.ObjectId | undefined 
+  project: ProjectType | undefined
 }
 
-const Dialog_modal = ({ open, onOpenChange, projectId }: DialogModalProps) => {
+const Dialog_modal = ({ open, onOpenChange, project }: DialogModalProps) => {
     const [coverLetter, setCoverLetter] = useState('');
     const [resume, setResume] = useState<File | null>(null);
     const [loading, setLoading] = useState(false)
+    const [ai_rating, setAi_rating] = useState<string | null | undefined>(null)
     const {toast} = useToast()
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +38,6 @@ const Dialog_modal = ({ open, onOpenChange, projectId }: DialogModalProps) => {
             setResume(file);
         } else {
             alert('Please upload a PDF file only');
-            // Reset the file input
             event.target.value = '';
         }
     };
@@ -62,13 +64,25 @@ const Dialog_modal = ({ open, onOpenChange, projectId }: DialogModalProps) => {
             return;
         }
         
-        if (!projectId) {
+        if (!project || !project._id) {
             console.error("Project Id is undefined");
             return;
         }
+        const prompt = `You are a job application assistant. Here is a candidate's cover letter and the project description. Please rate this candidate's suitability for the project out of 10, considering both the cover letter and the project description. Only return a single number between 1 and 10.
+        Cover Letter:
+        ${coverLetter}
 
-        const response = await applyToProject(projectId.toString(), coverLetter, resume);
-
+        Project Description:
+        ${project?.description}`;
+        
+        const response1 = await aichatbot(prompt)
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>',response1.data as string)
+        if(response1.success) {
+            setAi_rating(response1.data as string);
+        }
+        
+        const response = await applyToProject(project._id.toString(), coverLetter, resume, ai_rating ? ai_rating : '');
+        
         try {
             if(response.success) {
                 toast({
@@ -93,10 +107,6 @@ const Dialog_modal = ({ open, onOpenChange, projectId }: DialogModalProps) => {
         }
         console.log('description:', coverLetter);
         console.log('Resume:', resume);
-        
-        // onOpenChange(false);
-        // setCoverLetter('');
-        // setResume(null);
     };
 
     return (
@@ -113,7 +123,7 @@ const Dialog_modal = ({ open, onOpenChange, projectId }: DialogModalProps) => {
                     <div className="grid gap-6 py-4">
                         <div className="grid gap-3">
                             <Label htmlFor="description" className="font-medium text-black">
-                                description <span className="text-red-500">*</span>
+                                cover letter <span className="text-red-500">*</span>
                             </Label>
                             <Textarea
                                 id="description"

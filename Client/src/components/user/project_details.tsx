@@ -1,20 +1,16 @@
 import { useLocation } from "react-router-dom";
-// import { Button } from "../ui/button";
-// import { Divide, Star } from "lucide-react";
 import { ProjectType, UserType } from "../../types/user.type";
-import { ArrowLeft, Calendar, Users, Briefcase, Code, UndoIcon } from 'lucide-react';
+import { ArrowLeft, Calendar, Users, Briefcase, Code } from 'lucide-react';
 import { useSelector } from "react-redux";
 import { RootState } from '../../redux/storage';
-import { applyToProject, fetchUserById } from "../../api/user";
+import { fetchUserById } from "../../api/user";
 import { useEffect, useState } from "react";
 import { SheetDemo } from "../ui/sheetDemo";
-import { useToast } from "../../hooks/use-toast";
 import Dialog_modal from "./dialog-modal";
 
 
 const ProjectDetails = () => {
   const location = useLocation();
-  const {toast} = useToast()
   const project = location.state?.project as ProjectType;
   const user = useSelector((state: RootState)=> state.user)
   const [uploadedUser, setUploadedUser] = useState<UserType>()
@@ -53,9 +49,9 @@ const ProjectDetails = () => {
     setDialogModal(true);
   }
 
-  const handleCloseDialog = () => {
-      setDialogModal(false);
-  }
+  // const handleCloseDialog = () => {
+  //     setDialogModal(false);
+  // }
   
   useEffect(()=>{
     const fetchUpoloadedUser = async() => {
@@ -78,7 +74,7 @@ const ProjectDetails = () => {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Dialog_modal open={dialogModal} onOpenChange={setDialogModal} projectId={project._id}/>
+      <Dialog_modal open={dialogModal} onOpenChange={setDialogModal} project={project}/>
       
       <button 
         onClick={handleBack}
@@ -180,10 +176,17 @@ const ProjectDetails = () => {
             (
             <div className="lg:col-span-1">
               <div className="sticky p-8 transition-all bg-white border border-gray-100 shadow-lg top-24 hover:shadow-xl rounded-2xl">
-                <h2 className="flex items-center mb-6 text-2xl font-semibold">
-                  <Users className="w-6 h-6 mr-3 text-blue-600" />
-                  Applicants
-                </h2>
+                <div className="flex items-center justify-between ">
+                  <h2 className="flex items-center mb-6 text-2xl font-semibold">
+                    <Users className="w-6 h-6 mr-3 text-blue-600" />
+                    Applicants
+                  </h2>
+                  <button
+                    className="px-6 py-2 mb-6 text-base font-semibold text-white transition-all duration-200 rounded-full shadow-md bg-gradient-to-r from-blue-500 to-purple-500 hover:from-purple-500 hover:to-blue-500 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  >
+                    Shortlist
+                  </button>
+                </div>
                 
                 {project.applicants && project.applicants.length > 0 ? (
                   <div className="space-y-4">

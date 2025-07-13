@@ -5,4 +5,5 @@ export interface IUserController {
     allProjects(req: Request, res: Response, next: NextFunction): Promise<void>;
     allProjectsById(req: Request, res: Response, next: NextFunction): Promise<void>;
     applyToProject(req: Request, res: Response, next: NextFunction): Promise<void>;
+    getApplicants(req: Request, res: Response, next: NextFunction): Promise<void>; 
 }

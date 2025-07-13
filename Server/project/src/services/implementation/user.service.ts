@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { httpStatusCodes, messages } from "../../constants";
 import { IUserRepository } from "../../repositories/interface/user-respository.interface";
-import { ApplyFileType, FileType, ProjectType } from "../../types";
+import { ApplyFileType, FileType, ProjectType, UserType } from "../../types";
 import { generateHttpError } from "../../utils/http-error.util";
 import { IUserService } from "../interface/user-service.interface";
 import { handleProfileImageUpload, handlePDFUpload } from "../../config";
@@ -34,7 +34,6 @@ export class UserService implements IUserService {
             skills: parsedSkills,
             deadline: formData.deadline,
             additional_info: formData.additional_info,
-            applicants: [],
             userId: new mongoose.Types.ObjectId(userId),
         };
 
@@ -90,7 +89,7 @@ export class UserService implements IUserService {
             throw generateHttpError(httpStatusCodes.BAD_REQUEST, messages.DATA_EMPTY)
         }
 
-        const { userId, projectId, coverLetter, resume } = data;
+        const { userId, projectId, coverLetter, resume, ai_rating } = data;
 
         const hasUserApplied = await this._userRepository.hasUserAlreadyApplied(userId, projectId)
 
@@ -107,10 +106,28 @@ export class UserService implements IUserService {
             projectId,
             coverLetter,
             resumeUrl,
+            ai_rating
         };
 
         console.log('in service--', applicationData);
         
         await this._userRepository.create(applicationData)
     }
+
+    // getApplicants(projectId: string): Promise<{ applicants: UserType[]; }> {
+    //     if(!projectId) {
+    //         throw generateHttpError(httpStatusCodes.BAD_REQUEST, messages.DATA_EMPTY)
+    //     }
+
+    //     return this._userRepository.getApplicants(projectId)
+    //         .then((applicants: ApplicationType[]) => {
+    //             const formattedApplicants = applicants.map(applicant => ({
+    //                 userId: applicant.userId.toString(),
+    //                 projectId: applicant.projectId.toString(),
+    //                 coverLetter: applicant.coverLetter,
+    //                 resumeUrl: applicant.resumeUrl
+    //             }));
+    //             return { applicants: formattedApplicants };
+    //     });
+    // }
 }

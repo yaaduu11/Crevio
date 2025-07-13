@@ -41,18 +41,18 @@ export class UserController implements IUserController {
 
     applyToProject(req: Request, res: Response, next: NextFunction): Promise<void> {
         return asyncHandler(async(req: Request, res: Response): Promise<void> => {
-            const {projectId, coverLetter} = req.body
+            const {projectId, coverLetter, ai_rating} = req.body
             const resume = req.file
             const {userId} = JSON.parse(req.headers['x-user-payload'] as string)
 
-            console.log(projectId, userId);
-            console.log(typeof projectId, typeof userId);
+            console.log(projectId, userId, ai_rating);
             
             const data : ApplyFileType= {
                 userId,
                 projectId,
                 coverLetter,
-                resume
+                resume,
+                ai_rating
             }
             console.log(data)
 
@@ -64,5 +64,12 @@ export class UserController implements IUserController {
         })(req, res, next)
     }
 
+    getApplicants(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return asyncHandler(async(req: Request, res: Response): Promise<void> => {
+            const {projectId} = req.body
+            // const applicants = await this._userService.getApplicants(projectId as string)
 
+            res.status(httpStatusCodes.OK).json()
+        })(req, res, next)
+    }
 }

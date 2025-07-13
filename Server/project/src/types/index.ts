@@ -16,6 +16,7 @@ export interface ApplyFileType {
     coverLetter: string;
     resume?: FileType ;
     resumeUrl? : string
+    ai_rating: number
 }
 
 export interface ProjectType {
@@ -27,8 +28,17 @@ export interface ProjectType {
     skills: string[];
     deadline: string;
     additional_info: string;
-    // applicants: {
-    //     userId: mongoose.Types.ObjectId;
-    //     appliedAt: Date;
-    // }[];
+    is_shortlisted?: boolean;
+    shortlisted_freelancers?: mongoose.Types.ObjectId[];
+}
+
+export interface UserType {
+    _id?: mongoose.Types.ObjectId;
+    name?: string;
+    email: string;
+    password?: string;
+    profilePicture?: string;
+    role?: 'freelancer' | 'client' | 'admin';
+    isBlocked?: boolean;
+    subscriptionType? : string;
 }

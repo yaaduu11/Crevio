@@ -1,7 +1,7 @@
 import { IUserRepository } from "../interface/user-respository.interface";
 import Project from '../../models/project.model';
 import Application, { ApplicationType } from '../../models/applicants.model'
-import { ApplyFileType, ProjectType } from "../../types/index";
+import { ApplyFileType, ProjectType, UserType } from "../../types/index";
 import mongoose from "mongoose";
 
 class UserRepository implements IUserRepository {
@@ -66,9 +66,7 @@ class UserRepository implements IUserRepository {
     }
 
     async hasUserAlreadyApplied(userId: string, projectId: string): Promise<boolean> {
-        try {
-            console.log('in repooo>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', userId, projectId);
-            
+        try {            
             const existing = await Application.findOne({
                 userId: new mongoose.Types.ObjectId(userId),
                 projectId: new mongoose.Types.ObjectId(projectId),
@@ -81,6 +79,19 @@ class UserRepository implements IUserRepository {
         }
     }
 
+
+    // async getApplicants(projectId: string): Promise<{ applicants: UserType[]; }> {
+    //     try {            
+    //         const applicants = await Application.find({
+    //             projectId: new mongoose.Types.ObjectId(projectId),
+    //         });
+
+    //         return !!existing;
+    //     } catch (error) {
+    //         console.error(error);
+    //         throw new Error("Error while checking if user already applied.");
+    //     }
+    // }
 
 }
 

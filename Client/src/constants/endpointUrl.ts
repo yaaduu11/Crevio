@@ -30,6 +30,7 @@ export const userEndPoints = {
     ALL_PROJECTS_BY_ID: '/project/projects-by-id',
     ADD_PROJECT: '/project/projects/add-project',
     APPLY_TO_PROJECT: '/project/projects/apply',
+    FETCH_APPLICANTS: '/project/projects/fetch-applicants',
 
     AI_CHATBOT: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`
 }

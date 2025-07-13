@@ -7,6 +7,7 @@ export interface ApplicationType extends Document {
   coverLetter: string;
   resumeUrl: string;
   status: "pending" | "accepted" | "rejected";
+  ai_rating: number;
 }
 
 const applicationSchema: Schema = new Schema(
@@ -35,6 +36,12 @@ const applicationSchema: Schema = new Schema(
       enum: ["pending", "accepted", "rejected"],
       default: "pending",
     },
+    ai_rating: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 10
+    }
   },
   { timestamps: true }
 );

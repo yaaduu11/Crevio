@@ -322,14 +322,25 @@ export const allProjects = async () => {
     }
 }
 
-export const applyToProject = async(projectId: string, coverLetter: string, resume: File) => {
+export const applyToProject = async(projectId: string, coverLetter: string, resume: File, ai_rating: string) => {
     try {
-        await Api.post(userEndPoints.APPLY_TO_PROJECT, {projectId, coverLetter, resume}, {
+        await Api.post(userEndPoints.APPLY_TO_PROJECT, {projectId, coverLetter, resume, ai_rating}, {
             headers: {
                 ...headers,
                 "Content-Type": "multipart/form-data",
             },
         })
+        return {success: true} 
+    } catch (error) {
+        const err = error as any;
+        const message = err.response?.data?.error || "Something went wrong";
+        return { success: false, error: message };
+    }
+}
+
+export const fetchApplicants = async(projectId: string) => {
+    try {
+        await Api.post(userEndPoints.APPLY_TO_PROJECT, projectId, {headers})
         return {success: true} 
     } catch (error) {
         const err = error as any;

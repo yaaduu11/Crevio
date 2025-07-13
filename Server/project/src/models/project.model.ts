@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface ProjectType extends Document {
     userId: mongoose.Types.ObjectId;
@@ -9,10 +9,8 @@ export interface ProjectType extends Document {
     skills: string[];
     deadline: string;
     additional_info: string;
-    // applicants: {
-    //     userId: mongoose.Types.ObjectId;
-    //     appliedAt: Date;
-    // }[];
+    is_shortlisted: boolean;
+    shortlisted_freelancers: Types.ObjectId[];
 }
 
 const projectSchema: Schema = new Schema({
@@ -44,18 +42,14 @@ const projectSchema: Schema = new Schema({
         type: String,
         default: ""
     },
-    // applicants: [
-    //     {
-    //         userId: {
-    //             type: mongoose.Schema.Types.ObjectId,
-    //             required: false,
-    //         },
-    //         appliedAt: {
-    //             type: Date,
-    //             default: Date.now,
-    //         }
-    //     }
-    // ],
+    is_shortlisted: {
+        type: Boolean,
+        default: false
+    },
+    shortlisted_freelancers: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: []
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
