@@ -12,6 +12,7 @@ export default {
         Rubik : ["Rubik", "serif"],
         Montserrat : ["Montserrat", 'sans-serif'],
         Quicksand: ["Quicksand", "sans-serif"],
+        playfair: ['"Playfair Display"', 'serif']
       },
       keyframes: {
         scrollRight: {

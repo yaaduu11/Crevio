@@ -14,7 +14,8 @@ import { removeUser } from '../../redux/userSlice';
 import { useEffect, useState } from 'react';
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-
+// bg-[#1a5c4a]
+// bg-[#D7FEC8]
 
 
 const Navbar = ({currentPage } : {currentPage : string}) => {
@@ -129,10 +130,11 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
     // </>
     
     <>
-      <div className="fixed left-0 w-full z-50 h-[110px] bg-[#D7FEC8] rounded-br-[80px] top-0 flex items-center justify-between px-8">
-        <h1 className="text-[#00835B] font-K2D text-5xl mb-2 font-semibold cursor-pointer" onClick={() => navigate(userRoutes.HOME)}>
+      <div className="fixed left-0 w-full z-50 h-[90px] bg-[#D7FEC8] top-0 flex items-center justify-between px-8">
+        <h1 className="text-[#00835B] font-K2D text-5xl mb-4 font-semibold cursor-pointer" onClick={() => navigate(userRoutes.HOME)}>
           Crevio
         </h1>
+
 
         {user.accessToken && (
           <div className="absolute hidden space-x-8 transform -translate-x-1/2 md:flex left-1/2">
@@ -219,7 +221,74 @@ const Navbar = ({currentPage } : {currentPage : string}) => {
             </div>
           )}
         </div>
+        
+        {/* <div className="relative pt-16">
+          <svg
+            className="w-full h-20"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,0 H1200 V60 
+                Q1050,20 900,60 
+                T600,60 T300,60 T0,60 Z"
+              className="fill-[#D7FEC8]"
+            ></path>
+            
+            <path
+              d="M0,0 H1200 V80 
+                Q1050,40 900,80 
+                T600,80 T300,80 T0,80 Z"
+              opacity=".7"
+              className="fill-[#D7FEC8]"
+            ></path>
+
+            <path
+              d="M0,0 H1200 V100 
+                Q1050,60 900,100 
+                T600,100 T300,100 T0,100 Z"
+              opacity=".4"
+              className="fill-[#D7FEC8]"
+            ></path>
+          </svg>
+        </div> */}
+        
+        
+        <div className="absolute bottom-0 left-0 w-full top-[70%]">
+          <svg
+            className="w-full h-20"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,0 H1200 V60 
+                Q1050,20 900,60 
+                T600,60 T300,60 T0,60 Z"
+              className="fill-[#D7FEC8]"
+            ></path>
+            
+            <path
+              d="M0,0 H1200 V80 
+                Q1050,40 900,80 
+                T600,80 T300,80 T0,80 Z"
+              opacity=".7"
+              className="fill-[#D7FEC8]"
+            ></path>
+
+            <path
+              d="M0,0 H1200 V100 
+                Q1050,60 900,100 
+                T600,100 T300,100 T0,100 Z"
+              opacity=".4"
+              className="fill-[#D7FEC8]"
+            ></path>
+          </svg>
+        </div>
+        
       </div>
+        
 
       {/* Mobile sidebar */}
       {isMobileMenuOpen && (
